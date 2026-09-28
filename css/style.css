@@ -953,3 +953,388 @@ body {
     }
 
 }
+
+/* =========================================
+   PRACTICAL 5
+   STUDENT REGISTRATION FORM
+   ========================================= */
+
+
+/* ================= FORM CARD ================= */
+
+.form-card {
+
+    max-width: 760px;
+
+    margin: 30px auto;
+
+    padding: 30px;
+
+    background: white;
+
+    border: 1px solid #e0e5eb;
+
+    border-radius: 10px;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+
+}
+
+
+/* ================= FORM GROUP ================= */
+
+.form-group {
+
+    margin-bottom: 20px;
+
+}
+
+
+.form-group label,
+.form-group legend {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-weight: 600;
+
+    color: #243b53;
+
+}
+
+
+.required {
+
+    color: #d93025;
+
+}
+
+
+/* ================= INPUTS ================= */
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="password"],
+.form-group select {
+
+    width: 100%;
+
+    padding: 12px 13px;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 6px;
+
+    font-size: 15px;
+
+    font-family: inherit;
+
+    background: white;
+
+    box-sizing: border-box;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+
+}
+
+
+.form-group input:focus,
+.form-group select:focus {
+
+    outline: none;
+
+    border-color: #1677e8;
+
+    box-shadow: 0 0 0 3px rgba(22, 119, 232, 0.12);
+
+}
+
+
+/* ================= ERROR INPUT ================= */
+
+.input-error {
+
+    border-color: #d93025 !important;
+
+    background: #fff8f8 !important;
+
+}
+
+
+.input-success {
+
+    border-color: #188038 !important;
+
+}
+
+
+/* ================= ERROR MESSAGE ================= */
+
+.error-message {
+
+    display: block;
+
+    min-height: 18px;
+
+    margin-top: 5px;
+
+    color: #d93025;
+
+    font-size: 13px;
+
+}
+
+
+/* ================= INPUT HINT ================= */
+
+.input-hint {
+
+    display: block;
+
+    margin-top: 5px;
+
+    color: #6b7280;
+
+    font-size: 12px;
+
+}
+
+
+/* ================= RADIO BUTTONS ================= */
+
+fieldset.form-group {
+
+    border: none;
+
+    padding: 0;
+
+    margin: 0 0 20px;
+
+}
+
+
+.radio-group {
+
+    display: flex;
+
+    gap: 25px;
+
+    flex-wrap: wrap;
+
+}
+
+
+.radio-group label {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    font-weight: normal;
+
+    cursor: pointer;
+
+}
+
+
+.radio-group input {
+
+    width: auto;
+
+    accent-color: #1677e8;
+
+}
+
+
+/* ================= TERMS ================= */
+
+.terms-group {
+
+    margin: 20px 0;
+
+    padding: 15px;
+
+    background: #f6f9fc;
+
+    border: 1px solid #e1e8ef;
+
+    border-radius: 6px;
+
+}
+
+
+.terms-group label {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 8px;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+}
+
+
+.terms-group input {
+
+    margin-top: 4px;
+
+}
+
+
+.terms-group a {
+
+    color: #1677e8;
+
+    text-decoration: none;
+
+}
+
+
+.terms-group a:hover {
+
+    text-decoration: underline;
+
+}
+
+
+/* ================= FORM BUTTONS ================= */
+
+.form-actions {
+
+    display: flex;
+
+    gap: 12px;
+
+    margin-top: 25px;
+
+    flex-wrap: wrap;
+
+}
+
+
+/* ================= SUCCESS MESSAGE ================= */
+
+.success-message {
+
+    display: none;
+
+    margin-top: 20px;
+
+    padding: 14px 16px;
+
+    border-radius: 6px;
+
+    background: #eaf7ee;
+
+    border: 1px solid #b7dfc1;
+
+    color: #176b2c;
+
+    font-weight: 600;
+
+}
+
+
+.success-message.show {
+
+    display: block;
+
+}
+
+
+/* ================= DARK MODE ================= */
+
+.dark-theme .form-card {
+
+    background: #1e1e1e;
+
+    border-color: #333;
+
+}
+
+
+.dark-theme .form-group label,
+.dark-theme .form-group legend {
+
+    color: #eeeeee;
+
+}
+
+
+.dark-theme .form-group input[type="text"],
+.dark-theme .form-group input[type="email"],
+.dark-theme .form-group input[type="tel"],
+.dark-theme .form-group input[type="password"],
+.dark-theme .form-group select {
+
+    background: #252525;
+
+    color: #eeeeee;
+
+    border-color: #555;
+
+}
+
+
+.dark-theme .input-hint {
+
+    color: #aaaaaa;
+
+}
+
+
+.dark-theme .terms-group {
+
+    background: #252525;
+
+    border-color: #444;
+
+}
+
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 600px) {
+
+    .form-card {
+
+        padding: 20px 16px;
+
+        margin: 20px auto;
+
+    }
+
+
+    .radio-group {
+
+        flex-direction: column;
+
+        gap: 10px;
+
+    }
+
+
+    .form-actions {
+
+        flex-direction: column;
+
+    }
+
+
+    .form-actions .btn {
+
+        width: 100%;
+
+    }
+
+}

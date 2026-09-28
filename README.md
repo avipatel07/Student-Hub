@@ -1,96 +1,319 @@
-# StudentHub Portal
+# 🎓 StudentHub - Digital Student Portal
 
-## 1. Problem Definition
+StudentHub is a responsive web-based student portal designed to
+provide students with a simple and centralized platform for accessing
+academic information, campus events, student services, profiles,
+feedback and other important resources.
 
-Students need a single web portal to access academic and campus-related information.
+The project is developed progressively as part of a semester-long
+web development practical.
 
-Currently, information about events, registrations, notices, student profiles, and feedback may be available through different systems.
+---
 
-StudentHub will provide one centralized web portal for students and administrators.
+## 📌 Project Overview
 
-## 2. Project Objectives
+StudentHub provides a single digital platform where students can:
 
-1. Provide a single portal for students.
-2. Allow students to register and log in.
-3. Display college events and notices.
-4. Allow students to register for events.
-5. Allow students to manage their profiles.
-6. Provide an administrative management system.
-
-## 3. User Roles
-
-### 3.1 Student
-
-The student can:
-
-- Register
-- Login and logout
-- View the student dashboard
-- View and search events
+- View important campus information
+- Explore upcoming events
 - Register for events
-- View and update profile
-- View FAQ
+- Manage their student profile
+- Access the student dashboard
 - Submit feedback
+- Find answers through FAQs
+- Register for a StudentHub account
+- Use the portal on desktop, tablet and mobile devices
 
-### 3.2 Admin
+The project focuses on clean UI design, responsive layouts,
+accessibility and JavaScript-based interactivity.
 
-The administrator can:
+---
 
-- Login
-- View the admin dashboard
-- Manage student records
-- Add, update, and delete events
-- View event registrations
-- View system activities
+# 🎯 Objectives
 
-## 4. Functional Requirements
+- Design and develop a student-centric web portal
+- Understand website planning and information architecture
+- Create a proper sitemap and navigation structure
+- Develop semantic HTML5 pages
+- Design responsive layouts using CSS Grid and Flexbox
+- Implement interactive UI components using JavaScript
+- Implement client-side form validation using Regular Expressions
+- Maintain the project using Git and GitHub
 
-FR-01: The system shall allow a new student to register.
+---
 
-FR-02: The system shall allow registered users to log in and log out.
+# 🛠️ Technologies Used
 
-FR-03: The student shall be able to view a personal dashboard.
+### Frontend
 
-FR-04: The student shall be able to view and search events.
+- HTML5
+- CSS3
+- JavaScript
 
-FR-05: The student shall be able to register for an event.
+### CSS Concepts
 
-FR-06: The student shall be able to view and update profile details.
+- CSS Grid
+- Flexbox
+- Media Queries
+- Responsive Design
+- Mobile-First Design
+- CSS Transitions
 
-FR-07: The system shall provide About, Contact, FAQ, and Feedback pages.
+### JavaScript Concepts
 
-FR-08: The administrator shall be able to manage student records.
+- DOM Manipulation
+- Event Listeners
+- Regular Expressions
+- Form Validation
+- Modal Popup
+- FAQ Accordion
+- Content Slider
+- Hamburger Menu
+- Theme Switching
+- Notification Banner
+- Local Storage
 
-FR-09: The administrator shall be able to add, update, and delete events.
+### Tools
 
-FR-10: The system shall restrict admin pages to administrator users only.
+- Visual Studio Code
+- Git
+- GitHub
+- Browser Developer Tools
 
-## 5. Non-Functional Requirements
+---
 
-NFR-01: The website should be easy to use and navigate.
+# 📚 Practical Progress
 
-NFR-02: The website should work properly on mobile, tablet, and desktop devices.
+## Practical 1 - Project Initiation and Planning
 
-NFR-03: The website should follow basic accessibility guidelines.
+### Objective
 
-NFR-04: User passwords should be stored securely.
+To initiate the semester-long StudentHub portal by identifying
+the problem scope, user roles, modules, navigation flow and
+minimum required pages.
 
-NFR-05: The project should use an organized and maintainable folder structure.
+### Work Completed
 
-NFR-06: The source code should be maintained using Git and GitHub.
+- Identified the problem scope
+- Defined StudentHub user requirements
+- Identified user roles
+- Defined major portal modules
+- Designed website navigation flow
+- Created sitemap
+- Created low-fidelity wireframe
+- Created project folder structure
+- Created README documentation
+- Created GitHub repository
 
-## 6. Proposed Pages
+---
+
+# Practical 2 - Static HTML5 Pages
+
+### Objective
+
+To develop static HTML5 skeletons for at least 10 StudentHub pages
+using semantic and accessibility-friendly HTML structure.
+
+### Pages Developed
 
 1. Home
 2. About
 3. Register
 4. Login
-5. Student Dashboard
+5. Dashboard
 6. Events
 7. Profile
 8. Contact
-9. FAQ
-10. Feedback
-11. Admin Dashboard
-12. Manage Students
-13. Manage Events
+9. Admin
+10. FAQ
+11. Feedback
+
+### HTML5 Concepts Used
+
+- `header`
+- `nav`
+- `main`
+- `section`
+- `article`
+- `footer`
+- Forms
+- Labels
+- Buttons
+- Semantic structure
+- Accessibility attributes
+
+---
+
+# Practical 3 - Responsive Web Design
+
+### Objective
+
+To design responsive layouts for the major StudentHub pages using
+CSS Grid and Flexbox.
+
+### Pages Designed
+
+- Home
+- About
+- Registration
+- Dashboard
+- Events
+
+### Features Implemented
+
+- CSS Grid layouts
+- Flexbox layouts
+- Responsive navigation
+- Responsive cards
+- Mobile-first design
+- Media queries
+- Responsive forms
+- Desktop and mobile layouts
+
+The StudentHub interface adapts to different screen sizes including:
+
+- Desktop
+- Laptop
+- Tablet
+- Mobile
+
+---
+
+# Practical 4 - JavaScript Dynamic UI Components
+
+### Objective
+
+To add dynamic and interactive UI components using JavaScript.
+
+### Components Implemented
+
+### 1. 🔔 Notification Banner
+
+A notification banner is displayed on the Home page with a
+close button.
+
+### 2. 🖼️ Content Slider
+
+A JavaScript-powered content slider was implemented on the
+Home page.
+
+Features:
+
+- Automatic slide change
+- Previous button
+- Next button
+- Multiple content slides
+
+### 3. ❓ Collapsible FAQ
+
+The FAQ page contains expandable and collapsible questions.
+
+When a question is clicked, the corresponding answer is displayed.
+
+### 4. 🪟 Modal Popup
+
+The Events page contains event registration buttons.
+
+Clicking the Register button opens a modal popup where the
+student can confirm or cancel registration.
+
+### 5. ☰ Hamburger Menu
+
+A responsive hamburger navigation menu was implemented for
+smaller screen sizes.
+
+### 6. 🌙 Light/Dark Theme Switcher
+
+A theme switcher allows users to change between light and
+dark modes.
+
+The selected theme can be preserved using browser local storage.
+
+---
+
+# Practical 5 - Student Registration Form
+
+### Objective
+
+To create a student registration form using HTML5 input types
+and JavaScript validation with Regular Expressions.
+
+### Registration Fields
+
+The form contains:
+
+- Full Name
+- Email Address
+- Mobile Number
+- Password
+- Confirm Password
+- Course
+- Academic Year
+- Gender
+- Terms and Conditions
+
+### HTML5 Input Types Used
+
+- Text
+- Email
+- Telephone
+- Password
+- Radio
+- Checkbox
+- Select
+
+### JavaScript Validation
+
+JavaScript validates the form before submission.
+
+The following validations are implemented:
+
+#### Name Validation
+
+Checks that the name contains valid letters and spaces.
+
+#### Email Validation
+
+Checks whether the entered email follows a valid email format.
+
+#### Mobile Validation
+
+Checks for a valid 10-digit Indian mobile number.
+
+#### Password Validation
+
+The password must contain:
+
+- Minimum 8 characters
+- At least one uppercase letter
+- At least one lowercase letter
+- At least one number
+
+#### Confirm Password
+
+Checks whether the confirm password matches the original password.
+
+#### Course Validation
+
+Checks whether a course has been selected.
+
+#### Academic Year Validation
+
+Checks whether an academic year has been selected.
+
+#### Gender Validation
+
+Checks whether the user has selected a gender.
+
+#### Terms Validation
+
+Checks whether the user has accepted the Terms and Conditions.
+
+---
+
+# 🔐 Regular Expressions Used
+
+### Name
+
+```text
+/^[A-Za-z]+(?:\s[A-Za-z]+)+$/
