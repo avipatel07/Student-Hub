@@ -10,11 +10,15 @@
 
     <title>StudentHub - Events</title>
 
-     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
 
 </head>
 
+
 <body>
+
+
+<!-- ================= HEADER ================= -->
 
 <header class="site-header">
 
@@ -27,242 +31,403 @@
 </header>
 
 
+<!-- ================= NAVBAR ================= -->
+
 <nav class="navbar">
 
-    <div class="nav-container">
+    <div class="nav-wrapper">
 
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="register.html">Register</a>
-        <a href="login.html">Login</a>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="events.html">Events</a>
+        <button
+            class="menu-toggle"
+            aria-label="Open navigation menu"
+            aria-expanded="false">
+
+            ☰
+
+        </button>
+
+
+        <div class="nav-container">
+
+            <a href="index.html">Home</a>
+
+            <a href="about.html">About</a>
+
+            <a href="register.html">Register</a>
+
+            <a href="login.html">Login</a>
+
+            <a href="dashboard.html">Dashboard</a>
+
+            <a href="events.html">Events</a>
+
+            <a href="profile.html">Profile</a>
+
+            <a href="contact.html">Contact</a>
+
+            <a href="admin.html">Admin</a>
+
+            <a href="faq.html">FAQ</a>
+
+            <a href="feedback.html">Feedback</a>
+
+        </div>
+
+
+        <button
+            class="theme-toggle"
+            aria-label="Toggle dark mode">
+
+            🌙
+
+        </button>
 
     </div>
 
 </nav>
 
 
+<!-- ================= MAIN ================= -->
+
 <main>
 
-<div class="container">
-
-    <div class="page-title">
-
-        <h2>Campus Events</h2>
-
-        <p>Explore upcoming StudentHub events</p>
-
-    </div>
+    <div class="container">
 
 
-    <section class="events-grid">
+        <div class="page-title">
+
+            <h2>
+                Campus Events
+            </h2>
+
+            <p>
+                Discover upcoming activities,
+                workshops and events.
+            </p>
+
+        </div>
 
 
-        <article class="event-card">
+        <!-- ================= EVENTS ================= -->
 
-            <div class="event-date">
-                05 OCT 2026
-            </div>
+        <section class="event-grid">
 
-            <div class="event-content">
 
-                <h3>Tech Innovation Day</h3>
+            <!-- EVENT 1 -->
 
-                <p>
-                    Explore emerging technologies
-                    and innovative student projects.
-                </p>
+            <article class="event-card">
 
-                <div class="event-info">
-
-                    <span>📍 Seminar Hall</span>
-
-                    <span>🕙 10:00 AM</span>
-
+                <div class="event-icon">
+                    💻
                 </div>
 
-                <button class="btn">
+                <h3>
+                    Tech Innovation Day
+                </h3>
+
+                <p class="event-date">
+                    📅 October 10, 2026
+                </p>
+
+                <p class="event-location">
+                    📍 Main Auditorium
+                </p>
+
+                <p>
+                    Explore emerging technologies,
+                    student projects and innovative
+                    ideas.
+                </p>
+
+
+                <button
+                    class="btn event-register"
+                    data-event="Tech Innovation Day">
+
                     Register
+
                 </button>
 
-            </div>
-
-        </article>
+            </article>
 
 
-        <article class="event-card">
+            <!-- EVENT 2 -->
 
-            <div class="event-date">
-                12 OCT 2026
-            </div>
+            <article class="event-card">
 
-            <div class="event-content">
+                <div class="event-icon">
+                    ⚽
+                </div>
 
-                <h3>Sports Meet</h3>
+                <h3>
+                    Annual Sports Meet
+                </h3>
+
+                <p class="event-date">
+                    📅 October 18, 2026
+                </p>
+
+                <p class="event-location">
+                    📍 University Sports Ground
+                </p>
 
                 <p>
                     Participate in exciting indoor
                     and outdoor sports activities.
                 </p>
 
-                <div class="event-info">
 
-                    <span>📍 Sports Ground</span>
+                <button
+                    class="btn event-register"
+                    data-event="Annual Sports Meet">
 
-                    <span>🕘 09:00 AM</span>
-
-                </div>
-
-                <button class="btn">
                     Register
+
                 </button>
 
-            </div>
-
-        </article>
+            </article>
 
 
-        <article class="event-card">
+            <!-- EVENT 3 -->
 
-            <div class="event-date">
-                18 OCT 2026
-            </div>
+            <article class="event-card">
 
-            <div class="event-content">
+                <div class="event-icon">
+                    🎭
+                </div>
 
-                <h3>Cultural Fest</h3>
+                <h3>
+                    Cultural Fest
+                </h3>
 
-                <p>
-                    Celebrate creativity, culture
-                    and student talent.
+                <p class="event-date">
+                    📅 October 25, 2026
                 </p>
 
-                <div class="event-info">
-
-                    <span>📍 Main Auditorium</span>
-
-                    <span>🕕 06:00 PM</span>
-
-                </div>
-
-                <button class="btn">
-                    Register
-                </button>
-
-            </div>
-
-        </article>
-
-
-        <article class="event-card">
-
-            <div class="event-date">
-                24 OCT 2026
-            </div>
-
-            <div class="event-content">
-
-                <h3>Career Workshop</h3>
-
-                <p>
-                    Learn about careers, internships
-                    and industry opportunities.
+                <p class="event-location">
+                    📍 Central Campus
                 </p>
 
-                <div class="event-info">
-
-                    <span>📍 Conference Room</span>
-
-                    <span>🕑 02:00 PM</span>
-
-                </div>
-
-                <button class="btn">
-                    Register
-                </button>
-
-            </div>
-
-        </article>
-
-
-        <article class="event-card">
-
-            <div class="event-date">
-                30 OCT 2026
-            </div>
-
-            <div class="event-content">
-
-                <h3>Hackathon 2026</h3>
-
                 <p>
-                    Build innovative solutions
-                    with your team.
+                    Celebrate creativity, culture,
+                    music, dance and student talent.
                 </p>
 
-                <div class="event-info">
 
-                    <span>📍 Innovation Lab</span>
+                <button
+                    class="btn event-register"
+                    data-event="Cultural Fest">
 
-                    <span>🕘 09:00 AM</span>
-
-                </div>
-
-                <button class="btn">
                     Register
+
                 </button>
 
-            </div>
-
-        </article>
+            </article>
 
 
-        <article class="event-card">
+            <!-- EVENT 4 -->
 
-            <div class="event-date">
-                05 NOV 2026
-            </div>
+            <article class="event-card">
 
-            <div class="event-content">
+                <div class="event-icon">
+                    🤖
+                </div>
 
-                <h3>Alumni Meet</h3>
+                <h3>
+                    AI & Robotics Workshop
+                </h3>
 
-                <p>
-                    Connect with alumni and learn
-                    from their experiences.
+                <p class="event-date">
+                    📅 November 05, 2026
                 </p>
 
-                <div class="event-info">
+                <p class="event-location">
+                    📍 Innovation Lab
+                </p>
 
-                    <span>📍 Auditorium</span>
+                <p>
+                    Learn about artificial intelligence,
+                    robotics and modern technologies.
+                </p>
 
-                    <span>🕔 05:00 PM</span>
 
-                </div>
+                <button
+                    class="btn event-register"
+                    data-event="AI and Robotics Workshop">
 
-                <button class="btn">
                     Register
+
                 </button>
 
-            </div>
-
-        </article>
+            </article>
 
 
-    </section>
+            <!-- EVENT 5 -->
 
-</div>
+            <article class="event-card">
+
+                <div class="event-icon">
+                    🏆
+                </div>
+
+                <h3>
+                    Project Exhibition
+                </h3>
+
+                <p class="event-date">
+                    📅 November 15, 2026
+                </p>
+
+                <p class="event-location">
+                    📍 Exhibition Hall
+                </p>
+
+                <p>
+                    Showcase innovative student
+                    projects and technical solutions.
+                </p>
+
+
+                <button
+                    class="btn event-register"
+                    data-event="Project Exhibition">
+
+                    Register
+
+                </button>
+
+            </article>
+
+
+            <!-- EVENT 6 -->
+
+            <article class="event-card">
+
+                <div class="event-icon">
+                    🎤
+                </div>
+
+                <h3>
+                    Student Leadership Summit
+                </h3>
+
+                <p class="event-date">
+                    📅 November 22, 2026
+                </p>
+
+                <p class="event-location">
+                    📍 Seminar Hall
+                </p>
+
+                <p>
+                    Learn leadership, communication
+                    and teamwork from experienced speakers.
+                </p>
+
+
+                <button
+                    class="btn event-register"
+                    data-event="Student Leadership Summit">
+
+                    Register
+
+                </button>
+
+            </article>
+
+
+        </section>
+
+    </div>
 
 </main>
 
 
+<!-- ================= MODAL POPUP ================= -->
+
+<div
+    class="event-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title">
+
+
+    <div class="modal-box">
+
+
+        <!-- Close -->
+
+        <button
+            class="modal-close"
+            aria-label="Close registration popup">
+
+            ×
+
+        </button>
+
+
+        <!-- Modal Heading -->
+
+        <h2
+            class="modal-title"
+            id="modal-title">
+
+            Event Registration
+
+        </h2>
+
+
+        <!-- Dynamic Text -->
+
+        <p class="modal-text">
+
+            Please confirm your registration.
+
+        </p>
+
+
+        <!-- Modal Buttons -->
+
+        <div class="modal-actions">
+
+
+            <button
+                class="btn modal-confirm">
+
+                Confirm Registration
+
+            </button>
+
+
+            <button
+                class="btn btn-secondary modal-close">
+
+                Cancel
+
+            </button>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= FOOTER ================= -->
+
 <footer>
 
-    <p>© 2026 StudentHub</p>
+    <p>
+        © 2026 StudentHub | Digital Campus Portal
+    </p>
 
 </footer>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script src="../js/script.js"></script>
 
 </body>
 

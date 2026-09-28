@@ -2,15 +2,23 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>StudentHub - Home</title>
 
     <link rel="stylesheet" href="../css/style.css">
+
 </head>
 
+
 <body>
+
+
+<!-- ================= HEADER ================= -->
 
 <header class="site-header">
 
@@ -23,164 +31,419 @@
 </header>
 
 
+<!-- ================= NAVBAR ================= -->
+
 <nav class="navbar">
 
-    <div class="nav-container">
+    <div class="nav-wrapper">
 
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="register.html">Register</a>
-        <a href="login.html">Login</a>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="events.html">Events</a>
-        <a href="profile.html">Profile</a>
-        <a href="contact.html">Contact</a>
-        <a href="admin.html">Admin</a>
-        <a href="faq.html">FAQ</a>
-        <a href="feedback.html">Feedback</a>
+        <button
+            class="menu-toggle"
+            aria-label="Open navigation menu"
+            aria-expanded="false">
+
+            ☰
+
+        </button>
+
+
+        <div class="nav-container">
+
+            <a href="index.html">Home</a>
+
+            <a href="about.html">About</a>
+
+            <a href="register.html">Register</a>
+
+            <a href="login.html">Login</a>
+
+            <a href="dashboard.html">Dashboard</a>
+
+            <a href="events.html">Events</a>
+
+            <a href="profile.html">Profile</a>
+
+            <a href="contact.html">Contact</a>
+
+            <a href="admin.html">Admin</a>
+
+            <a href="faq.html">FAQ</a>
+
+            <a href="feedback.html">Feedback</a>
+
+        </div>
+
+
+        <button
+            class="theme-toggle"
+            aria-label="Toggle dark mode">
+
+            🌙
+
+        </button>
 
     </div>
 
 </nav>
 
 
+<!-- ================= MAIN ================= -->
+
 <main>
 
-<div class="container">
+    <div class="container">
 
-    <section class="hero">
 
-        <div class="hero-content">
+        <!-- ================= NOTIFICATION ================= -->
 
-            <h2>Welcome to StudentHub</h2>
+        <div class="notification-banner">
 
-            <p>
-                Your simple and centralized digital campus portal
-                for managing academic activities, events and
-                student information.
-            </p>
+            <div class="notification-content">
 
-            <div class="quick-links">
+                <span>🔔</span>
 
-                <a href="register.html" class="btn">
-                    Get Started
+                <span>
+
+                    <strong>New Update:</strong>
+
+                    StudentHub Tech Fest registrations
+                    are now open!
+
+                </span>
+
+            </div>
+
+
+            <button
+                class="close-notification"
+                aria-label="Close notification">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <!-- ================= CONTENT SLIDER ================= -->
+
+        <section class="slider">
+
+
+            <!-- Slide 1 -->
+
+            <div class="slide active">
+
+                <div class="slide-content">
+
+                    <h2>
+                        🎓 Welcome to StudentHub
+                    </h2>
+
+                    <p>
+                        Your digital campus experience
+                        starts here.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Slide 2 -->
+
+            <div class="slide">
+
+                <div class="slide-content">
+
+                    <h2>
+                        💡 Student Innovation
+                    </h2>
+
+                    <p>
+                        Discover projects, workshops
+                        and learning opportunities.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Slide 3 -->
+
+            <div class="slide">
+
+                <div class="slide-content">
+
+                    <h2>
+                        📅 Campus Events
+                    </h2>
+
+                    <p>
+                        Stay updated with upcoming
+                        college activities and events.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Slider Controls -->
+
+            <div class="slider-controls">
+
+                <button
+                    class="slider-btn slider-prev"
+                    aria-label="Previous slide">
+
+                    ‹
+
+                </button>
+
+
+                <button
+                    class="slider-btn slider-next"
+                    aria-label="Next slide">
+
+                    ›
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= HERO ================= -->
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <h2>
+                    One Portal. Every Student Need.
+                </h2>
+
+                <p>
+                    StudentHub brings academic resources,
+                    campus events, student services and
+                    important information together in
+                    one simple digital platform.
+                </p>
+
+
+                <div class="hero-actions">
+
+                    <a
+                        href="register.html"
+                        class="btn">
+
+                        Get Started
+
+                    </a>
+
+
+                    <a
+                        href="about.html"
+                        class="btn btn-secondary">
+
+                        Learn More
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= FEATURES ================= -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <h2>
+                    StudentHub Features
+                </h2>
+
+                <p>
+                    Everything students need in one place
+                </p>
+
+            </div>
+
+
+            <div class="feature-grid">
+
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">
+                        📚
+                    </div>
+
+                    <h3>
+                        Academic Resources
+                    </h3>
+
+                    <p>
+                        Access important academic
+                        information and resources
+                        from one place.
+                    </p>
+
+                </article>
+
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">
+                        📅
+                    </div>
+
+                    <h3>
+                        Campus Events
+                    </h3>
+
+                    <p>
+                        Explore technical, cultural,
+                        sports and student activities.
+                    </p>
+
+                </article>
+
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">
+                        👤
+                    </div>
+
+                    <h3>
+                        Student Profile
+                    </h3>
+
+                    <p>
+                        Manage your personal information
+                        and student profile.
+                    </p>
+
+                </article>
+
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">
+                        💬
+                    </div>
+
+                    <h3>
+                        Student Feedback
+                    </h3>
+
+                    <p>
+                        Share suggestions and feedback
+                        to improve campus experiences.
+                    </p>
+
+                </article>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= QUICK ACCESS ================= -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <h2>
+                    Quick Access
+                </h2>
+
+            </div>
+
+
+            <div class="quick-grid">
+
+                <a href="dashboard.html"
+                   class="card">
+
+                    <h3>📊 Dashboard</h3>
+
+                    <p>
+                        View your student dashboard.
+                    </p>
+
                 </a>
 
-                <a href="events.html" class="btn btn-secondary">
-                    View Events
+
+                <a href="events.html"
+                   class="card">
+
+                    <h3>🎉 Events</h3>
+
+                    <p>
+                        Explore upcoming campus events.
+                    </p>
+
+                </a>
+
+
+                <a href="profile.html"
+                   class="card">
+
+                    <h3>👤 Profile</h3>
+
+                    <p>
+                        Manage your profile.
+                    </p>
+
+                </a>
+
+
+                <a href="feedback.html"
+                   class="card">
+
+                    <h3>📝 Feedback</h3>
+
+                    <p>
+                        Share your feedback.
+                    </p>
+
                 </a>
 
             </div>
 
-        </div>
+        </section>
 
-
-        <div class="hero-box">
-
-            <span>🎓</span>
-
-            <h3>Campus at One Place</h3>
-
-            <p>
-                Learn, connect and stay updated.
-            </p>
-
-        </div>
-
-    </section>
-
-
-    <section>
-
-        <div class="page-title">
-
-            <h2>StudentHub Features</h2>
-
-            <p>Everything students need in one portal</p>
-
-        </div>
-
-
-        <div class="features-grid">
-
-            <article class="feature-card">
-
-                <div class="feature-icon">📚</div>
-
-                <h3>Academic</h3>
-
-                <p>
-                    Access academic information
-                    and student resources.
-                </p>
-
-            </article>
-
-
-            <article class="feature-card">
-
-                <div class="feature-icon">📅</div>
-
-                <h3>Events</h3>
-
-                <p>
-                    Discover upcoming college
-                    events and activities.
-                </p>
-
-            </article>
-
-
-            <article class="feature-card">
-
-                <div class="feature-icon">👤</div>
-
-                <h3>Profile</h3>
-
-                <p>
-                    Manage your personal student
-                    information.
-                </p>
-
-            </article>
-
-
-            <article class="feature-card">
-
-                <div class="feature-icon">📢</div>
-
-                <h3>Updates</h3>
-
-                <p>
-                    Stay informed about important
-                    campus announcements.
-                </p>
-
-            </article>
-
-        </div>
-
-    </section>
-
-</div>
+    </div>
 
 </main>
 
 
+<!-- ================= FOOTER ================= -->
+
 <footer>
 
-    <p>© 2026 StudentHub</p>
-
-    <div class="footer-links">
-
-        <a href="about.html">About</a>
-        <a href="contact.html">Contact</a>
-        <a href="faq.html">FAQ</a>
-        <a href="feedback.html">Feedback</a>
-
-    </div>
+    <p>
+        © 2026 StudentHub | Digital Campus Portal
+    </p>
 
 </footer>
 
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script src="../js/script.js"></script>
+
 </body>
+
 </html>

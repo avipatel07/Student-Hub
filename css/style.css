@@ -551,3 +551,405 @@ footer {
         padding: 20px 0;
     }
 }
+
+/* =========================================
+   HAMBURGER MENU
+   ========================================= */
+
+.nav-wrapper {
+    width: min(1100px, 92%);
+    margin: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.menu-toggle,
+.theme-toggle {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 22px;
+    padding: 8px;
+}
+
+.menu-toggle {
+    display: none;
+}
+
+
+/* =========================================
+   DARK THEME
+   ========================================= */
+
+body {
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
+}
+
+.dark-theme {
+    background: #121212;
+    color: #eeeeee;
+}
+
+.dark-theme .card,
+.dark-theme .feature-card,
+.dark-theme .stat-card,
+.dark-theme .event-card,
+.dark-theme .hero,
+.dark-theme .about-main,
+.dark-theme .form-card {
+    background: #1e1e1e;
+    border-color: #333;
+    color: #eeeeee;
+}
+
+.dark-theme .about-sidebar {
+    background: #17283a;
+    border-color: #284b6b;
+}
+
+.dark-theme .page-title p,
+.dark-theme .label,
+.dark-theme .hero-content p {
+    color: #bbbbbb;
+}
+
+.dark-theme footer {
+    background: #080808;
+}
+
+
+/* =========================================
+   NOTIFICATION BANNER
+   ========================================= */
+
+.notification-banner {
+    background: #eaf3ff;
+    border: 1px solid #b9d8ff;
+    border-left: 5px solid #1677e8;
+
+    padding: 12px 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+
+    border-radius: 6px;
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.close-notification {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+
+    font-size: 20px;
+    color: #555;
+}
+
+
+/* =========================================
+   SLIDER
+   ========================================= */
+
+.slider {
+    position: relative;
+
+    background: white;
+
+    border: 1px solid #e0e5eb;
+
+    border-radius: 8px;
+
+    overflow: hidden;
+
+    margin-bottom: 25px;
+}
+
+.slide {
+    display: none;
+
+    min-height: 220px;
+
+    padding: 35px;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    background: #eaf3ff;
+}
+
+.slide.active {
+    display: flex;
+}
+
+.slide-content h2 {
+    color: #164f91;
+    margin-bottom: 8px;
+}
+
+.slider-controls {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    display: flex;
+    justify-content: space-between;
+
+    padding: 0 12px;
+
+    pointer-events: none;
+}
+
+.slider-btn {
+    pointer-events: auto;
+
+    width: 38px;
+    height: 38px;
+
+    border-radius: 50%;
+
+    border: none;
+
+    background: #1677e8;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 18px;
+}
+
+.slider-btn:hover {
+    background: #0e5fc4;
+}
+
+
+/* =========================================
+   FAQ
+   ========================================= */
+
+.faq-container {
+    max-width: 800px;
+    margin: auto;
+}
+
+.faq-item {
+    background: white;
+
+    border: 1px solid #e0e5eb;
+
+    border-radius: 7px;
+
+    margin-bottom: 12px;
+
+    overflow: hidden;
+}
+
+.faq-question {
+    width: 100%;
+
+    padding: 17px;
+
+    background: white;
+
+    border: none;
+
+    cursor: pointer;
+
+    text-align: left;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    color: #1b4f8a;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+}
+
+.faq-question:hover {
+    background: #f4f8fc;
+}
+
+.faq-question::after {
+    content: "+";
+    font-size: 22px;
+}
+
+.faq-question.active::after {
+    content: "−";
+}
+
+.faq-answer {
+    display: none;
+
+    padding: 0 17px 17px;
+
+    color: #555;
+}
+
+.faq-answer.show {
+    display: block;
+}
+
+
+/* =========================================
+   MODAL
+   ========================================= */
+
+.event-modal {
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    z-index: 1000;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+.event-modal.show {
+    display: flex;
+}
+
+.modal-box {
+    width: min(450px, 100%);
+
+    background: white;
+
+    border-radius: 9px;
+
+    padding: 25px;
+
+    position: relative;
+
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+.modal-box h2 {
+    color: #1b4f8a;
+
+    margin-bottom: 10px;
+}
+
+.modal-close {
+    position: absolute;
+
+    right: 15px;
+    top: 12px;
+
+    border: none;
+
+    background: transparent;
+
+    font-size: 24px;
+
+    cursor: pointer;
+}
+
+.modal-actions {
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+
+/* =========================================
+   MOBILE NAVIGATION
+   ========================================= */
+
+@media (max-width: 899px) {
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .nav-wrapper {
+        position: relative;
+    }
+
+    .nav-container {
+        display: none;
+
+        position: absolute;
+
+        top: 100%;
+
+        left: 0;
+        right: 0;
+
+        z-index: 999;
+
+        background: #222;
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+        width: 100%;
+    }
+
+    .nav-container.active {
+        display: flex;
+    }
+
+    .nav-container a {
+        text-align: center;
+
+        border-bottom: 1px solid #444;
+    }
+}
+
+
+/* =========================================
+   MOBILE SLIDER
+   ========================================= */
+
+@media (max-width: 599px) {
+
+    .slide {
+        min-height: 180px;
+        padding: 25px 45px;
+    }
+
+    .slide-content h2 {
+        font-size: 21px;
+    }
+
+    .notification-banner {
+        align-items: flex-start;
+    }
+
+}
