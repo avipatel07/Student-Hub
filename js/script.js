@@ -1010,3 +1010,545 @@ if (confirmButton) {
     });
 
 }
+/* ==========================================
+   PRACTICAL 6
+   FETCH API + DYNAMIC EVENT SYSTEM
+   ========================================== */
+
+
+const eventList =
+    document.getElementById("eventList");
+
+
+if (eventList) {
+
+
+    const eventSearch =
+        document.getElementById("eventSearch");
+
+
+    const eventCategory =
+        document.getElementById("eventCategory");
+
+
+    const eventSort =
+        document.getElementById("eventSort");
+
+
+    const eventStatus =
+        document.getElementById("eventStatus");
+
+
+    const eventPagination =
+        document.getElementById("eventPagination");
+
+
+    let allEvents = [];
+
+    let filteredEvents = [];
+
+    let currentPage = 1;
+
+    const eventsPerPage = 6;
+
+
+    /* ================= FETCH JSON ================= */
+
+    async function loadEvents() {
+
+        try {
+
+            eventStatus.textContent =
+                "Loading events...";
+
+
+            const response =
+                await fetch("../data/events.json");
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to load event data."
+                );
+
+            }
+
+
+            allEvents =
+                await response.json();
+
+
+            filteredEvents =
+                [...allEvents];
+
+
+            renderEvents();
+
+
+        } catch (error) {
+
+            console.error(error);
+
+
+            eventStatus.innerHTML =
+                '<div class="event-error">' +
+                'Unable to load events. Please try again later.' +
+                '</div>';
+
+        }
+
+    }
+
+
+    /* ================= RENDER EVENTS ================= */
+
+    function renderEvents() {
+
+        const totalEvents =
+            filteredEvents.length;
+
+
+        eventStatus.textContent =
+            `${totalEvents} event${totalEvents !== 1 ? "s" : ""} found`;
+
+
+        if (totalEvents === 0) {
+
+            eventList.innerHTML = `
+                <div class="no-events">
+
+                    <h3>No Events Found</h3>
+
+                    <p>
+                        Try changing your search or filter.
+                    </p>
+
+                </div>
+            `;
+
+
+            eventPagination.innerHTML = "";
+
+            return;
+
+        }
+
+
+        const totalPages =
+            Math.ceil(
+                totalEvents / eventsPerPage
+            );
+
+
+        if (currentPage > totalPages) {
+
+            currentPage = totalPages;
+
+        }
+
+
+        const startIndex =
+            (currentPage - 1) *
+            eventsPerPage;
+
+
+        const endIndex =
+            startIndex + eventsPerPage;
+
+
+        const pageEvents =
+            filteredEvents.slice(
+                startIndex,
+                endIndex
+            );
+
+
+        eventList.innerHTML =
+            pageEvents.map(
+                event => createEventCard(event)
+            ).join("");
+
+
+        renderPagination(totalPages);
+
+    }
+
+
+    /* ================= EVENT CARD ================= */
+
+    function createEventCard(event) {
+
+        const formattedDate =
+            new Date(event.date)
+                .toLocaleDateString(
+                    "en-IN",
+                    {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric"
+                    }
+                );
+
+
+        return `
+
+            <article class="dynamic-event-card">
+
+                <span class="event-category-badge">
+
+                    ${event.category}
+
+                </span>
+
+
+                <h3>
+
+                    ${event.title}
+
+                </h3>
+
+
+                <p class="event-description">
+
+                    ${event.description}
+
+                </p>
+
+
+                <div class="event-details">
+
+                    <span>
+                        📅 ${formattedDate}
+                    </span>
+
+                    <span>
+                        🕐 ${event.time}
+                    </span>
+
+                    <span>
+                        📍 ${event.location}
+                    </span>
+
+                    <span>
+                        👤 ${event.organizer}
+                    </span>
+
+                </div>
+
+
+                <div class="event-seats">
+
+                    ${event.seats} seats available
+
+                </div>
+
+
+                <button
+                    class="btn event-register-btn"
+                    data-event-id="${event.id}">
+
+                    Register
+
+                </button>
+
+            </article>
+
+        `;
+
+    }
+
+
+    /* ================= SEARCH ================= */
+
+    function applyFilters() {
+
+        const searchTerm =
+            eventSearch.value
+                .trim()
+                .toLowerCase();
+
+
+        const category =
+            eventCategory.value;
+
+
+        filteredEvents =
+            allEvents.filter(
+                event => {
+
+                    const matchesSearch =
+
+                        event.title
+                            .toLowerCase()
+                            .includes(searchTerm)
+
+                        ||
+
+                        event.category
+                            .toLowerCase()
+                            .includes(searchTerm)
+
+                        ||
+
+                        event.location
+                            .toLowerCase()
+                            .includes(searchTerm);
+
+
+                    const matchesCategory =
+
+                        category === "all"
+
+                        ||
+
+                        event.category === category;
+
+
+                    return (
+                        matchesSearch &&
+                        matchesCategory
+                    );
+
+                }
+            );
+
+
+        applySorting();
+
+
+        currentPage = 1;
+
+
+        renderEvents();
+
+    }
+
+
+    /* ================= SORTING ================= */
+
+    function applySorting() {
+
+        const sortType =
+            eventSort.value;
+
+
+        filteredEvents.sort(
+            (a, b) => {
+
+
+                if (sortType === "dateAsc") {
+
+                    return new Date(a.date)
+                        - new Date(b.date);
+
+                }
+
+
+                if (sortType === "dateDesc") {
+
+                    return new Date(b.date)
+                        - new Date(a.date);
+
+                }
+
+
+                if (sortType === "nameAsc") {
+
+                    return a.title
+                        .localeCompare(b.title);
+
+                }
+
+
+                if (sortType === "nameDesc") {
+
+                    return b.title
+                        .localeCompare(a.title);
+
+                }
+
+
+                return 0;
+
+            }
+        );
+
+    }
+
+
+    /* ================= PAGINATION ================= */
+
+    function renderPagination(totalPages) {
+
+        eventPagination.innerHTML = "";
+
+
+        const previousButton =
+            document.createElement("button");
+
+
+        previousButton.textContent =
+            "‹";
+
+
+        previousButton.setAttribute(
+            "aria-label",
+            "Previous page"
+        );
+
+
+        previousButton.disabled =
+            currentPage === 1;
+
+
+        previousButton.addEventListener(
+            "click",
+            () => {
+
+                currentPage--;
+
+                renderEvents();
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+
+            }
+        );
+
+
+        eventPagination.appendChild(
+            previousButton
+        );
+
+
+        for (
+            let page = 1;
+            page <= totalPages;
+            page++
+        ) {
+
+
+            const pageButton =
+                document.createElement("button");
+
+
+            pageButton.textContent =
+                page;
+
+
+            if (page === currentPage) {
+
+                pageButton.classList.add(
+                    "active"
+                );
+
+                pageButton.setAttribute(
+                    "aria-current",
+                    "page"
+                );
+
+            }
+
+
+            pageButton.addEventListener(
+                "click",
+                () => {
+
+                    currentPage = page;
+
+                    renderEvents();
+
+                    window.scrollTo({
+                        top: 0,
+                        behavior: "smooth"
+                    });
+
+                }
+            );
+
+
+            eventPagination.appendChild(
+                pageButton
+            );
+
+        }
+
+
+        const nextButton =
+            document.createElement("button");
+
+
+        nextButton.textContent =
+            "›";
+
+
+        nextButton.setAttribute(
+            "aria-label",
+            "Next page"
+        );
+
+
+        nextButton.disabled =
+            currentPage === totalPages;
+
+
+        nextButton.addEventListener(
+            "click",
+            () => {
+
+                currentPage++;
+
+                renderEvents();
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+
+            }
+        );
+
+
+        eventPagination.appendChild(
+            nextButton
+        );
+
+    }
+
+
+    /* ================= EVENT LISTENERS ================= */
+
+    eventSearch.addEventListener(
+        "input",
+        applyFilters
+    );
+
+
+    eventCategory.addEventListener(
+        "change",
+        applyFilters
+    );
+
+
+    eventSort.addEventListener(
+        "change",
+        () => {
+
+            applySorting();
+
+            currentPage = 1;
+
+            renderEvents();
+
+        }
+    );
+
+
+    /* ================= INITIAL LOAD ================= */
+
+    loadEvents();
+
+}

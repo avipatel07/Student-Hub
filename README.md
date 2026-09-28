@@ -3,19 +3,21 @@
 StudentHub is a responsive web-based student portal designed to
 provide students with a simple and centralized platform for accessing
 academic information, campus events, student services, profiles,
-feedback and other important resources.
+notices, FAQs and other important resources.
 
-The project is developed progressively as part of a semester-long
-web development practical.
+The project is developed progressively as a semester-long web
+development practical, with each practical adding new functionality
+to the same StudentHub portal.
 
 ---
 
 ## 📌 Project Overview
 
-StudentHub provides a single digital platform where students can:
+StudentHub provides a centralized digital platform where students can:
 
 - View important campus information
 - Explore upcoming events
+- Search and filter events
 - Register for events
 - Manage their student profile
 - Access the student dashboard
@@ -24,8 +26,16 @@ StudentHub provides a single digital platform where students can:
 - Register for a StudentHub account
 - Use the portal on desktop, tablet and mobile devices
 
-The project focuses on clean UI design, responsive layouts,
-accessibility and JavaScript-based interactivity.
+The project focuses on:
+
+- Clean UI design
+- Responsive layouts
+- Accessibility
+- JavaScript interactivity
+- Form validation
+- Dynamic data loading
+- Search and filtering
+- Sorting and pagination
 
 ---
 
@@ -33,24 +43,27 @@ accessibility and JavaScript-based interactivity.
 
 - Design and develop a student-centric web portal
 - Understand website planning and information architecture
-- Create a proper sitemap and navigation structure
+- Create a sitemap and navigation structure
 - Develop semantic HTML5 pages
 - Design responsive layouts using CSS Grid and Flexbox
 - Implement interactive UI components using JavaScript
 - Implement client-side form validation using Regular Expressions
+- Load external JSON data using Fetch API
+- Implement dynamic rendering, search, filtering, sorting and pagination
 - Maintain the project using Git and GitHub
 
 ---
 
 # 🛠️ Technologies Used
 
-### Frontend
+## Frontend
 
 - HTML5
 - CSS3
 - JavaScript
+- JSON
 
-### CSS Concepts
+## CSS Concepts
 
 - CSS Grid
 - Flexbox
@@ -59,40 +72,47 @@ accessibility and JavaScript-based interactivity.
 - Mobile-First Design
 - CSS Transitions
 
-### JavaScript Concepts
+## JavaScript Concepts
 
 - DOM Manipulation
 - Event Listeners
 - Regular Expressions
 - Form Validation
+- Fetch API
+- Async/Await
+- Dynamic Rendering
+- Search
+- Filtering
+- Sorting
+- Pagination
 - Modal Popup
 - FAQ Accordion
 - Content Slider
 - Hamburger Menu
-- Theme Switching
-- Notification Banner
+- Light/Dark Theme
 - Local Storage
 
-### Tools
+## Tools
 
 - Visual Studio Code
 - Git
 - GitHub
+- Live Server
 - Browser Developer Tools
 
 ---
 
 # 📚 Practical Progress
 
-## Practical 1 - Project Initiation and Planning
+# Practical 1 - Project Initiation and Planning
 
-### Objective
+## Objective
 
 To initiate the semester-long StudentHub portal by identifying
-the problem scope, user roles, modules, navigation flow and
+the problem scope, user roles, key modules, navigation flow and
 minimum required pages.
 
-### Work Completed
+## Work Completed
 
 - Identified the problem scope
 - Defined StudentHub user requirements
@@ -109,12 +129,12 @@ minimum required pages.
 
 # Practical 2 - Static HTML5 Pages
 
-### Objective
+## Objective
 
 To develop static HTML5 skeletons for at least 10 StudentHub pages
 using semantic and accessibility-friendly HTML structure.
 
-### Pages Developed
+## Pages Developed
 
 1. Home
 2. About
@@ -128,7 +148,7 @@ using semantic and accessibility-friendly HTML structure.
 10. FAQ
 11. Feedback
 
-### HTML5 Concepts Used
+## HTML5 Concepts Used
 
 - `header`
 - `nav`
@@ -146,12 +166,12 @@ using semantic and accessibility-friendly HTML structure.
 
 # Practical 3 - Responsive Web Design
 
-### Objective
+## Objective
 
 To design responsive layouts for the major StudentHub pages using
 CSS Grid and Flexbox.
 
-### Pages Designed
+## Pages Designed
 
 - Home
 - About
@@ -159,7 +179,7 @@ CSS Grid and Flexbox.
 - Dashboard
 - Events
 
-### Features Implemented
+## Features Implemented
 
 - CSS Grid layouts
 - Flexbox layouts
@@ -168,7 +188,9 @@ CSS Grid and Flexbox.
 - Mobile-first design
 - Media queries
 - Responsive forms
-- Desktop and mobile layouts
+- Desktop layouts
+- Tablet layouts
+- Mobile layouts
 
 The StudentHub interface adapts to different screen sizes including:
 
@@ -181,28 +203,27 @@ The StudentHub interface adapts to different screen sizes including:
 
 # Practical 4 - JavaScript Dynamic UI Components
 
-### Objective
+## Objective
 
 To add dynamic and interactive UI components using JavaScript.
 
-### Components Implemented
+## Components Implemented
 
 ### 1. 🔔 Notification Banner
 
-A notification banner is displayed on the Home page with a
+A notification banner is displayed on the portal with a
 close button.
 
 ### 2. 🖼️ Content Slider
 
-A JavaScript-powered content slider was implemented on the
-Home page.
+A JavaScript-powered content slider was implemented.
 
 Features:
 
-- Automatic slide change
+- Multiple slides
 - Previous button
 - Next button
-- Multiple content slides
+- Automatic slide change
 
 ### 3. ❓ Collapsible FAQ
 
@@ -212,20 +233,17 @@ When a question is clicked, the corresponding answer is displayed.
 
 ### 4. 🪟 Modal Popup
 
-The Events page contains event registration buttons.
-
-Clicking the Register button opens a modal popup where the
-student can confirm or cancel registration.
+Event registration uses a modal popup where users can
+confirm or cancel an action.
 
 ### 5. ☰ Hamburger Menu
 
-A responsive hamburger navigation menu was implemented for
-smaller screen sizes.
+A responsive hamburger navigation menu was implemented
+for smaller screen sizes.
 
 ### 6. 🌙 Light/Dark Theme Switcher
 
-A theme switcher allows users to change between light and
-dark modes.
+Users can switch between light and dark themes.
 
 The selected theme can be preserved using browser local storage.
 
@@ -233,12 +251,12 @@ The selected theme can be preserved using browser local storage.
 
 # Practical 5 - Student Registration Form
 
-### Objective
+## Objective
 
 To create a student registration form using HTML5 input types
 and JavaScript validation with Regular Expressions.
 
-### Registration Fields
+## Registration Fields
 
 The form contains:
 
@@ -252,7 +270,7 @@ The form contains:
 - Gender
 - Terms and Conditions
 
-### HTML5 Input Types Used
+## HTML5 Input Types Used
 
 - Text
 - Email
@@ -262,56 +280,21 @@ The form contains:
 - Checkbox
 - Select
 
-### JavaScript Validation
+## JavaScript Validation
 
-JavaScript validates the form before submission.
+The form validates:
 
-The following validations are implemented:
+- Name
+- Email
+- Mobile Number
+- Password
+- Confirm Password
+- Course
+- Academic Year
+- Gender
+- Terms acceptance
 
-#### Name Validation
-
-Checks that the name contains valid letters and spaces.
-
-#### Email Validation
-
-Checks whether the entered email follows a valid email format.
-
-#### Mobile Validation
-
-Checks for a valid 10-digit Indian mobile number.
-
-#### Password Validation
-
-The password must contain:
-
-- Minimum 8 characters
-- At least one uppercase letter
-- At least one lowercase letter
-- At least one number
-
-#### Confirm Password
-
-Checks whether the confirm password matches the original password.
-
-#### Course Validation
-
-Checks whether a course has been selected.
-
-#### Academic Year Validation
-
-Checks whether an academic year has been selected.
-
-#### Gender Validation
-
-Checks whether the user has selected a gender.
-
-#### Terms Validation
-
-Checks whether the user has accepted the Terms and Conditions.
-
----
-
-# 🔐 Regular Expressions Used
+## Regular Expressions
 
 ### Name
 

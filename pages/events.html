@@ -1,434 +1,138 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>StudentHub - Events</title>
-
-    <link rel="stylesheet" href="../css/style.css">
-
-</head>
-
-
-<body>
-
-
-<!-- ================= HEADER ================= -->
-
-<header class="site-header">
-
-    <div class="logo-icon">🎓</div>
-
-    <h1>StudentHub</h1>
-
-    <p>Your Digital Campus Portal</p>
-
-</header>
-
-
-<!-- ================= NAVBAR ================= -->
-
-<nav class="navbar">
-
-    <div class="nav-wrapper">
-
-        <button
-            class="menu-toggle"
-            aria-label="Open navigation menu"
-            aria-expanded="false">
-
-            ☰
-
-        </button>
-
-
-        <div class="nav-container">
-
-            <a href="index.html">Home</a>
-
-            <a href="about.html">About</a>
-
-            <a href="register.html">Register</a>
-
-            <a href="login.html">Login</a>
-
-            <a href="dashboard.html">Dashboard</a>
-
-            <a href="events.html">Events</a>
-
-            <a href="profile.html">Profile</a>
-
-            <a href="contact.html">Contact</a>
-
-            <a href="admin.html">Admin</a>
-
-            <a href="faq.html">FAQ</a>
-
-            <a href="feedback.html">Feedback</a>
-
-        </div>
-
-
-        <button
-            class="theme-toggle"
-            aria-label="Toggle dark mode">
-
-            🌙
-
-        </button>
-
-    </div>
-
-</nav>
-
-
-<!-- ================= MAIN ================= -->
-
 <main>
 
     <div class="container">
 
-
         <div class="page-title">
 
-            <h2>
-                Campus Events
-            </h2>
+            <h2>Campus Events</h2>
 
             <p>
-                Discover upcoming activities,
-                workshops and events.
+                Discover upcoming events and activities at StudentHub
             </p>
+
+        </div>
+
+
+        <!-- ================= CONTROLS ================= -->
+
+        <section class="event-controls">
+
+            <div class="search-box">
+
+                <label for="eventSearch">
+                    Search Events
+                </label>
+
+                <input
+                    type="search"
+                    id="eventSearch"
+                    placeholder="Search by event name, category or location..."
+                >
+
+            </div>
+
+
+            <div class="filter-box">
+
+                <label for="eventCategory">
+                    Category
+                </label>
+
+                <select id="eventCategory">
+
+                    <option value="all">
+                        All Categories
+                    </option>
+
+                    <option value="Technology">
+                        Technology
+                    </option>
+
+                    <option value="Competition">
+                        Competition
+                    </option>
+
+                    <option value="Workshop">
+                        Workshop
+                    </option>
+
+                    <option value="Sports">
+                        Sports
+                    </option>
+
+                    <option value="Cultural">
+                        Cultural
+                    </option>
+
+                    <option value="Career">
+                        Career
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="sort-box">
+
+                <label for="eventSort">
+                    Sort By
+                </label>
+
+                <select id="eventSort">
+
+                    <option value="dateAsc">
+                        Date: Earliest First
+                    </option>
+
+                    <option value="dateDesc">
+                        Date: Latest First
+                    </option>
+
+                    <option value="nameAsc">
+                        Name: A - Z
+                    </option>
+
+                    <option value="nameDesc">
+                        Name: Z - A
+                    </option>
+
+                </select>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= STATUS ================= -->
+
+        <div
+            id="eventStatus"
+            class="event-status"
+            aria-live="polite">
+
+            Loading events...
 
         </div>
 
 
         <!-- ================= EVENTS ================= -->
 
-        <section class="event-grid">
-
-
-            <!-- EVENT 1 -->
-
-            <article class="event-card">
-
-                <div class="event-icon">
-                    💻
-                </div>
-
-                <h3>
-                    Tech Innovation Day
-                </h3>
-
-                <p class="event-date">
-                    📅 October 10, 2026
-                </p>
-
-                <p class="event-location">
-                    📍 Main Auditorium
-                </p>
-
-                <p>
-                    Explore emerging technologies,
-                    student projects and innovative
-                    ideas.
-                </p>
-
-
-                <button
-                    class="btn event-register"
-                    data-event="Tech Innovation Day">
-
-                    Register
-
-                </button>
-
-            </article>
-
-
-            <!-- EVENT 2 -->
-
-            <article class="event-card">
-
-                <div class="event-icon">
-                    ⚽
-                </div>
-
-                <h3>
-                    Annual Sports Meet
-                </h3>
-
-                <p class="event-date">
-                    📅 October 18, 2026
-                </p>
-
-                <p class="event-location">
-                    📍 University Sports Ground
-                </p>
-
-                <p>
-                    Participate in exciting indoor
-                    and outdoor sports activities.
-                </p>
-
-
-                <button
-                    class="btn event-register"
-                    data-event="Annual Sports Meet">
-
-                    Register
-
-                </button>
-
-            </article>
-
-
-            <!-- EVENT 3 -->
-
-            <article class="event-card">
-
-                <div class="event-icon">
-                    🎭
-                </div>
-
-                <h3>
-                    Cultural Fest
-                </h3>
-
-                <p class="event-date">
-                    📅 October 25, 2026
-                </p>
-
-                <p class="event-location">
-                    📍 Central Campus
-                </p>
-
-                <p>
-                    Celebrate creativity, culture,
-                    music, dance and student talent.
-                </p>
-
-
-                <button
-                    class="btn event-register"
-                    data-event="Cultural Fest">
-
-                    Register
-
-                </button>
-
-            </article>
-
-
-            <!-- EVENT 4 -->
-
-            <article class="event-card">
-
-                <div class="event-icon">
-                    🤖
-                </div>
-
-                <h3>
-                    AI & Robotics Workshop
-                </h3>
-
-                <p class="event-date">
-                    📅 November 05, 2026
-                </p>
-
-                <p class="event-location">
-                    📍 Innovation Lab
-                </p>
-
-                <p>
-                    Learn about artificial intelligence,
-                    robotics and modern technologies.
-                </p>
-
-
-                <button
-                    class="btn event-register"
-                    data-event="AI and Robotics Workshop">
-
-                    Register
-
-                </button>
-
-            </article>
-
-
-            <!-- EVENT 5 -->
-
-            <article class="event-card">
-
-                <div class="event-icon">
-                    🏆
-                </div>
-
-                <h3>
-                    Project Exhibition
-                </h3>
-
-                <p class="event-date">
-                    📅 November 15, 2026
-                </p>
-
-                <p class="event-location">
-                    📍 Exhibition Hall
-                </p>
-
-                <p>
-                    Showcase innovative student
-                    projects and technical solutions.
-                </p>
-
-
-                <button
-                    class="btn event-register"
-                    data-event="Project Exhibition">
-
-                    Register
-
-                </button>
-
-            </article>
-
-
-            <!-- EVENT 6 -->
-
-            <article class="event-card">
-
-                <div class="event-icon">
-                    🎤
-                </div>
-
-                <h3>
-                    Student Leadership Summit
-                </h3>
-
-                <p class="event-date">
-                    📅 November 22, 2026
-                </p>
-
-                <p class="event-location">
-                    📍 Seminar Hall
-                </p>
-
-                <p>
-                    Learn leadership, communication
-                    and teamwork from experienced speakers.
-                </p>
-
-
-                <button
-                    class="btn event-register"
-                    data-event="Student Leadership Summit">
-
-                    Register
-
-                </button>
-
-            </article>
-
+        <section
+            id="eventList"
+            class="event-grid">
 
         </section>
 
-    </div>
 
-</main>
+        <!-- ================= PAGINATION ================= -->
 
-
-<!-- ================= MODAL POPUP ================= -->
-
-<div
-    class="event-modal"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="modal-title">
-
-
-    <div class="modal-box">
-
-
-        <!-- Close -->
-
-        <button
-            class="modal-close"
-            aria-label="Close registration popup">
-
-            ×
-
-        </button>
-
-
-        <!-- Modal Heading -->
-
-        <h2
-            class="modal-title"
-            id="modal-title">
-
-            Event Registration
-
-        </h2>
-
-
-        <!-- Dynamic Text -->
-
-        <p class="modal-text">
-
-            Please confirm your registration.
-
-        </p>
-
-
-        <!-- Modal Buttons -->
-
-        <div class="modal-actions">
-
-
-            <button
-                class="btn modal-confirm">
-
-                Confirm Registration
-
-            </button>
-
-
-            <button
-                class="btn btn-secondary modal-close">
-
-                Cancel
-
-            </button>
-
+        <div
+            id="eventPagination"
+            class="pagination">
 
         </div>
 
     </div>
 
-</div>
-
-
-<!-- ================= FOOTER ================= -->
-
-<footer>
-
-    <p>
-        © 2026 StudentHub | Digital Campus Portal
-    </p>
-
-</footer>
-
-
-<!-- ================= JAVASCRIPT ================= -->
-
-<script src="../js/script.js"></script>
-
-</body>
-
-</html>
+</main>

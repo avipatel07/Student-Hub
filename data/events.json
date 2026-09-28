@@ -1,0 +1,134 @@
+[
+    {
+        "id": 1,
+        "title": "Tech Innovation Summit 2026",
+        "category": "Technology",
+        "date": "2026-10-10",
+        "time": "10:00 AM",
+        "location": "Main Auditorium",
+        "description": "Explore emerging technologies, AI innovations and modern software development.",
+        "organizer": "Computer Engineering Department",
+        "seats": 120
+    },
+    {
+        "id": 2,
+        "title": "Campus Coding Challenge",
+        "category": "Competition",
+        "date": "2026-10-15",
+        "time": "02:00 PM",
+        "location": "Computer Lab 1",
+        "description": "Participate in an exciting programming competition and solve real-world coding problems.",
+        "organizer": "Coding Club",
+        "seats": 80
+    },
+    {
+        "id": 3,
+        "title": "Entrepreneurship Workshop",
+        "category": "Workshop",
+        "date": "2026-10-20",
+        "time": "11:00 AM",
+        "location": "Seminar Hall",
+        "description": "Learn how to transform innovative ideas into practical startup opportunities.",
+        "organizer": "Innovation Cell",
+        "seats": 100
+    },
+    {
+        "id": 4,
+        "title": "Sports Fest 2026",
+        "category": "Sports",
+        "date": "2026-10-25",
+        "time": "09:00 AM",
+        "location": "University Ground",
+        "description": "Take part in various indoor and outdoor sports activities.",
+        "organizer": "Sports Committee",
+        "seats": 250
+    },
+    {
+        "id": 5,
+        "title": "Web Development Bootcamp",
+        "category": "Workshop",
+        "date": "2026-11-02",
+        "time": "10:30 AM",
+        "location": "IT Lab",
+        "description": "A practical bootcamp covering HTML, CSS, JavaScript and modern web development.",
+        "organizer": "IT Department",
+        "seats": 60
+    },
+    {
+        "id": 6,
+        "title": "Cultural Night",
+        "category": "Cultural",
+        "date": "2026-11-08",
+        "time": "06:00 PM",
+        "location": "Open Air Theatre",
+        "description": "Celebrate creativity, culture and student talent through performances and activities.",
+        "organizer": "Student Council",
+        "seats": 300
+    },
+    {
+        "id": 7,
+        "title": "AI & Machine Learning Seminar",
+        "category": "Technology",
+        "date": "2026-11-12",
+        "time": "01:00 PM",
+        "location": "Conference Hall",
+        "description": "Understand current AI and machine learning concepts and their applications.",
+        "organizer": "AI Club",
+        "seats": 150
+    },
+    {
+        "id": 8,
+        "title": "Photography Competition",
+        "category": "Competition",
+        "date": "2026-11-18",
+        "time": "03:00 PM",
+        "location": "Creative Studio",
+        "description": "Showcase your photography skills and capture memorable campus moments.",
+        "organizer": "Photography Club",
+        "seats": 50
+    },
+    {
+        "id": 9,
+        "title": "Career Guidance Session",
+        "category": "Career",
+        "date": "2026-11-22",
+        "time": "11:30 AM",
+        "location": "Seminar Hall",
+        "description": "Get guidance about internships, placements, skills and career opportunities.",
+        "organizer": "Career Development Cell",
+        "seats": 200
+    },
+    {
+        "id": 10,
+        "title": "Hackathon 2026",
+        "category": "Competition",
+        "date": "2026-11-28",
+        "time": "09:00 AM",
+        "location": "Innovation Center",
+        "description": "Build innovative technology solutions with your team during this university hackathon.",
+        "organizer": "Innovation Cell",
+        "seats": 100
+    },
+    {
+        "id": 11,
+        "title": "Cloud Computing Workshop",
+        "category": "Technology",
+        "date": "2026-12-03",
+        "time": "10:00 AM",
+        "location": "IT Lab 2",
+        "description": "Learn the fundamentals of cloud platforms, deployment and modern infrastructure.",
+        "organizer": "Cloud Computing Club",
+        "seats": 70
+    },
+    {
+        "id": 12,
+        "title": "Alumni Interaction Meet",
+        "category": "Career",
+        "date": "2026-12-10",
+        "time": "04:00 PM",
+        "location": "Main Auditorium",
+        "description": "Interact with university alumni and learn from their academic and professional journey.",
+        "organizer": "Alumni Association",
+        "seats": 180
+    }
+]
