@@ -1,41 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="StudentHub Campus Events">
+
+    <title>StudentHub - Events</title>
+
+    <!-- YOUR EXISTING CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+     ===================================================== -->
+
+<header class="site-header">
+
+    <div class="logo-icon">
+        🎓
+    </div>
+
+    <h1>
+        StudentHub
+    </h1>
+
+    <p>
+        Your Digital Campus Portal
+    </p>
+
+</header>
+
+
+<!-- =====================================================
+     NAVIGATION
+     ===================================================== -->
+
+<nav class="navbar">
+
+    <div class="nav-wrapper">
+
+
+        <!-- Hamburger -->
+
+        <button
+            type="button"
+            class="menu-toggle"
+            aria-label="Open navigation menu"
+            aria-expanded="false">
+
+            ☰ Menu
+
+        </button>
+
+
+        <!-- Navigation Links -->
+
+        <div class="nav-container">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="about.html">
+                About
+            </a>
+
+            <a href="register.html">
+                Register
+            </a>
+
+            <a href="login.html">
+                Login
+            </a>
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="events.html"
+               class="active">
+                Events
+            </a>
+
+            <a href="profile.html">
+                Profile
+            </a>
+
+            <a href="contact.html">
+                Contact
+            </a>
+
+            <a href="admin.html">
+                Admin
+            </a>
+
+            <a href="faq.html">
+                FAQ
+            </a>
+
+            <a href="feedback.html">
+                Feedback
+            </a>
+
+        </div>
+
+
+        <!-- Theme -->
+
+        <button
+            type="button"
+            class="theme-toggle"
+            aria-label="Toggle dark mode">
+
+            🌙 Dark Mode
+
+        </button>
+
+    </div>
+
+</nav>
+
+
+<!-- =====================================================
+     MAIN CONTENT
+     ===================================================== -->
+
 <main>
 
     <div class="container">
 
-        <div class="page-title">
 
-            <h2>Campus Events</h2>
+        <!-- =================================================
+             PAGE TITLE
+             ================================================= -->
+
+        <section class="page-title">
+
+            <h2>
+                Campus Events
+            </h2>
 
             <p>
                 Discover upcoming events and activities at StudentHub
             </p>
 
-        </div>
+        </section>
 
 
-        <!-- ================= CONTROLS ================= -->
+        <!-- =================================================
+             EVENT CONTROLS
+             ================================================= -->
 
-        <section class="event-controls">
+        <section class="event-controls"
+                 aria-label="Event search and filtering">
 
-            <div class="search-box">
+
+            <!-- SEARCH -->
+
+            <div class="event-control">
 
                 <label for="eventSearch">
-                    Search Events
+                    🔎 Search Events
                 </label>
 
                 <input
                     type="search"
                     id="eventSearch"
-                    placeholder="Search by event name, category or location..."
-                >
+                    placeholder="Search event, category or location..."
+                    autocomplete="off">
 
             </div>
 
 
-            <div class="filter-box">
+            <!-- FILTER -->
+
+            <div class="event-control">
 
                 <label for="eventCategory">
-                    Category
+                    🏷️ Category
                 </label>
 
                 <select id="eventCategory">
@@ -73,10 +227,12 @@
             </div>
 
 
-            <div class="sort-box">
+            <!-- SORT -->
+
+            <div class="event-control">
 
                 <label for="eventSort">
-                    Sort By
+                    ↕️ Sort By
                 </label>
 
                 <select id="eventSort">
@@ -104,7 +260,9 @@
         </section>
 
 
-        <!-- ================= STATUS ================= -->
+        <!-- =================================================
+             RESULT INFORMATION
+             ================================================= -->
 
         <div
             id="eventStatus"
@@ -116,23 +274,1208 @@
         </div>
 
 
-        <!-- ================= EVENTS ================= -->
+        <!-- =================================================
+             EVENT LIST
+             ================================================= -->
 
         <section
             id="eventList"
-            class="event-grid">
+            class="event-grid"
+            aria-live="polite">
 
         </section>
 
 
-        <!-- ================= PAGINATION ================= -->
+        <!-- =================================================
+             PAGINATION
+             ================================================= -->
+
+        <nav
+            id="eventPagination"
+            class="pagination"
+            aria-label="Event pages">
+
+        </nav>
+
+
+    </div>
+
+</main>
+
+
+<!-- =====================================================
+     EVENT REGISTRATION MODAL
+     ===================================================== -->
+
+<div
+    id="eventModal"
+    class="event-modal"
+    aria-hidden="true">
+
+
+    <div
+        class="event-modal-content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalEventTitle">
+
+
+        <!-- Close -->
+
+        <button
+            type="button"
+            id="closeEventModal"
+            class="modal-close"
+            aria-label="Close registration window">
+
+            ×
+
+        </button>
+
+
+        <h2 id="modalEventTitle">
+            Event Registration
+        </h2>
+
+
+        <p id="modalEventDescription">
+            You are registering for this event.
+        </p>
+
+
+        <div class="modal-event-info">
+
+            <p>
+                <strong>📅 Date:</strong>
+
+                <span id="modalEventDate">
+                    -
+                </span>
+            </p>
+
+
+            <p>
+                <strong>📍 Location:</strong>
+
+                <span id="modalEventLocation">
+                    -
+                </span>
+            </p>
+
+
+            <p>
+                <strong>👤 Organizer:</strong>
+
+                <span id="modalEventOrganizer">
+                    -
+                </span>
+            </p>
+
+        </div>
+
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                id="confirmEventRegistration"
+                class="btn">
+
+                Confirm Registration
+
+            </button>
+
+
+            <button
+                type="button"
+                id="cancelEventRegistration"
+                class="btn btn-secondary">
+
+                Cancel
+
+            </button>
+
+        </div>
+
 
         <div
-            id="eventPagination"
-            class="pagination">
+            id="registrationMessage"
+            class="registration-message"
+            role="alert">
 
         </div>
 
     </div>
 
-</main>
+</div>
+
+
+<!-- =====================================================
+     FOOTER
+     ===================================================== -->
+
+<footer>
+
+    <p>
+        © 2026 StudentHub | Digital Campus Portal
+    </p>
+
+
+    <div class="footer-links">
+
+        <a href="about.html">
+            About
+        </a>
+
+        <a href="contact.html">
+            Contact
+        </a>
+
+        <a href="faq.html">
+            FAQ
+        </a>
+
+        <a href="feedback.html">
+            Feedback
+        </a>
+
+    </div>
+
+</footer>
+
+
+<!-- =====================================================
+     GLOBAL JAVASCRIPT
+     ===================================================== -->
+
+<script src="../js/script.js"></script>
+
+
+<!-- =====================================================
+     PRACTICAL 6 EVENT JAVASCRIPT
+     ===================================================== -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+    /* =================================================
+       ELEMENTS
+       ================================================= */
+
+    const eventList =
+        document.getElementById("eventList");
+
+    const eventSearch =
+        document.getElementById("eventSearch");
+
+    const eventCategory =
+        document.getElementById("eventCategory");
+
+    const eventSort =
+        document.getElementById("eventSort");
+
+    const eventStatus =
+        document.getElementById("eventStatus");
+
+    const eventPagination =
+        document.getElementById("eventPagination");
+
+
+    /* Modal */
+
+    const eventModal =
+        document.getElementById("eventModal");
+
+    const closeEventModal =
+        document.getElementById("closeEventModal");
+
+    const cancelEventRegistration =
+        document.getElementById(
+            "cancelEventRegistration"
+        );
+
+    const confirmEventRegistration =
+        document.getElementById(
+            "confirmEventRegistration"
+        );
+
+    const modalEventTitle =
+        document.getElementById(
+            "modalEventTitle"
+        );
+
+    const modalEventDescription =
+        document.getElementById(
+            "modalEventDescription"
+        );
+
+    const modalEventDate =
+        document.getElementById(
+            "modalEventDate"
+        );
+
+    const modalEventLocation =
+        document.getElementById(
+            "modalEventLocation"
+        );
+
+    const modalEventOrganizer =
+        document.getElementById(
+            "modalEventOrganizer"
+        );
+
+    const registrationMessage =
+        document.getElementById(
+            "registrationMessage"
+        );
+
+
+    /* =================================================
+       VARIABLES
+       ================================================= */
+
+    let allEvents = [];
+
+    let filteredEvents = [];
+
+    let currentPage = 1;
+
+    const eventsPerPage = 6;
+
+    let selectedEvent = null;
+
+
+    /* =================================================
+       FETCH API
+       ================================================= */
+
+    async function loadEvents() {
+
+        try {
+
+            eventStatus.textContent =
+                "Loading events...";
+
+
+            const response =
+                await fetch("../data/events.json");
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Failed to load events.json"
+                );
+
+            }
+
+
+            allEvents =
+                await response.json();
+
+
+            filteredEvents =
+                [...allEvents];
+
+
+            applySorting(false);
+
+            renderEvents();
+
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Fetch API Error:",
+                error
+            );
+
+
+            eventStatus.innerHTML = `
+                <div class="event-error">
+                    ❌ Unable to load events.
+                    Please make sure
+                    <strong>data/events.json</strong>
+                    exists and the project is running
+                    with Live Server.
+                </div>
+            `;
+
+
+            eventList.innerHTML = "";
+
+            eventPagination.innerHTML = "";
+
+        }
+
+    }
+
+
+    /* =================================================
+       CREATE EVENT CARD
+       ================================================= */
+
+    function createEventCard(event) {
+
+
+        const formattedDate =
+            new Date(event.date)
+                .toLocaleDateString(
+                    "en-IN",
+                    {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric"
+                    }
+                );
+
+
+        return `
+
+            <article class="dynamic-event-card">
+
+
+                <span class="event-category-badge">
+
+                    ${event.category}
+
+                </span>
+
+
+                <h3>
+
+                    ${event.title}
+
+                </h3>
+
+
+                <p class="event-description">
+
+                    ${event.description}
+
+                </p>
+
+
+                <div class="event-details">
+
+
+                    <span>
+
+                        📅
+                        <strong>Date:</strong>
+                        ${formattedDate}
+
+                    </span>
+
+
+                    <span>
+
+                        🕐
+                        <strong>Time:</strong>
+                        ${event.time}
+
+                    </span>
+
+
+                    <span>
+
+                        📍
+                        <strong>Location:</strong>
+                        ${event.location}
+
+                    </span>
+
+
+                    <span>
+
+                        👤
+                        <strong>Organizer:</strong>
+                        ${event.organizer}
+
+                    </span>
+
+
+                </div>
+
+
+                <div class="event-seats">
+
+                    🎟️
+                    ${event.seats}
+                    seats available
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="btn event-register-button"
+                    data-event-id="${event.id}">
+
+                    Register Now
+
+                </button>
+
+
+            </article>
+
+        `;
+
+    }
+
+
+    /* =================================================
+       RENDER EVENTS
+       ================================================= */
+
+    function renderEvents() {
+
+
+        const totalEvents =
+            filteredEvents.length;
+
+
+        if (totalEvents === 0) {
+
+            eventStatus.textContent =
+                "0 events found";
+
+
+            eventList.innerHTML = `
+
+                <div class="no-events">
+
+                    <div class="no-events-icon">
+                        🔍
+                    </div>
+
+                    <h3>
+                        No Events Found
+                    </h3>
+
+                    <p>
+                        Try changing your search
+                        or category filter.
+                    </p>
+
+                </div>
+
+            `;
+
+
+            eventPagination.innerHTML = "";
+
+            return;
+
+        }
+
+
+        const totalPages =
+            Math.ceil(
+                totalEvents / eventsPerPage
+            );
+
+
+        if (currentPage > totalPages) {
+
+            currentPage =
+                totalPages;
+
+        }
+
+
+        const startIndex =
+            (currentPage - 1) *
+            eventsPerPage;
+
+
+        const endIndex =
+            startIndex +
+            eventsPerPage;
+
+
+        const currentEvents =
+            filteredEvents.slice(
+                startIndex,
+                endIndex
+            );
+
+
+        eventStatus.textContent =
+            `Showing ${
+                startIndex + 1
+            }-${
+                Math.min(
+                    endIndex,
+                    totalEvents
+                )
+            } of ${
+                totalEvents
+            } events`;
+
+
+        eventList.innerHTML =
+            currentEvents
+                .map(createEventCard)
+                .join("");
+
+
+        renderPagination(
+            totalPages
+        );
+
+
+        attachRegistrationButtons();
+
+    }
+
+
+    /* =================================================
+       SEARCH + FILTER
+       ================================================= */
+
+    function applyFilters() {
+
+
+        const searchTerm =
+            eventSearch.value
+                .trim()
+                .toLowerCase();
+
+
+        const selectedCategory =
+            eventCategory.value;
+
+
+        filteredEvents =
+            allEvents.filter(
+                function (event) {
+
+
+                    const searchableText = `
+
+                        ${event.title}
+                        ${event.category}
+                        ${event.location}
+                        ${event.description}
+                        ${event.organizer}
+
+                    `.toLowerCase();
+
+
+                    const matchesSearch =
+                        searchableText
+                            .includes(
+                                searchTerm
+                            );
+
+
+                    const matchesCategory =
+                        selectedCategory === "all"
+                        ||
+                        event.category ===
+                        selectedCategory;
+
+
+                    return (
+                        matchesSearch
+                        &&
+                        matchesCategory
+                    );
+
+                }
+            );
+
+
+        applySorting(false);
+
+
+        currentPage = 1;
+
+
+        renderEvents();
+
+    }
+
+
+    /* =================================================
+       SORTING
+       ================================================= */
+
+    function applySorting(
+        resetPage = true
+    ) {
+
+
+        const sortType =
+            eventSort.value;
+
+
+        filteredEvents.sort(
+            function (a, b) {
+
+
+                if (
+                    sortType ===
+                    "dateAsc"
+                ) {
+
+                    return new Date(a.date)
+                        -
+                        new Date(b.date);
+
+                }
+
+
+                if (
+                    sortType ===
+                    "dateDesc"
+                ) {
+
+                    return new Date(b.date)
+                        -
+                        new Date(a.date);
+
+                }
+
+
+                if (
+                    sortType ===
+                    "nameAsc"
+                ) {
+
+                    return a.title
+                        .localeCompare(
+                            b.title
+                        );
+
+                }
+
+
+                if (
+                    sortType ===
+                    "nameDesc"
+                ) {
+
+                    return b.title
+                        .localeCompare(
+                            a.title
+                        );
+
+                }
+
+
+                return 0;
+
+            }
+        );
+
+
+        if (resetPage) {
+
+            currentPage = 1;
+
+        }
+
+    }
+
+
+    /* =================================================
+       PAGINATION
+       ================================================= */
+
+    function renderPagination(
+        totalPages
+    ) {
+
+
+        eventPagination.innerHTML =
+            "";
+
+
+        if (totalPages <= 1) {
+
+            return;
+
+        }
+
+
+        /* Previous */
+
+        const previousButton =
+            document.createElement(
+                "button"
+            );
+
+
+        previousButton.type =
+            "button";
+
+
+        previousButton.textContent =
+            "‹";
+
+
+        previousButton.title =
+            "Previous page";
+
+
+        previousButton.disabled =
+            currentPage === 1;
+
+
+        previousButton.addEventListener(
+            "click",
+            function () {
+
+                if (
+                    currentPage >
+                    1
+                ) {
+
+                    currentPage--;
+
+                    renderEvents();
+
+                    scrollToEvents();
+
+                }
+
+            }
+        );
+
+
+        eventPagination.appendChild(
+            previousButton
+        );
+
+
+        /* Page Numbers */
+
+        for (
+            let page = 1;
+            page <= totalPages;
+            page++
+        ) {
+
+
+            const pageButton =
+                document.createElement(
+                    "button"
+                );
+
+
+            pageButton.type =
+                "button";
+
+
+            pageButton.textContent =
+                page;
+
+
+            if (
+                page ===
+                currentPage
+            ) {
+
+                pageButton.classList.add(
+                    "active"
+                );
+
+                pageButton.setAttribute(
+                    "aria-current",
+                    "page"
+                );
+
+            }
+
+
+            pageButton.addEventListener(
+                "click",
+                function () {
+
+                    currentPage =
+                        page;
+
+                    renderEvents();
+
+                    scrollToEvents();
+
+                }
+            );
+
+
+            eventPagination.appendChild(
+                pageButton
+            );
+
+        }
+
+
+        /* Next */
+
+        const nextButton =
+            document.createElement(
+                "button"
+            );
+
+
+        nextButton.type =
+            "button";
+
+
+        nextButton.textContent =
+            "›";
+
+
+        nextButton.title =
+            "Next page";
+
+
+        nextButton.disabled =
+            currentPage ===
+            totalPages;
+
+
+        nextButton.addEventListener(
+            "click",
+            function () {
+
+                if (
+                    currentPage <
+                    totalPages
+                ) {
+
+                    currentPage++;
+
+                    renderEvents();
+
+                    scrollToEvents();
+
+                }
+
+            }
+        );
+
+
+        eventPagination.appendChild(
+            nextButton
+        );
+
+    }
+
+
+    /* =================================================
+       SCROLL TO EVENTS
+       ================================================= */
+
+    function scrollToEvents() {
+
+        const eventSection =
+            document.getElementById(
+                "eventList"
+            );
+
+
+        if (eventSection) {
+
+            eventSection.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }
+
+    }
+
+
+    /* =================================================
+       REGISTER BUTTONS
+       ================================================= */
+
+    function attachRegistrationButtons() {
+
+
+        const buttons =
+            document.querySelectorAll(
+                ".event-register-button"
+            );
+
+
+        buttons.forEach(
+            function (button) {
+
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+
+                        const eventId =
+                            Number(
+                                button.dataset.eventId
+                            );
+
+
+                        selectedEvent =
+                            allEvents.find(
+                                function (event) {
+
+                                    return (
+                                        event.id ===
+                                        eventId
+                                    );
+
+                                }
+                            );
+
+
+                        if (
+                            selectedEvent
+                        ) {
+
+                            openEventModal(
+                                selectedEvent
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =================================================
+       OPEN MODAL
+       ================================================= */
+
+    function openEventModal(
+        event
+    ) {
+
+
+        const formattedDate =
+            new Date(event.date)
+                .toLocaleDateString(
+                    "en-IN",
+                    {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric"
+                    }
+                );
+
+
+        modalEventTitle.textContent =
+            event.title;
+
+
+        modalEventDescription.textContent =
+            event.description;
+
+
+        modalEventDate.textContent =
+            `${formattedDate} at ${event.time}`;
+
+
+        modalEventLocation.textContent =
+            event.location;
+
+
+        modalEventOrganizer.textContent =
+            event.organizer;
+
+
+        registrationMessage.textContent =
+            "";
+
+
+        eventModal.classList.add(
+            "show"
+        );
+
+
+        eventModal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+
+        document.body.style.overflow =
+            "hidden";
+
+    }
+
+
+    /* =================================================
+       CLOSE MODAL
+       ================================================= */
+
+    function closeModal() {
+
+        eventModal.classList.remove(
+            "show"
+        );
+
+
+        eventModal.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+
+        document.body.style.overflow =
+            "";
+
+    }
+
+
+    /* =================================================
+       CONFIRM REGISTRATION
+       ================================================= */
+
+    confirmEventRegistration
+        .addEventListener(
+            "click",
+            function () {
+
+
+                if (
+                    !selectedEvent
+                ) {
+
+                    return;
+
+                }
+
+
+                registrationMessage.textContent =
+                    `🎉 Successfully registered for ${selectedEvent.title}!`;
+
+
+                registrationMessage.classList.add(
+                    "success"
+                );
+
+
+                confirmEventRegistration.disabled =
+                    true;
+
+
+                setTimeout(
+                    function () {
+
+                        closeModal();
+
+                        confirmEventRegistration.disabled =
+                            false;
+
+                    },
+                    1800
+                );
+
+            }
+        );
+
+
+    /* =================================================
+       MODAL EVENTS
+       ================================================= */
+
+    closeEventModal.addEventListener(
+        "click",
+        closeModal
+    );
+
+
+    cancelEventRegistration
+        .addEventListener(
+            "click",
+            closeModal
+        );
+
+
+    eventModal.addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                event.target ===
+                eventModal
+            ) {
+
+                closeModal();
+
+            }
+
+        }
+    );
+
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key ===
+                "Escape"
+            ) {
+
+                closeModal();
+
+            }
+
+        }
+    );
+
+
+    /* =================================================
+       CONTROL EVENTS
+       ================================================= */
+
+    eventSearch.addEventListener(
+        "input",
+        applyFilters
+    );
+
+
+    eventCategory.addEventListener(
+        "change",
+        applyFilters
+    );
+
+
+    eventSort.addEventListener(
+        "change",
+        function () {
+
+            applySorting();
+
+            renderEvents();
+
+        }
+    );
+
+
+    /* =================================================
+       START APPLICATION
+       ================================================= */
+
+    loadEvents();
+
+});
+
+</script>
+
+
+</body>
+
+</html>

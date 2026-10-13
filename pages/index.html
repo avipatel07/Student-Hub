@@ -2,27 +2,31 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
+    <meta name="description"
+          content="StudentHub - Your Digital Campus Portal">
+
     <title>StudentHub - Home</title>
 
     <link rel="stylesheet" href="../css/style.css">
-
 </head>
 
 
 <body>
 
-
-<!-- ================= HEADER ================= -->
+<!-- =====================================================
+     HEADER
+     ===================================================== -->
 
 <header class="site-header">
 
-    <div class="logo-icon">🎓</div>
+    <div class="logo-icon">
+        🎓
+    </div>
 
     <h1>StudentHub</h1>
 
@@ -31,7 +35,9 @@
 </header>
 
 
-<!-- ================= NAVBAR ================= -->
+<!-- =====================================================
+     NAVIGATION
+     ===================================================== -->
 
 <nav class="navbar">
 
@@ -39,11 +45,10 @@
 
         <button
             class="menu-toggle"
+            type="button"
             aria-label="Open navigation menu"
             aria-expanded="false">
-
-            ☰
-
+            ☰ Menu
         </button>
 
 
@@ -76,10 +81,9 @@
 
         <button
             class="theme-toggle"
+            type="button"
             aria-label="Toggle dark mode">
-
-            🌙
-
+            🌙 Dark Mode
         </button>
 
     </div>
@@ -87,14 +91,18 @@
 </nav>
 
 
-<!-- ================= MAIN ================= -->
+<!-- =====================================================
+     MAIN
+     ===================================================== -->
 
 <main>
 
     <div class="container">
 
 
-        <!-- ================= NOTIFICATION ================= -->
+        <!-- =================================================
+             NOTIFICATION BANNER
+             ================================================= -->
 
         <div class="notification-banner">
 
@@ -103,12 +111,9 @@
                 <span>🔔</span>
 
                 <span>
-
                     <strong>New Update:</strong>
-
-                    StudentHub Tech Fest registrations
-                    are now open!
-
+                    StudentHub campus events and registrations
+                    are now available.
                 </span>
 
             </div>
@@ -116,6 +121,7 @@
 
             <button
                 class="close-notification"
+                type="button"
                 aria-label="Close notification">
 
                 ×
@@ -125,12 +131,67 @@
         </div>
 
 
-        <!-- ================= CONTENT SLIDER ================= -->
+        <!-- =================================================
+             CHARUSAT CAMPUS IMAGE
+             ================================================= -->
 
-        <section class="slider">
+        <section class="campus-banner-section">
+
+            <div class="campus-banner-card">
+
+                <img
+                    src="../images/charusat-banner.png"
+                    alt="CHARUSAT Student Hub Portal"
+                    class="campus-banner"
+                    loading="eager">
 
 
-            <!-- Slide 1 -->
+                <div class="campus-banner-content">
+
+                    <h2>
+                        Welcome to StudentHub
+                    </h2>
+
+                    <p>
+                        Your Digital Campus Portal
+                    </p>
+
+
+                    <div class="hero-actions">
+
+                        <a
+                            href="register.html"
+                            class="btn">
+
+                            Get Started
+
+                        </a>
+
+
+                        <a
+                            href="about.html"
+                            class="btn btn-secondary">
+
+                            Learn More
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             IMAGE / CONTENT SLIDER
+             ================================================= -->
+
+        <section class="slider"
+                 aria-label="StudentHub highlights">
+
 
             <div class="slide active">
 
@@ -150,8 +211,6 @@
             </div>
 
 
-            <!-- Slide 2 -->
-
             <div class="slide">
 
                 <div class="slide-content">
@@ -161,7 +220,7 @@
                     </h2>
 
                     <p>
-                        Discover projects, workshops
+                        Discover workshops, competitions
                         and learning opportunities.
                     </p>
 
@@ -169,8 +228,6 @@
 
             </div>
 
-
-            <!-- Slide 3 -->
 
             <div class="slide">
 
@@ -182,7 +239,7 @@
 
                     <p>
                         Stay updated with upcoming
-                        college activities and events.
+                        university activities.
                     </p>
 
                 </div>
@@ -190,11 +247,10 @@
             </div>
 
 
-            <!-- Slider Controls -->
-
             <div class="slider-controls">
 
                 <button
+                    type="button"
                     class="slider-btn slider-prev"
                     aria-label="Previous slide">
 
@@ -204,6 +260,7 @@
 
 
                 <button
+                    type="button"
                     class="slider-btn slider-next"
                     aria-label="Next slide">
 
@@ -216,7 +273,9 @@
         </section>
 
 
-        <!-- ================= HERO ================= -->
+        <!-- =================================================
+             WELCOME
+             ================================================= -->
 
         <section class="hero">
 
@@ -240,16 +299,16 @@
                         href="register.html"
                         class="btn">
 
-                        Get Started
+                        Create Account
 
                     </a>
 
 
                     <a
-                        href="about.html"
+                        href="events.html"
                         class="btn btn-secondary">
 
-                        Learn More
+                        Explore Events
 
                     </a>
 
@@ -260,7 +319,9 @@
         </section>
 
 
-        <!-- ================= FEATURES ================= -->
+        <!-- =================================================
+             FEATURES
+             ================================================= -->
 
         <section class="section">
 
@@ -352,13 +413,14 @@
 
                 </article>
 
-
             </div>
 
         </section>
 
 
-        <!-- ================= QUICK ACCESS ================= -->
+        <!-- =================================================
+             QUICK ACCESS
+             ================================================= -->
 
         <section class="section">
 
@@ -368,57 +430,158 @@
                     Quick Access
                 </h2>
 
+                <p>
+                    Quickly access important StudentHub sections
+                </p>
+
             </div>
 
 
             <div class="quick-grid">
 
-                <a href="dashboard.html"
-                   class="card">
 
-                    <h3>📊 Dashboard</h3>
+                <a
+                    href="dashboard.html"
+                    class="card">
+
+                    <h3>
+                        📊 Dashboard
+                    </h3>
 
                     <p>
-                        View your student dashboard.
+                        View your student dashboard
+                        and important updates.
                     </p>
 
                 </a>
 
 
-                <a href="events.html"
-                   class="card">
+                <a
+                    href="events.html"
+                    class="card">
 
-                    <h3>🎉 Events</h3>
+                    <h3>
+                        🎉 Events
+                    </h3>
 
                     <p>
-                        Explore upcoming campus events.
+                        Explore upcoming campus events
+                        and activities.
                     </p>
 
                 </a>
 
 
-                <a href="profile.html"
-                   class="card">
+                <a
+                    href="profile.html"
+                    class="card">
 
-                    <h3>👤 Profile</h3>
+                    <h3>
+                        👤 Profile
+                    </h3>
 
                     <p>
-                        Manage your profile.
+                        Manage your student profile
+                        and information.
                     </p>
 
                 </a>
 
 
-                <a href="feedback.html"
-                   class="card">
+                <a
+                    href="feedback.html"
+                    class="card">
 
-                    <h3>📝 Feedback</h3>
+                    <h3>
+                        📝 Feedback
+                    </h3>
 
                     <p>
-                        Share your feedback.
+                        Share your suggestions and
+                        feedback with the university.
                     </p>
 
                 </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             CAMPUS HIGHLIGHTS
+             ================================================= -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <h2>
+                    Campus Highlights
+                </h2>
+
+                <p>
+                    Stay connected with your university community
+                </p>
+
+            </div>
+
+
+            <div class="highlight-grid">
+
+
+                <article class="highlight-card">
+
+                    <div class="highlight-icon">
+                        🎓
+                    </div>
+
+                    <h3>
+                        Student Community
+                    </h3>
+
+                    <p>
+                        Connect with students and participate
+                        in campus activities.
+                    </p>
+
+                </article>
+
+
+                <article class="highlight-card">
+
+                    <div class="highlight-icon">
+                        💻
+                    </div>
+
+                    <h3>
+                        Technology
+                    </h3>
+
+                    <p>
+                        Explore technology workshops,
+                        competitions and innovation events.
+                    </p>
+
+                </article>
+
+
+                <article class="highlight-card">
+
+                    <div class="highlight-icon">
+                        🌟
+                    </div>
+
+                    <h3>
+                        Student Opportunities
+                    </h3>
+
+                    <p>
+                        Discover workshops, competitions,
+                        internships and career opportunities.
+                    </p>
+
+                </article>
 
             </div>
 
@@ -429,7 +592,9 @@
 </main>
 
 
-<!-- ================= FOOTER ================= -->
+<!-- =====================================================
+     FOOTER
+     ===================================================== -->
 
 <footer>
 
@@ -437,10 +602,25 @@
         © 2026 StudentHub | Digital Campus Portal
     </p>
 
+
+    <div class="footer-links">
+
+        <a href="about.html">About</a>
+
+        <a href="contact.html">Contact</a>
+
+        <a href="faq.html">FAQ</a>
+
+        <a href="feedback.html">Feedback</a>
+
+    </div>
+
 </footer>
 
 
-<!-- ================= JAVASCRIPT ================= -->
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
 
 <script src="../js/script.js"></script>
 
