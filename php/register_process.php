@@ -21,6 +21,9 @@
 // Set timezone for accurate registration timestamps
 date_default_timezone_set('Asia/Kolkata');
 
+// Practical 8 Database Module
+require_once __DIR__ . '/db_connect.php';
+
 // Storage file paths
 $dataDir = __DIR__ . '/../data';
 $csvFile = $dataDir . '/registrations.csv';
@@ -87,6 +90,7 @@ $year = '';
 $gender = '';
 $termsAccepted = false;
 $recordSaved = false;
+$mysqlWriteSuccess = false;
 $registrationId = '';
 $registrationDate = '';
 
@@ -283,7 +287,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        $recordSaved = ($csvWriteSuccess || $jsonWriteSuccess);
+        // --- C. Store in MySQL via PDO Prepared Statements (Practical 8) ---
+        try {
+            $pdo = getDBConnection();
+            if ($pdo instanceof PDO) {
+                $sql = "INSERT INTO students 
+                    (registration_no, full_name, email, mobile, password_hash, course, academic_year, gender, terms_accepted, created_at) 
+                    VALUES 
+                    (:reg_no, :name, :email, :mobile, :hash, :course, :year, :gender, :terms, :created_at)";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([
+                    ':reg_no'     => $registrationId,
+                    ':name'       => $studentName,
+                    ':email'      => $studentEmail,
+                    ':mobile'     => $studentMobile,
+                    ':hash'       => $passwordHash,
+                    ':course'     => $course,
+                    ':year'       => (int)$year,
+                    ':gender'     => $gender,
+                    ':terms'      => 'Accepted',
+                    ':created_at' => $registrationDate
+                ]);
+                $mysqlWriteSuccess = true;
+            }
+        } catch (Exception $e) {
+            error_log("Practical 8 MySQL Insert Notice: " . $e->getMessage());
+        }
+
+        $recordSaved = ($csvWriteSuccess || $jsonWriteSuccess || $mysqlWriteSuccess);
     }
 }
 
@@ -357,6 +388,7 @@ if ($isAjax) {
             <a href="../pages/profile.html">Profile</a>
             <a href="../pages/contact.html">Contact</a>
             <a href="../pages/admin.html">Admin</a>
+            <a href="db_dashboard.php">Practical 8 (DB)</a>
             <a href="../pages/faq.html">FAQ</a>
             <a href="../pages/feedback.html">Feedback</a>
         </div>
@@ -435,6 +467,11 @@ if ($isAjax) {
                         <span class="storage-tag json">
                             <span>📦</span> JSON Updated (registrations.json)
                         </span>
+                        <?php if ($mysqlWriteSuccess): ?>
+                            <span class="storage-tag csv" style="background: #e0f2fe; border-color: #7dd3fc; color: #0369a1;">
+                                <span>💾</span> MySQL Inserted (students table)
+                            </span>
+                        <?php endif; ?>
                     </div>
                 </div>
 

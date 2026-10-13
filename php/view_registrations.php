@@ -7,9 +7,20 @@
  */
 
 date_default_timezone_set('Asia/Kolkata');
+require_once __DIR__ . '/db_connect.php';
 
 $csvFile = __DIR__ . '/../data/registrations.csv';
 $jsonFile = __DIR__ . '/../data/registrations.json';
+
+// Check database count if available
+$dbCount = 0;
+$pdo = getDBConnection();
+if ($pdo instanceof PDO) {
+    try {
+        $dbCountStmt = $pdo->query("SELECT COUNT(*) FROM students");
+        $dbCount = (int)$dbCountStmt->fetchColumn();
+    } catch (Exception $e) {}
+}
 
 // Handle download CSV
 if (isset($_GET['action']) && $_GET['action'] === 'download_csv') {
@@ -99,6 +110,7 @@ $totalStudents = count($csvRecords);
             <a href="../pages/profile.html">Profile</a>
             <a href="../pages/contact.html">Contact</a>
             <a href="../pages/admin.html">Admin</a>
+            <a href="db_dashboard.php">Practical 8 (DB)</a>
             <a href="../pages/faq.html">FAQ</a>
             <a href="../pages/feedback.html">Feedback</a>
         </div>
@@ -118,7 +130,7 @@ $totalStudents = count($csvRecords);
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                 <div>
                     <h2>Stored Student Registrations</h2>
-                    <p>Live Records Stored via PHP in CSV & JSON File Formats (Practical 7)</p>
+                    <p>Live Records Stored via PHP in CSV & JSON File Formats (Practical 7) & MySQL (Practical 8)</p>
                 </div>
                 <div>
                     <span class="badge badge-primary" style="font-size: 15px; padding: 7px 14px;">
@@ -137,9 +149,15 @@ $totalStudents = count($csvRecords);
                 <span class="storage-tag json">
                     <span>📦</span> File: data/registrations.json (<?php echo count($jsonRecords); ?> records)
                 </span>
+                <a href="db_dashboard.php" class="storage-tag csv" style="text-decoration: none; background: #e0f2fe; border-color: #7dd3fc; color: #0369a1;">
+                    <span>💾</span> MySQL Database (<?php echo $dbCount; ?> in `students`)
+                </a>
             </div>
 
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <a href="db_dashboard.php" class="btn btn-secondary btn-small">
+                    🗄️ Practical 8 DB
+                </a>
                 <a href="?action=download_csv" class="btn btn-secondary btn-small">
                     ⬇️ Download CSV
                 </a>

@@ -403,4 +403,61 @@ Student Hub/
     ├── register_process.php    # Server-side PHP processor for registration
     ├── contact_process.php     # Server-side PHP processor for contact form
     └── view_registrations.php  # Live record viewer and CSV/JSON exporter
-```
+```
+
+---
+
+# Practical 8 - MySQL Schema Design, ER Model, PDO Connectivity, and Prepared Statements
+
+## Objective
+
+To design a normalized relational database schema for StudentHub (students, events, and event registrations), document the Entity-Relationship (ER) model, establish a secure PHP database connection using PDO (PHP Data Objects), and execute secure parameterized database operations using Prepared Statements.
+
+## Key Capabilities Implemented
+
+### 1. Relational Database Schema (`database/schema.sql`)
+- **`students`**: Stores registered student profiles with attributes (`student_id`, `registration_no`, `full_name`, `email`, `mobile`, `password_hash`, `course`, `academic_year`, `gender`, `terms_accepted`, timestamps). Enforces uniqueness on registration number, email, and mobile.
+- **`events`**: Stores campus event records matching Practical 6 (`event_id`, `title`, `category`, `event_date`, `event_time`, `location`, `description`, `organizer`, `total_seats`, `available_seats`, `status`).
+- **`event_registrations`**: Associative junction table resolving the **Many-to-Many (M:N)** relationship between Students and Events. Enforces referential integrity via Foreign Keys (`ON DELETE CASCADE`, `ON UPDATE CASCADE`) and prevents duplicate registrations with `UNIQUE KEY unique_student_event_registration (student_id, event_id)`.
+- **`contact_inquiries`**: Stores campus inquiries and helpdesk tickets (`inquiry_id`, `reference_no`, `full_name`, `email`, `mobile`, `subject`, `message`, `status`, `submitted_at`).
+- **Initial Seed Data**: Pre-loaded with realistic records matching Practical 5, 6, and 7 for instant testing.
+
+### 2. Entity-Relationship (ER) Model (`docs/ER_MODEL.md`)
+- Detailed ER Model documentation covering entity types, attributes, constraints, cardinality (`1:N`, `M:N`), and Third Normal Form (`3NF`) normalization analysis.
+- Includes embedded Mermaid ER Diagram (`erDiagram`) for immediate visual rendering.
+
+### 3. PDO Database Connection Module (`php/db_connect.php`)
+- **PHP Data Objects (PDO)** configuration connecting to MySQL using UTF-8 multi-byte encoding (`utf8mb4`).
+- **Strict Error Handling**: Enables `PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION`.
+- **Native Prepared Statements**: Explicitly sets `PDO::ATTR_EMULATE_PREPARES => false` to force MySQL server-side statement compilation, providing absolute defense against SQL Injection attacks.
+- **Diagnostics**: Built-in `testDBConnection()` helper returning live latency, MySQL version, driver info, and table row counts.
+
+### 4. Prepared Statements Demos & Live Operations (`php/db_dashboard.php`)
+- **Live Connection Diagnostics**: Shows real-time connection status, database latency, and active table metrics.
+- **Demo 1 (Parameterized SELECT with Named Placeholders)**:
+  ```php
+  $stmt = $pdo->prepare("SELECT student_id, registration_no, full_name, email, course FROM students WHERE course = :course");
+  $stmt->execute([':course' => $selectedCourse]);
+  $students = $stmt->fetchAll();
+  ```
+- **Demo 2 (Relational INNER JOIN)**: Multi-table join displaying registered students and their corresponding event titles.
+- **Demo 3 (Atomic Transaction & Prepared INSERT)**:
+  - Uses `PDO::beginTransaction()`, prepared duplicate checks, prepared seat availability checks with row-level locking (`FOR UPDATE`), prepared INSERT into `event_registrations`, prepared UPDATE to decrement `available_seats`, and `PDO::commit()`.
+  - Automatically rolls back on any error (`PDO::rollBack()`).
+- **Dual-Storage Integration**: `php/register_process.php` automatically performs prepared MySQL insertion into the `students` table whenever MySQL is reachable.
+
+## Practical 8 File Structure
+
+```text
+Student Hub/
+├── database/
+│   └── schema.sql              # Complete MySQL DDL script with seed data
+├── docs/
+│   └── ER_MODEL.md             # Complete Entity-Relationship model spec & Mermaid diagram
+└── php/
+    ├── db_connect.php          # Secure PDO connection module with native prepared statements
+    ├── db_dashboard.php        # Interactive Practical 8 diagnostic dashboard & prepared statement demos
+    ├── register_process.php    # Integrated with PDO prepared statement insertion
+    └── view_registrations.php  # Integrated with MySQL table metrics
+```
+
