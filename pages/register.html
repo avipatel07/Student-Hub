@@ -98,13 +98,22 @@
 
         <div class="page-title">
 
-            <h2>
-                Student Registration
-            </h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <h2>
+                        Student Registration
+                    </h2>
 
-            <p>
-                Create your StudentHub account
-            </p>
+                    <p>
+                        Create your StudentHub account (Practical 7 - PHP Form Processing)
+                    </p>
+                </div>
+                <div>
+                    <a href="../php/view_registrations.php" class="btn btn-secondary btn-small">
+                        📋 View Stored Records
+                    </a>
+                </div>
+            </div>
 
         </div>
 
@@ -116,6 +125,8 @@
 
             <form
                 id="registrationForm"
+                action="../php/register_process.php"
+                method="POST"
                 novalidate>
 
 

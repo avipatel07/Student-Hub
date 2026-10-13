@@ -2178,3 +2178,325 @@ footer p {
     }
 
 }
+
+
+/* =========================================================
+   41. PRACTICAL 7 - PHP FORM PROCESSING & RESPONSE STYLES
+   ========================================================= */
+
+.form-card {
+    max-width: 780px;
+    margin: 0 auto;
+    background: white;
+    border: 1px solid #e0e5eb;
+    border-radius: 9px;
+    padding: 28px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+}
+
+.required {
+    color: #dc3545;
+    margin-left: 2px;
+    font-weight: bold;
+}
+
+.input-hint {
+    display: block;
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 5px;
+}
+
+.terms-group {
+    margin: 18px 0;
+}
+
+.alert-box {
+    padding: 16px 18px;
+    border-radius: 8px;
+    margin-bottom: 22px;
+    border: 1px solid transparent;
+}
+
+.alert-success {
+    background: #eaf7ee;
+    border-color: #b7dfc1;
+    color: #176b2c;
+}
+
+.alert-danger,
+.alert-error {
+    background: #fdf2f2;
+    border-color: #f8b4b4;
+    color: #9b1c1c;
+}
+
+.alert-info {
+    background: #e8f2ff;
+    border-color: #b6d4fe;
+    color: #0d47a1;
+}
+
+.alert-warning {
+    background: #fff8e1;
+    border-color: #f2d675;
+    color: #684f00;
+}
+
+.alert-title {
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.alert-list {
+    margin: 8px 0 0 20px;
+    padding: 0;
+}
+
+.alert-list li {
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    margin: 20px 0;
+    border: 1px solid #e0e5eb;
+    border-radius: 8px;
+    background: white;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    text-align: left;
+}
+
+.data-table th,
+.data-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #e0e5eb;
+}
+
+.data-table th {
+    background: #f8fafc;
+    color: #243b53;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.data-table tr:last-child td {
+    border-bottom: none;
+}
+
+.data-table tr:hover td {
+    background: #f8fafc;
+}
+
+.summary-card {
+    background: white;
+    border: 1px solid #e0e5eb;
+    border-radius: 9px;
+    padding: 24px;
+    margin-bottom: 22px;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 18px 0;
+}
+
+.summary-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 12px 14px;
+}
+
+.summary-label {
+    font-size: 12px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.summary-value {
+    font-size: 15px;
+    color: #243b53;
+    font-weight: 600;
+    word-break: break-all;
+}
+
+.storage-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 14px 0;
+}
+
+.storage-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.storage-tag.csv {
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+    color: #065f46;
+}
+
+.storage-tag.json {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+    color: #1e40af;
+}
+
+.contact-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 25px;
+}
+
+@media (min-width: 850px) {
+    .contact-layout {
+        grid-template-columns: 1fr 2fr;
+    }
+}
+
+.contact-sidebar {
+    background: white;
+    border: 1px solid #e0e5eb;
+    border-radius: 9px;
+    padding: 24px;
+    height: fit-content;
+}
+
+.contact-sidebar h3 {
+    margin-bottom: 14px;
+    color: #243b53;
+    font-size: 20px;
+}
+
+.contact-info-item {
+    margin-bottom: 16px;
+}
+
+.contact-info-item strong {
+    display: block;
+    color: #243b53;
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.contact-info-item p {
+    color: #64748b;
+    font-size: 14px;
+}
+
+/* Dark mode additions for Practical 7 */
+.dark-theme .form-card,
+.dark-theme .summary-card,
+.dark-theme .contact-sidebar,
+.dark-theme .table-responsive {
+    background: #1e1e1e;
+    border-color: #333;
+}
+
+.dark-theme .data-table th {
+    background: #252525;
+    color: #eeeeee;
+    border-color: #333;
+}
+
+.dark-theme .data-table td {
+    border-color: #333;
+    color: #dddddd;
+}
+
+.dark-theme .data-table tr:hover td {
+    background: #272727;
+}
+
+.dark-theme .summary-item {
+    background: #252525;
+    border-color: #333;
+}
+
+.dark-theme .summary-label {
+    color: #94a3b8;
+}
+
+.dark-theme .summary-value {
+    color: #f1f5f9;
+}
+
+.dark-theme .contact-sidebar h3,
+.dark-theme .contact-info-item strong {
+    color: #eeeeee;
+}
+
+.dark-theme .contact-info-item p {
+    color: #bbbbbb;
+}
+
+.dark-theme .alert-success {
+    background: #0f2e1b;
+    border-color: #1b4d2e;
+    color: #86efac;
+}
+
+.dark-theme .alert-danger,
+.dark-theme .alert-error {
+    background: #3b1219;
+    border-color: #5c1d28;
+    color: #fca5a5;
+}
+
+.dark-theme .alert-info {
+    background: #0c274c;
+    border-color: #173b70;
+    color: #93c5fd;
+}
+
+.dark-theme .alert-warning {
+    background: #362908;
+    border-color: #55400d;
+    color: #fde047;
+}
+
+.dark-theme .storage-tag.csv {
+    background: #064e3b;
+    border-color: #047857;
+    color: #6ee7b7;
+}
+
+.dark-theme .storage-tag.json {
+    background: #1e3a8a;
+    border-color: #1d4ed8;
+    color: #93c5fd;
+}

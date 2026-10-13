@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contact StudentHub Campus Helpdesk and Administration">
+    <title>StudentHub - Contact Us</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="site-header">
+    <div class="logo-icon">🎓</div>
+    <h1>StudentHub</h1>
+    <p>Your Digital Campus Portal</p>
+</header>
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar">
+    <div class="nav-wrapper">
+        <button class="menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">
+            ☰ Menu
+        </button>
+
+        <div class="nav-container">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="register.html">Register</a>
+            <a href="login.html">Login</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="events.html">Events</a>
+            <a href="profile.html">Profile</a>
+            <a href="contact.html" class="active">Contact</a>
+            <a href="admin.html">Admin</a>
+            <a href="faq.html">FAQ</a>
+            <a href="feedback.html">Feedback</a>
+        </div>
+
+        <button class="theme-toggle" type="button" aria-label="Toggle dark mode">
+            🌙 Dark Mode
+        </button>
+    </div>
+</nav>
+
+<!-- ================= MAIN ================= -->
+<main>
+    <div class="container">
+
+        <!-- Page Heading -->
+        <div class="page-title">
+            <h2>Contact Campus Helpdesk</h2>
+            <p>Have questions or need assistance? Reach out to the StudentHub support team.</p>
+        </div>
+
+        <div class="contact-layout">
+
+            <!-- Sidebar Info -->
+            <aside class="contact-sidebar">
+                <h3>Campus Information</h3>
+
+                <div class="contact-info-item">
+                    <strong>📍 Location</strong>
+                    <p>CHARUSAT Campus, 139, Highway, Changa, Gujarat 388421</p>
+                </div>
+
+                <div class="contact-info-item">
+                    <strong>📧 Email Support</strong>
+                    <p>studenthub@charusat.edu.in</p>
+                </div>
+
+                <div class="contact-info-item">
+                    <strong>📞 Phone Helpline</strong>
+                    <p>+91 (02697) 265011 / 265021</p>
+                </div>
+
+                <div class="contact-info-item">
+                    <strong>🕒 Operating Hours</strong>
+                    <p>Monday - Friday: 9:00 AM - 5:00 PM<br>Saturday: 9:00 AM - 1:00 PM</p>
+                </div>
+
+                <div class="contact-info-item">
+                    <strong>⚡ Emergency Helpline</strong>
+                    <p>+91 98765 43210 (Campus Security)</p>
+                </div>
+            </aside>
+
+            <!-- Contact Form -->
+            <section class="form-card">
+                <h3 style="color: #243b53; margin-bottom: 8px; font-size: 20px;">
+                    Send us a Message
+                </h3>
+                <p style="color: #64748b; font-size: 14px; margin-bottom: 20px;">
+                    Fill out the form below. Submitted queries are processed and stored on the server via PHP (Practical 7).
+                </p>
+
+                <form id="contactForm" action="../php/contact_process.php" method="POST" novalidate>
+
+                    <!-- Name -->
+                    <div class="form-group">
+                        <label for="contactName">
+                            Full Name <span class="required">*</span>
+                        </label>
+                        <input type="text" id="contactName" name="contactName" placeholder="Enter your full name" required>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="contactEmail">
+                            Email Address <span class="required">*</span>
+                        </label>
+                        <input type="email" id="contactEmail" name="contactEmail" placeholder="your.email@charusat.edu.in" required>
+                    </div>
+
+                    <!-- Mobile -->
+                    <div class="form-group">
+                        <label for="contactMobile">
+                            Mobile Number <span class="required">*</span>
+                        </label>
+                        <input type="tel" id="contactMobile" name="contactMobile" placeholder="10-digit mobile number" maxlength="10" required>
+                    </div>
+
+                    <!-- Subject -->
+                    <div class="form-group">
+                        <label for="contactSubject">
+                            Subject / Inquiry Topic <span class="required">*</span>
+                        </label>
+                        <input type="text" id="contactSubject" name="contactSubject" placeholder="Brief subject of your query" required>
+                    </div>
+
+                    <!-- Message -->
+                    <div class="form-group">
+                        <label for="contactMessage">
+                            Your Message <span class="required">*</span>
+                        </label>
+                        <textarea id="contactMessage" name="contactMessage" placeholder="Describe your inquiry or issue in detail..." rows="5" required></textarea>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn">
+                            📤 Send Message
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            Reset Form
+                        </button>
+                    </div>
+
+                </form>
+            </section>
+
+        </div>
+
+    </div>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+    <p>© 2026 StudentHub | Digital Campus Portal</p>
+    <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="register.html">Register</a>
+        <a href="contact.html">Contact</a>
+        <a href="faq.html">FAQ</a>
+    </div>
+</footer>
+
+<script src="../js/script.js"></script>
+
+</body>
+</html>

@@ -300,3 +300,107 @@ The form validates:
 
 ```text
 /^[A-Za-z]+(?:\s[A-Za-z]+)+$/
+```
+
+### Email
+
+```text
+/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+```
+
+### Mobile
+
+```text
+/^[6-9]\d{9}$/
+```
+
+### Password
+
+```text
+/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/
+```
+
+---
+
+# Practical 6 - Asynchronous Data Loading using Fetch API
+
+## Objective
+
+To fetch event data asynchronously from an external JSON file using the JavaScript Fetch API, dynamically render event cards, and implement real-time search, category filtering, multi-criteria sorting, and pagination.
+
+## Implemented Features
+
+- **JSON Data Source (`data/events.json`)**: Campus events dataset with id, title, category, description, date, time, location, organizer, and seats.
+- **Fetch API & Async/Await**: Asynchronously loads and parses `data/events.json` with loading status and error handling.
+- **Dynamic DOM Rendering**: Renders event cards dynamically with formatted dates and category badges.
+- **Live Search**: Filters events in real time by title, category, or location.
+- **Category Filter**: Dropdown filter for Academic, Cultural, Sports, and Workshop events.
+- **Multi-Criteria Sorting**: Sort by date (ascending/descending) or title (alphabetical).
+- **Client-Side Pagination**: Clean pagination controls with previous/next buttons and active page indicator.
+
+---
+
+# Practical 7 - Server-Side Form Processing with PHP
+
+## Objective
+
+To process submitted registration and contact form data using PHP, sanitize and validate all inputs on the server side, store records in CSV and JSON file formats, and display clear, responsive success and error messages.
+
+## Key Capabilities Implemented
+
+### 1. Server-Side Input Sanitization
+- `strip_tags()` and `trim()` to remove extraneous whitespace and HTML tags.
+- `htmlspecialchars(..., ENT_QUOTES, 'UTF-8')` for robust Cross-Site Scripting (XSS) defense.
+- `filter_var(..., FILTER_SANITIZE_EMAIL)` to sanitize email strings.
+- Regex numeric sanitization to isolate mobile numbers.
+
+### 2. Comprehensive Server-Side Validation
+- **Full Name**: Verified presence, length (3–60 characters), and regex validation (`/^[A-Za-z]+(?:\s[A-Za-z]+)+$/`) requiring letters and spaces only.
+- **Email Address**: Server-side format validation using PHP's `filter_var($email, FILTER_VALIDATE_EMAIL)`.
+- **Mobile Number**: Verified 10-digit Indian mobile number starting with 6–9 using `/^[6-9]\d{9}$/`.
+- **Password Complexity**: Enforced minimum 8 characters with at least one uppercase letter, one lowercase letter, and one number (`/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/`).
+- **Confirm Password**: Server-side equality check (`$password === $confirmPassword`).
+- **Course & Academic Year**: Strict whitelist verification against allowed campus courses and years (1–4).
+- **Gender**: Whitelist verification for Male, Female, and Other.
+- **Terms & Conditions**: Explicit verification that terms agreement is checked.
+- **Duplicate Prevention**: Scans existing records to reject duplicate registrations with the same email or mobile.
+
+### 3. Dual Persistent File Storage (CSV & JSON)
+- **CSV Storage (`data/registrations.csv` & `data/contacts.csv`)**:
+  - Automatically writes CSV header if file does not exist.
+  - Safe concurrent writing using exclusive file locks (`flock($handle, LOCK_EX)`).
+  - RFC 4180 compliant CSV formatting via `fputcsv()`.
+- **JSON Storage (`data/registrations.json` & `data/contacts.json`)**:
+  - Reads, decodes, appends new record, and writes back cleanly formatted JSON with `JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES`.
+- **Security & Integrity**:
+  - Passwords are never stored in plain text; hashed using bcrypt via `password_hash($password, PASSWORD_DEFAULT)`.
+  - Auto-generated sequential Registration IDs (e.g., `STU20261013004`) and Contact IDs (e.g., `MSG20261013001`).
+  - Standardized timestamps (`YYYY-MM-DD HH:MM:SS`) in IST timezone.
+
+### 4. Dynamic Feedback & Result Presentation
+- **Success Response**: Displays registration ID badge, storage confirmation tags (CSV & JSON), and a detailed summary grid of sanitized submitted details.
+- **Error Response**: Clear alert boxes with actionable error messages for each invalid field, plus a button to return to the form with preserved values.
+- **Records Viewer (`php/view_registrations.php`)**: An interactive dashboard showing all stored student registrations with search count, live table rendering, CSV download, and raw JSON view.
+- **Dual Mode Support**: Supports traditional form submissions (renders complete StudentHub HTML pages) as well as modern asynchronous AJAX/Fetch requests (returns structured JSON).
+
+## Practical 7 File Structure
+
+```text
+Student Hub/
+├── css/
+│   └── style.css               # Added Practical 7 alert boxes, data tables, summary cards, dark mode
+├── data/
+│   ├── registrations.csv       # Persistent CSV student database
+│   ├── registrations.json      # Structured JSON student database
+│   ├── contacts.csv            # Persistent CSV contact messages
+│   └── contacts.json           # Structured JSON contact messages
+├── js/
+│   └── script.js               # Client validation integrated with PHP backend submission
+├── pages/
+│   ├── register.html           # Registration form wired to php/register_process.php
+│   └── contact.html            # Contact form wired to php/contact_process.php
+└── php/
+    ├── register_process.php    # Server-side PHP processor for registration
+    ├── contact_process.php     # Server-side PHP processor for contact form
+    └── view_registrations.php  # Live record viewer and CSV/JSON exporter
+```

@@ -1,0 +1,38 @@
+[
+  {
+    "registrationId": "STU20261012001",
+    "name": "Rahul Patel",
+    "email": "rahul@example.com",
+    "mobile": "9876543210",
+    "passwordHash": "$2y$10$exampleHashOne",
+    "course": "B.Tech IT",
+    "year": "3",
+    "gender": "Male",
+    "terms": "Accepted",
+    "registrationDate": "2026-10-12 10:30:00"
+  },
+  {
+    "registrationId": "STU20261012002",
+    "name": "Priya Shah",
+    "email": "priya@example.com",
+    "mobile": "9876543211",
+    "passwordHash": "$2y$10$exampleHashTwo",
+    "course": "B.Tech CSE",
+    "year": "2",
+    "gender": "Female",
+    "terms": "Accepted",
+    "registrationDate": "2026-10-12 10:35:00"
+  },
+  {
+    "registrationId": "STU20261012003",
+    "name": "Aarav Mehta",
+    "email": "aarav@example.com",
+    "mobile": "9876543212",
+    "passwordHash": "$2y$10$exampleHashThree",
+    "course": "BCA",
+    "year": "1",
+    "gender": "Male",
+    "terms": "Accepted",
+    "registrationDate": "2026-10-12 10:40:00"
+  }
+]

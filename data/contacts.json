@@ -1,0 +1,20 @@
+[
+  {
+    "contactId": "MSG20261012001",
+    "name": "Ananya Sharma",
+    "email": "ananya@example.com",
+    "mobile": "9898989898",
+    "subject": "Library Access Inquiry",
+    "message": "How can I get remote access to the digital library database?",
+    "submissionDate": "2026-10-12 11:15:00"
+  },
+  {
+    "contactId": "MSG20261012002",
+    "name": "Karan Joshi",
+    "email": "karan@example.com",
+    "mobile": "9797979797",
+    "subject": "Event Schedule",
+    "message": "Could you please update the schedule for the upcoming hackathon?",
+    "submissionDate": "2026-10-12 14:20:00"
+  }
+]

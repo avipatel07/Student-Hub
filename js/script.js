@@ -539,16 +539,17 @@ if (registrationForm) {
 
                 successMessage.classList.add("show");
 
-
                 successMessage.scrollIntoView({
                     behavior: "smooth",
                     block: "center"
                 });
 
-
                 console.log(
-                    "Student registration successful"
+                    "Student registration successful - submitting to PHP backend"
                 );
+
+                // Practical 7: Submit validated form data to PHP backend
+                registrationForm.submit();
 
             }
 
