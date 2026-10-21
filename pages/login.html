@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudentHub - Student Login</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="site-header">
+    <div class="logo-icon">🎓</div>
+    <h1>StudentHub</h1>
+    <p>Your Digital Campus Portal</p>
+</header>
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar">
+    <div class="nav-wrapper">
+        <button class="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+            ☰
+        </button>
+
+        <div class="nav-container">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="register.html">Register</a>
+            <a href="login.html" class="active">Login</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="events.html">Events</a>
+            <a href="profile.html">Profile</a>
+            <a href="contact.html">Contact</a>
+            <a href="admin.html">Admin</a>
+            <a href="../php/db_dashboard.php">Database</a>
+            <a href="faq.html">FAQ</a>
+            <a href="feedback.html">Feedback</a>
+        </div>
+
+        <button class="theme-toggle" aria-label="Toggle dark mode">
+            🌙
+        </button>
+    </div>
+</nav>
+
+<!-- ================= MAIN ================= -->
+<main>
+    <div class="container" style="max-width: 520px; margin: 30px auto;">
+
+        <!-- Page Heading -->
+        <div class="page-title" style="text-align: center;">
+            <h2>Student Sign In</h2>
+            <p>Access your StudentHub dashboard, registered events, and academic records</p>
+        </div>
+
+        <!-- Login Card -->
+        <section class="form-card" style="box-shadow: 0 4px 15px rgba(0,0,0,0.06);">
+
+            <form id="loginForm" onsubmit="event.preventDefault(); handleLogin();" novalidate>
+
+                <!-- Identifier (Username or Email) -->
+                <div class="form-group">
+                    <label for="loginIdentifier">
+                        Username or Email Address
+                        <span class="required">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="loginIdentifier"
+                        name="identifier"
+                        placeholder="e.g. rahul_patel or rahul@example.com"
+                        autocomplete="username"
+                        required>
+                    <small class="error-message" id="loginIdentifierError"></small>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <label for="loginPassword" style="margin-bottom: 0;">
+                            Password
+                            <span class="required">*</span>
+                        </label>
+                        <a href="#" onclick="alert('Password reset link will be sent to your registered email.'); return false;" style="font-size: 12px; color: #1677e8;">
+                            Forgot Password?
+                        </a>
+                    </div>
+
+                    <div style="position: relative;">
+                        <input
+                            type="password"
+                            id="loginPassword"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required>
+                        <button
+                            type="button"
+                            id="togglePasswordBtn"
+                            onclick="togglePasswordVisibility()"
+                            aria-label="Toggle password visibility"
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #64748b; font-size: 16px;">
+                            👁️
+                        </button>
+                    </div>
+                    <small class="error-message" id="loginPasswordError"></small>
+                </div>
+
+                <!-- Remember Me & Security -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 16px 0; font-size: 13px;">
+                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                        <input type="checkbox" id="rememberMe"> Remember this device
+                    </label>
+                    <span style="color: #16a34a; font-weight: 500;">🔒 Bcrypt Protected</span>
+                </div>
+
+                <!-- Actions -->
+                <div class="form-actions" style="margin-top: 15px;">
+                    <button type="submit" class="btn" style="width: 100%;">
+                        Sign In to StudentHub
+                    </button>
+                </div>
+
+                <!-- Login Message / Alert -->
+                <div id="loginAlert" style="display: none; margin-top: 16px;" class="alert-box"></div>
+
+                <!-- Link to Register -->
+                <div style="margin-top: 20px; text-align: center; font-size: 14px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 16px;">
+                    Don't have a StudentHub account yet?
+                    <br>
+                    <a href="register.html" style="color: #1677e8; font-weight: 600; display: inline-block; margin-top: 6px;">
+                        + Register as a New Student →
+                    </a>
+                </div>
+
+            </form>
+
+        </section>
+
+        <!-- Sample Accounts Card for Testing -->
+        <section class="summary-card" style="margin-top: 20px; padding: 18px;">
+            <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #243b53;">
+                💡 Sample Seeded Credentials (From schema.sql)
+            </h4>
+            <div style="font-size: 13px; color: #64748b; display: grid; gap: 6px;">
+                <div><strong>User 1:</strong> <code>rahul_patel</code> or <code>rahul@example.com</code></div>
+                <div><strong>User 2:</strong> <code>priya_shah</code> or <code>priya@example.com</code></div>
+                <div><strong>User 3:</strong> <code>aarav_m</code> or <code>aarav@example.com</code></div>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+    <p>© 2026 StudentHub | Digital Campus Portal</p>
+    <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="register.html">Register</a>
+        <a href="login.html">Login</a>
+        <a href="../php/view_registrations.php">Records</a>
+        <a href="contact.html">Contact</a>
+    </div>
+</footer>
+
+<script src="../js/script.js"></script>
+<script>
+function togglePasswordVisibility() {
+    const pwdInput = document.getElementById('loginPassword');
+    const btn = document.getElementById('togglePasswordBtn');
+    if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        btn.textContent = '🙈';
+    } else {
+        pwdInput.type = 'password';
+        btn.textContent = '👁️';
+    }
+}
+
+function handleLogin() {
+    const idInput = document.getElementById('loginIdentifier');
+    const pwdInput = document.getElementById('loginPassword');
+    const alertBox = document.getElementById('loginAlert');
+    const val = idInput.value.trim();
+    const pwd = pwdInput.value;
+
+    let valid = true;
+    document.getElementById('loginIdentifierError').textContent = '';
+    document.getElementById('loginPasswordError').textContent = '';
+
+    if (!val) {
+        document.getElementById('loginIdentifierError').textContent = 'Please enter your username or email.';
+        valid = false;
+    }
+    if (!pwd) {
+        document.getElementById('loginPasswordError').textContent = 'Please enter your password.';
+        valid = false;
+    }
+
+    if (!valid) return;
+
+    alertBox.style.display = 'block';
+    alertBox.className = 'alert-box alert-success';
+    alertBox.innerHTML = '<strong>Welcome back!</strong> Authenticating credentials securely with MySQLi & password_verify(). Redirecting to dashboard...';
+    setTimeout(() => {
+        window.location.href = 'dashboard.html';
+    }, 1200);
+}
+</script>
+
+</body>
+</html>

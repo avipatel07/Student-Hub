@@ -67,6 +67,106 @@ function getDBConnection(bool $throwExceptions = false): ?PDO {
 }
 
 /**
+ * Returns a configured MySQLi database connection instance.
+ *
+ * @param bool $throwExceptions Whether to re-throw exceptions to caller
+ * @return mysqli|null Returns mysqli instance on success, or null on failure
+ * @throws mysqli_sql_exception
+ */
+function getMySQLiConnection(bool $throwExceptions = false): ?mysqli {
+    static $mysqliInstance = null;
+
+    if ($mysqliInstance instanceof mysqli) {
+        if (@$mysqliInstance->ping()) {
+            return $mysqliInstance;
+        }
+        $mysqliInstance = null;
+    }
+
+    // Enable exception reporting for MySQLi (PHP 8.1+ default standard)
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+    try {
+        $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, (int)DB_PORT);
+        $mysqli->set_charset(DB_CHARSET);
+        $mysqliInstance = $mysqli;
+        return $mysqliInstance;
+    } catch (mysqli_sql_exception $e) {
+        error_log("StudentHub MySQLi Connection Error: " . $e->getMessage());
+
+        if ($throwExceptions) {
+            throw $e;
+        }
+
+        return null;
+    }
+}
+
+/**
+ * Diagnostic helper to test the MySQL connection via MySQLi and retrieve metadata.
+ *
+ * @return array Diagnostic result with success flag, server info, or error details
+ */
+function testMySQLiConnection(): array {
+    $startTime = microtime(true);
+
+    try {
+        $mysqli = getMySQLiConnection(true);
+
+        if ($mysqli instanceof mysqli) {
+            $latencyMs = round((microtime(true) - $startTime) * 1000, 2);
+
+            // Fetch table list and counts
+            $tableStats = [];
+            $res = $mysqli->query("SHOW TABLES");
+            if ($res) {
+                while ($row = $res->fetch_array(MYSQLI_NUM)) {
+                    $tableName = $row[0];
+                    $escaped = str_replace("`", "``", $tableName);
+                    $countRes = $mysqli->query("SELECT COUNT(*) FROM `{$escaped}`");
+                    if ($countRes) {
+                        $countRow = $countRes->fetch_array(MYSQLI_NUM);
+                        $tableStats[$tableName] = (int)($countRow[0] ?? 0);
+                        $countRes->free();
+                    }
+                }
+                $res->free();
+            }
+
+            return [
+                'success'       => true,
+                'driver'        => 'MySQLi (MySQL Improved)',
+                'message'       => 'Connected to MySQL successfully using MySQLi.',
+                'database'      => DB_NAME,
+                'version'       => $mysqli->server_info,
+                'client_info'   => $mysqli->client_info,
+                'host'          => DB_HOST . ':' . DB_PORT,
+                'latency_ms'    => $latencyMs,
+                'charset'       => $mysqli->character_set_name(),
+                'tables'        => $tableStats,
+                'prepared_mode' => 'Native Server-Side MySQLi Statements'
+            ];
+        }
+
+        return [
+            'success' => false,
+            'driver'  => 'MySQLi',
+            'message' => 'Unable to establish MySQLi connection.',
+            'error'   => 'MySQLi returned null.'
+        ];
+    } catch (mysqli_sql_exception $e) {
+        return [
+            'success'    => false,
+            'driver'     => 'MySQLi',
+            'message'    => 'MySQLi connection failed.',
+            'error_code' => $e->getCode(),
+            'error'      => $e->getMessage(),
+            'host_hint'  => DB_HOST . ':' . DB_PORT
+        ];
+    }
+}
+
+/**
  * Diagnostic helper to test the MySQL connection and retrieve server metadata.
  *
  * @return array Diagnostic result with success flag, server info, or error details

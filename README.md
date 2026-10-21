@@ -444,20 +444,41 @@ To design a normalized relational database schema for StudentHub (students, even
 - **Demo 3 (Atomic Transaction & Prepared INSERT)**:
   - Uses `PDO::beginTransaction()`, prepared duplicate checks, prepared seat availability checks with row-level locking (`FOR UPDATE`), prepared INSERT into `event_registrations`, prepared UPDATE to decrement `available_seats`, and `PDO::commit()`.
   - Automatically rolls back on any error (`PDO::rollBack()`).
-- **Dual-Storage Integration**: `php/register_process.php` automatically performs prepared MySQL insertion into the `students` table whenever MySQL is reachable.
+- **Dual-Storage Integration & MySQLi Registration**: `php/register_process.php` securely performs MySQL insertion using **MySQLi Prepared Statements** (`$stmt = $mysqli->prepare(...)`, `$stmt->bind_param(...)`, `$stmt->execute()`), checks duplicate email and username, and hashes user passwords with `password_hash($pwd, PASSWORD_DEFAULT)`.
+
+### 5. Secure User Registration System (`php/register_process.php`)
+- **Frontend & Backend Validation**: Validates full name, username, email, 10-digit mobile, password complexity (uppercase, lowercase, number), password confirmation, course, year, and terms acceptance.
+- **Duplicate Email & Username Checks**: Runs parameterized MySQLi `SELECT` queries before inserting to prevent duplicate accounts:
+  ```php
+  $stmt = $mysqli->prepare("SELECT student_id FROM students WHERE username = ? LIMIT 1");
+  $stmt->bind_param("s", $username);
+  $stmt->execute();
+  ```
+- **Cryptographic Password Hashing**: Passwords hashed securely using native `password_hash($password, PASSWORD_DEFAULT)` (Bcrypt) before storage.
+- **MySQLi Parameterized Insertion**:
+  ```php
+  $insertSql = "INSERT INTO students 
+      (registration_no, username, full_name, email, mobile, password_hash, course, academic_year, gender, terms_accepted, created_at) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  $stmt = $mysqli->prepare($insertSql);
+  $stmt->bind_param("sssssssisss", $regId, $username, $name, $email, $mobile, $passwordHash, $course, $year, $gender, $terms, $date);
+  $stmt->execute();
+  ```
+- **Dual Persistence**: Maintains real-time synchronization across MySQL (`students` table) and flat files (`registrations.csv`, `registrations.json`).
 
 ## Practical 8 File Structure
 
 ```text
 Student Hub/
 ├── database/
-│   └── schema.sql              # Complete MySQL DDL script with seed data
+│   └── schema.sql              # Complete MySQL DDL script with seed data (includes username column & unique indexes)
 ├── docs/
 │   └── ER_MODEL.md             # Complete Entity-Relationship model spec & Mermaid diagram
 └── php/
-    ├── db_connect.php          # Secure PDO connection module with native prepared statements
-    ├── db_dashboard.php        # Interactive Practical 8 diagnostic dashboard & prepared statement demos
-    ├── register_process.php    # Integrated with PDO prepared statement insertion
-    └── view_registrations.php  # Integrated with MySQL table metrics
+    ├── db_connect.php          # Secure connection module providing both PDO & MySQLi (getMySQLiConnection)
+    ├── db_dashboard.php        # Interactive diagnostic dashboard & prepared statement demos (PDO + MySQLi)
+    ├── register_process.php    # Secure user registration via MySQLi prepared statements & password_hash()
+    └── view_registrations.php  # Integrated record viewer with live MySQL query & CSV fallback
 ```
+
 

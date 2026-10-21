@@ -13,6 +13,11 @@ if (registrationForm) {
         /^[A-Za-z]+(?:\s[A-Za-z]+)+$/;
 
 
+    // Username: 4-30 chars, letters, numbers, underscores
+    const usernameRegex =
+        /^[a-zA-Z0-9_]{4,30}$/;
+
+
     // Email validation
     const emailRegex =
         /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -37,6 +42,10 @@ if (registrationForm) {
 
     const nameInput =
         document.getElementById("studentName");
+
+
+    const usernameInput =
+        document.getElementById("studentUsername");
 
 
     const emailInput =
@@ -188,6 +197,81 @@ if (registrationForm) {
 
 
         showValid(nameInput, "nameError");
+
+        return true;
+
+    }
+
+
+    /* ================= USERNAME VALIDATION ================= */
+
+
+    function validateUsername() {
+
+        if (!usernameInput) {
+
+            return true;
+
+        }
+
+
+        const username =
+            usernameInput.value.trim();
+
+
+        if (username === "") {
+
+            showError(
+                usernameInput,
+                "usernameError",
+                "Username is required."
+            );
+
+            return false;
+
+        }
+
+
+        if (username.length < 4 || username.length > 30) {
+
+            showError(
+                usernameInput,
+                "usernameError",
+                "Username must be between 4 and 30 characters."
+            );
+
+            return false;
+
+        }
+
+
+        if (!usernameRegex.test(username)) {
+
+            showError(
+                usernameInput,
+                "usernameError",
+                "Username can only contain letters, numbers, and underscores (no spaces)."
+            );
+
+            return false;
+
+        }
+
+
+        if (!/[a-zA-Z]/.test(username)) {
+
+            showError(
+                usernameInput,
+                "usernameError",
+                "Username must contain at least one letter."
+            );
+
+            return false;
+
+        }
+
+
+        showValid(usernameInput, "usernameError");
 
         return true;
 
@@ -491,6 +575,10 @@ if (registrationForm) {
                 validateName();
 
 
+            const validUsername =
+                validateUsername();
+
+
             const validEmail =
                 validateEmail();
 
@@ -525,6 +613,7 @@ if (registrationForm) {
 
             const formIsValid =
                 validName &&
+                validUsername &&
                 validEmail &&
                 validMobile &&
                 validPassword &&
@@ -570,6 +659,25 @@ if (registrationForm) {
         "blur",
         validateName
     );
+
+
+    if (usernameInput) {
+
+        usernameInput.addEventListener(
+            "blur",
+            validateUsername
+        );
+
+        usernameInput.addEventListener(
+            "input",
+            function () {
+                if (usernameInput.classList.contains("input-error")) {
+                    validateUsername();
+                }
+            }
+        );
+
+    }
 
 
     emailInput.addEventListener(

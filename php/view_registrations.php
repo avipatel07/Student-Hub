@@ -12,14 +12,31 @@ require_once __DIR__ . '/db_connect.php';
 $csvFile = __DIR__ . '/../data/registrations.csv';
 $jsonFile = __DIR__ . '/../data/registrations.json';
 
-// Check database count if available
+// Check database via MySQLi & PDO
 $dbCount = 0;
-$pdo = getDBConnection();
-if ($pdo instanceof PDO) {
+$mysqlStudents = [];
+$mysqli = getMySQLiConnection();
+if ($mysqli instanceof mysqli) {
     try {
-        $dbCountStmt = $pdo->query("SELECT COUNT(*) FROM students");
-        $dbCount = (int)$dbCountStmt->fetchColumn();
+        $res = $mysqli->query("SELECT student_id, registration_no, username, full_name, email, mobile, course, academic_year, gender, terms_accepted, created_at FROM students ORDER BY student_id DESC");
+        if ($res) {
+            while ($r = $res->fetch_assoc()) {
+                $mysqlStudents[] = $r;
+            }
+            $res->free();
+        }
+        $dbCount = count($mysqlStudents);
     } catch (Exception $e) {}
+}
+
+if ($dbCount === 0) {
+    $pdo = getDBConnection();
+    if ($pdo instanceof PDO) {
+        try {
+            $dbCountStmt = $pdo->query("SELECT COUNT(*) FROM students");
+            $dbCount = (int)$dbCountStmt->fetchColumn();
+        } catch (Exception $e) {}
+    }
 }
 
 // Handle download CSV
@@ -179,11 +196,15 @@ $totalStudents = count($csvRecords);
                 </div>
             <?php else: ?>
                 <div class="table-responsive" style="margin: 0;">
+                    <?php 
+                        $hasUsernameCol = (!empty($csvHeader) && count($csvHeader) > 2 && strtolower(trim($csvHeader[1])) === 'username');
+                    ?>
                     <table class="data-table">
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Reg. ID</th>
+                                <th>Username</th>
                                 <th>Student Name</th>
                                 <th>Email</th>
                                 <th>Mobile</th>
@@ -195,27 +216,43 @@ $totalStudents = count($csvRecords);
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($csvRecords as $index => $row): ?>
+                            <?php foreach ($csvRecords as $index => $row): 
+                                $regId = $row[0] ?? '';
+                                $uName = $hasUsernameCol ? ($row[1] ?? '') : '-';
+                                $name  = $hasUsernameCol ? ($row[2] ?? '') : ($row[1] ?? '');
+                                $email = $hasUsernameCol ? ($row[3] ?? '') : ($row[2] ?? '');
+                                $mob   = $hasUsernameCol ? ($row[4] ?? '') : ($row[3] ?? '');
+                                $crs   = $hasUsernameCol ? ($row[6] ?? '') : ($row[5] ?? '');
+                                $yr    = $hasUsernameCol ? ($row[7] ?? '') : ($row[6] ?? '');
+                                $gnd   = $hasUsernameCol ? ($row[8] ?? '') : ($row[7] ?? '');
+                                $terms = $hasUsernameCol ? ($row[9] ?? 'Accepted') : ($row[8] ?? 'Accepted');
+                                $dt    = $hasUsernameCol ? ($row[10] ?? '') : ($row[9] ?? '');
+                            ?>
                                 <tr>
                                     <td><strong><?php echo $index + 1; ?></strong></td>
                                     <td>
                                         <span class="badge badge-primary">
-                                            <?php echo htmlspecialchars($row[0] ?? '', ENT_QUOTES, 'UTF-8'); ?>
+                                            <?php echo htmlspecialchars($regId, ENT_QUOTES, 'UTF-8'); ?>
                                         </span>
                                     </td>
-                                    <td><strong><?php echo htmlspecialchars($row[1] ?? '', ENT_QUOTES, 'UTF-8'); ?></strong></td>
-                                    <td><?php echo htmlspecialchars($row[2] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-                                    <td><?php echo htmlspecialchars($row[3] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-                                    <td><?php echo htmlspecialchars($row[5] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-                                    <td>Year <?php echo htmlspecialchars($row[6] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-                                    <td><?php echo htmlspecialchars($row[7] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                                    <td>
+                                        <span class="badge badge-success" style="font-size: 12px;">
+                                            @<?php echo htmlspecialchars($uName, ENT_QUOTES, 'UTF-8'); ?>
+                                        </span>
+                                    </td>
+                                    <td><strong><?php echo htmlspecialchars($name, ENT_QUOTES, 'UTF-8'); ?></strong></td>
+                                    <td><?php echo htmlspecialchars($email, ENT_QUOTES, 'UTF-8'); ?></td>
+                                    <td><?php echo htmlspecialchars($mob, ENT_QUOTES, 'UTF-8'); ?></td>
+                                    <td><?php echo htmlspecialchars($crs, ENT_QUOTES, 'UTF-8'); ?></td>
+                                    <td>Year <?php echo htmlspecialchars($yr, ENT_QUOTES, 'UTF-8'); ?></td>
+                                    <td><?php echo htmlspecialchars($gnd, ENT_QUOTES, 'UTF-8'); ?></td>
                                     <td>
                                         <span class="badge badge-success">
-                                            <?php echo htmlspecialchars($row[8] ?? 'Accepted', ENT_QUOTES, 'UTF-8'); ?>
+                                            <?php echo htmlspecialchars($terms, ENT_QUOTES, 'UTF-8'); ?>
                                         </span>
                                     </td>
                                     <td style="font-size: 13px; color: #64748b; white-space: nowrap;">
-                                        <?php echo htmlspecialchars($row[9] ?? '', ENT_QUOTES, 'UTF-8'); ?>
+                                        <?php echo htmlspecialchars($dt, ENT_QUOTES, 'UTF-8'); ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

@@ -18,6 +18,7 @@ erDiagram
     STUDENTS {
         int student_id PK "AUTO_INCREMENT"
         varchar registration_no UK "Unique Student ID"
+        varchar username UK "Unique Portal Username"
         varchar full_name "Student Full Name"
         varchar email UK "Institutional/Personal Email"
         varchar mobile UK "10-digit Indian Mobile"

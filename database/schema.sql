@@ -27,6 +27,7 @@ DROP TABLE IF EXISTS `students`;
 CREATE TABLE `students` (
     `student_id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `registration_no` VARCHAR(30) NOT NULL UNIQUE COMMENT 'Formatted ID e.g. STU20261012001',
+    `username` VARCHAR(50) NOT NULL UNIQUE COMMENT 'Unique portal username e.g. rahul_patel',
     `full_name` VARCHAR(100) NOT NULL,
     `email` VARCHAR(120) NOT NULL UNIQUE,
     `mobile` VARCHAR(15) NOT NULL UNIQUE,
@@ -38,6 +39,7 @@ CREATE TABLE `students` (
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
+    INDEX `idx_students_username` (`username`),
     INDEX `idx_students_email` (`email`),
     INDEX `idx_students_course_year` (`course`, `academic_year`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -127,12 +129,12 @@ CREATE TABLE `contact_inquiries` (
 
 -- Seed Students (from registrations.csv and sample registrations)
 INSERT INTO `students`
-    (`registration_no`, `full_name`, `email`, `mobile`, `password_hash`, `course`, `academic_year`, `gender`, `terms_accepted`, `created_at`)
+    (`registration_no`, `username`, `full_name`, `email`, `mobile`, `password_hash`, `course`, `academic_year`, `gender`, `terms_accepted`, `created_at`)
 VALUES
-    ('STU20261012001', 'Rahul Patel', 'rahul@example.com', '9876543210', '$2y$10$exampleHashOne', 'B.Tech IT', 3, 'Male', 'Accepted', '2026-10-12 10:30:00'),
-    ('STU20261012002', 'Priya Shah', 'priya@example.com', '9876543211', '$2y$10$exampleHashTwo', 'B.Tech CSE', 2, 'Female', 'Accepted', '2026-10-12 10:35:00'),
-    ('STU20261012003', 'Aarav Mehta', 'aarav@example.com', '9876543212', '$2y$10$exampleHashThree', 'BCA', 1, 'Male', 'Accepted', '2026-10-12 10:40:00'),
-    ('STU20261013004', 'Ananya Joshi', 'ananya.j@example.com', '9876543213', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'B.Tech CE', 4, 'Female', 'Accepted', '2026-10-13 09:15:00');
+    ('STU20261012001', 'rahul_patel', 'Rahul Patel', 'rahul@example.com', '9876543210', '$2y$10$exampleHashOne', 'B.Tech IT', 3, 'Male', 'Accepted', '2026-10-12 10:30:00'),
+    ('STU20261012002', 'priya_shah', 'Priya Shah', 'priya@example.com', '9876543211', '$2y$10$exampleHashTwo', 'B.Tech CSE', 2, 'Female', 'Accepted', '2026-10-12 10:35:00'),
+    ('STU20261012003', 'aarav_m', 'Aarav Mehta', 'aarav@example.com', '9876543212', '$2y$10$exampleHashThree', 'BCA', 1, 'Male', 'Accepted', '2026-10-12 10:40:00'),
+    ('STU20261013004', 'ananya_j', 'Ananya Joshi', 'ananya.j@example.com', '9876543213', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'B.Tech CE', 4, 'Female', 'Accepted', '2026-10-13 09:15:00');
 
 -- Seed Events (from events.json)
 INSERT INTO `events`

@@ -9,9 +9,11 @@
 date_default_timezone_set('Asia/Kolkata');
 require_once __DIR__ . '/db_connect.php';
 
-// Run connection diagnostic
+// Run connection diagnostics (Both PDO and MySQLi)
 $dbDiag = testDBConnection();
+$mysqliDiag = testMySQLiConnection();
 $pdo = getDBConnection();
+$mysqli = getMySQLiConnection();
 
 $actionResult = null;
 $actionError = null;
@@ -304,7 +306,7 @@ if ($pdo instanceof PDO) {
                     <div class="alert-title">
                         <span>ℹ️</span> MySQL Server Offline or Database Not Yet Created
                     </div>
-                    <p>PDO cannot connect to MySQL at <code>localhost:3306</code>. To activate live database queries:</p>
+                    <p>MySQL connection cannot be established at <code>localhost:3306</code>. To activate live database operations:</p>
                     <ol style="margin: 10px 0 0 20px;">
                         <li>Open <strong>XAMPP Control Panel</strong> and click <strong>Start</strong> next to <strong>MySQL</strong>.</li>
                         <li>Open <strong>phpMyAdmin</strong> (<a href="http://localhost/phpmyadmin" target="_blank" style="text-decoration: underline;">http://localhost/phpmyadmin</a>).</li>
@@ -312,6 +314,65 @@ if ($pdo instanceof PDO) {
                     </ol>
                 </div>
             <?php endif; ?>
+        </section>
+
+        <!-- ================= MYSQLI PREPARED STATEMENT REGISTRATION SHOWCASE ================= -->
+        <section class="summary-card" style="border-left: 4px solid #1677e8;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <h3 style="color: #243b53; font-size: 19px; display: flex; align-items: center; gap: 8px;">
+                        <span>🔐</span> Secure User Registration Architecture (MYSQLi + password_hash)
+                    </h3>
+                    <p style="color: #64748b; font-size: 13px;">
+                        Implemented in <code>php/register_process.php</code> using parameterized MySQLi statements and native Bcrypt hashing.
+                    </p>
+                </div>
+                <div>
+                    <a href="../pages/register.html" class="btn btn-small">
+                        + Test Registration Form
+                    </a>
+                </div>
+            </div>
+
+            <div class="summary-grid" style="margin-top: 14px;">
+                <div class="summary-item">
+                    <div class="summary-label">Database Extension</div>
+                    <div class="summary-value">MySQLi (MySQL Improved)</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Duplicate Prevention</div>
+                    <div class="summary-value">Prepared SELECT on Email &amp; Username</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Password Hashing</div>
+                    <div class="summary-value"><code>password_hash(PASSWORD_DEFAULT)</code></div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Injection Defense</div>
+                    <div class="summary-value"><span class="badge badge-success">100% Parameterized (bind_param)</span></div>
+                </div>
+            </div>
+
+            <!-- Code Architecture Snippet -->
+            <div class="code-snippet" style="margin-top: 14px;">
+// 1. MySQLi Parameterized Duplicate Check (Email &amp; Username)
+$stmt = $mysqli->prepare("SELECT student_id FROM students WHERE username = ? LIMIT 1");
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$stmt->store_result();
+if ($stmt->num_rows > 0) { $errors['username'] = "Username is already taken."; }
+
+// 2. Cryptographic Password Hashing (Bcrypt)
+$passwordHash = password_hash($studentPassword, PASSWORD_DEFAULT);
+
+// 3. MySQLi Parameterized INSERT Query
+$insertSql = "INSERT INTO students 
+    (registration_no, username, full_name, email, mobile, password_hash, course, academic_year, gender, terms_accepted, created_at) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+$stmt = $mysqli->prepare($insertSql);
+$stmt->bind_param("sssssssisss", $regId, $username, $name, $email, $mobile, $passwordHash, $course, $year, $gender, $terms, $date);
+$stmt->execute();
+            </div>
         </section>
 
         <!-- ================= 2. LIVE PREPARED STATEMENTS DEMO 1 ================= -->

@@ -161,6 +161,42 @@
                 </div>
 
 
+                <!-- ================= USERNAME ================= -->
+
+                <div class="form-group">
+
+                    <label for="studentUsername">
+
+                        Username
+                        <span class="required">*</span>
+
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="studentUsername"
+                        name="username"
+                        placeholder="Choose a unique username (e.g. rahul_patel)"
+                        autocomplete="username"
+                        minlength="4"
+                        maxlength="30"
+                        required>
+
+
+                    <small class="input-hint">
+                        4-30 characters: letters, numbers and underscores. Must be unique.
+                    </small>
+
+
+                    <small
+                        class="error-message"
+                        id="usernameError">
+                    </small>
+
+                </div>
+
+
                 <!-- ================= EMAIL ================= -->
 
                 <div class="form-group">
@@ -500,6 +536,14 @@
                     </button>
 
                 </div>
+
+
+                <p style="margin-top: 15px; font-size: 14px; text-align: center; color: #64748b;">
+                    Already have a StudentHub account?
+                    <a href="login.html" style="color: #1677e8; font-weight: 600;">
+                        Sign In here →
+                    </a>
+                </p>
 
 
                 <!-- ================= SUCCESS ================= -->
