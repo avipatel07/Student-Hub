@@ -1,15 +1,30 @@
 [
   {
+    "registrationId": "ADM20261001001",
+    "username": "admin",
+    "name": "Campus Administrator",
+    "email": "admin@studenthub.com",
+    "mobile": "9999999999",
+    "passwordHash": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+    "course": "Administration",
+    "year": "4",
+    "gender": "Other",
+    "terms": "Accepted",
+    "role": "admin",
+    "registrationDate": "2026-10-01 09:00:00"
+  },
+  {
     "registrationId": "STU20261012001",
     "username": "rahul_patel",
     "name": "Rahul Patel",
     "email": "rahul@example.com",
     "mobile": "9876543210",
-    "passwordHash": "$2y$10$exampleHashOne",
+    "passwordHash": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
     "course": "B.Tech IT",
     "year": "3",
     "gender": "Male",
     "terms": "Accepted",
+    "role": "student",
     "registrationDate": "2026-10-12 10:30:00"
   },
   {
@@ -18,11 +33,12 @@
     "name": "Priya Shah",
     "email": "priya@example.com",
     "mobile": "9876543211",
-    "passwordHash": "$2y$10$exampleHashTwo",
+    "passwordHash": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
     "course": "B.Tech CSE",
     "year": "2",
     "gender": "Female",
     "terms": "Accepted",
+    "role": "student",
     "registrationDate": "2026-10-12 10:35:00"
   },
   {
@@ -31,11 +47,12 @@
     "name": "Aarav Mehta",
     "email": "aarav@example.com",
     "mobile": "9876543212",
-    "passwordHash": "$2y$10$exampleHashThree",
+    "passwordHash": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
     "course": "BCA",
     "year": "1",
     "gender": "Male",
     "terms": "Accepted",
+    "role": "student",
     "registrationDate": "2026-10-12 10:40:00"
   }
 ]

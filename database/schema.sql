@@ -36,11 +36,15 @@ CREATE TABLE `students` (
     `academic_year` TINYINT UNSIGNED NOT NULL COMMENT '1, 2, 3, or 4',
     `gender` ENUM('Male', 'Female', 'Other') NOT NULL,
     `terms_accepted` ENUM('Accepted', 'Pending') NOT NULL DEFAULT 'Accepted',
+    `role` ENUM('student', 'admin') NOT NULL DEFAULT 'student' COMMENT 'Role-based access control (RBAC)',
+    `remember_token` VARCHAR(64) DEFAULT NULL COMMENT 'SHA-256 hash of persistent remember-me token',
+    `token_expiry` DATETIME DEFAULT NULL COMMENT 'Expiration datetime for remember-me token',
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     INDEX `idx_students_username` (`username`),
     INDEX `idx_students_email` (`email`),
+    INDEX `idx_students_role` (`role`),
     INDEX `idx_students_course_year` (`course`, `academic_year`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -127,14 +131,16 @@ CREATE TABLE `contact_inquiries` (
 -- Populate realistic initial records corresponding to Practical 5, 6, and 7.
 -- ============================================================================
 
--- Seed Students (from registrations.csv and sample registrations)
+-- Seed Students and Administrator (Practical 10 RBAC)
+-- Note: All sample accounts have password: "password" (Bcrypt hashed)
 INSERT INTO `students`
-    (`registration_no`, `username`, `full_name`, `email`, `mobile`, `password_hash`, `course`, `academic_year`, `gender`, `terms_accepted`, `created_at`)
+    (`registration_no`, `username`, `full_name`, `email`, `mobile`, `password_hash`, `course`, `academic_year`, `gender`, `terms_accepted`, `role`, `created_at`)
 VALUES
-    ('STU20261012001', 'rahul_patel', 'Rahul Patel', 'rahul@example.com', '9876543210', '$2y$10$exampleHashOne', 'B.Tech IT', 3, 'Male', 'Accepted', '2026-10-12 10:30:00'),
-    ('STU20261012002', 'priya_shah', 'Priya Shah', 'priya@example.com', '9876543211', '$2y$10$exampleHashTwo', 'B.Tech CSE', 2, 'Female', 'Accepted', '2026-10-12 10:35:00'),
-    ('STU20261012003', 'aarav_m', 'Aarav Mehta', 'aarav@example.com', '9876543212', '$2y$10$exampleHashThree', 'BCA', 1, 'Male', 'Accepted', '2026-10-12 10:40:00'),
-    ('STU20261013004', 'ananya_j', 'Ananya Joshi', 'ananya.j@example.com', '9876543213', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'B.Tech CE', 4, 'Female', 'Accepted', '2026-10-13 09:15:00');
+    ('ADM20261001001', 'admin', 'Campus Administrator', 'admin@studenthub.com', '9999999999', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Administration', 4, 'Other', 'Accepted', 'admin', '2026-10-01 09:00:00'),
+    ('STU20261012001', 'rahul_patel', 'Rahul Patel', 'rahul@example.com', '9876543210', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'B.Tech IT', 3, 'Male', 'Accepted', 'student', '2026-10-12 10:30:00'),
+    ('STU20261012002', 'priya_shah', 'Priya Shah', 'priya@example.com', '9876543211', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'B.Tech CSE', 2, 'Female', 'Accepted', 'student', '2026-10-12 10:35:00'),
+    ('STU20261012003', 'aarav_m', 'Aarav Mehta', 'aarav@example.com', '9876543212', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'BCA', 1, 'Male', 'Accepted', 'student', '2026-10-12 10:40:00'),
+    ('STU20261013004', 'ananya_j', 'Ananya Joshi', 'ananya.j@example.com', '9876543213', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'B.Tech CE', 4, 'Female', 'Accepted', 'student', '2026-10-13 09:15:00');
 
 -- Seed Events (from events.json)
 INSERT INTO `events`

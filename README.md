@@ -481,4 +481,94 @@ Student Hub/
     └── view_registrations.php  # Integrated record viewer with live MySQL query & CSV fallback
 ```
 
+---
+
+# Practical 10 - Secure User Authentication, PHP Sessions & Access Control
+
+## Objective
+
+To develop secure login and logout functionality using PHP sessions. Verify passwords cryptographically using `password_verify()`, regenerate session IDs upon login to defend against session fixation attacks, restrict access to protected dashboards, enforce role-based redirection, implement an inactivity session timeout, and provide an optional secure remember-me token mechanism.
+
+## Key Capabilities Implemented
+
+### 1. Cryptographic Password Verification (`password_verify()`)
+- Processes user identifier (username or email) and password through parameterized MySQLi prepared statements (`SELECT ... WHERE username = ? OR email = ? LIMIT 1`).
+- Defends against timing attacks and rainbow tables by validating submitted passwords against stored Bcrypt hashes via PHP's native `password_verify($password, $user['password_hash'])`.
+
+### 2. Session Fixation Defense & Hardened Session Cookies (`session_regenerate_id(true)`)
+- Invokes `session_regenerate_id(true)` immediately upon successful credential verification to invalidate the pre-authentication session ID and assign a new cryptographically secure session ID.
+- Configures hardened session cookie parameters via `session_set_cookie_params()` before `session_start()`:
+  - `httponly => true` (prevents client-side JavaScript access / XSS token theft).
+  - `samesite => 'Lax'` (mitigates Cross-Site Request Forgery / CSRF).
+  - `secure => true` (automatically enabled when HTTPS is detected).
+  - `ini_set('session.use_strict_mode', '1')` (rejects uninitialized attacker-supplied session IDs).
+
+### 3. Protected Dashboards & Access Control Guard (`requireLogin()`)
+- Protected pages (`pages/dashboard.php` and `pages/admin.php`) invoke `requireLogin($role)` at the very top.
+- Unauthenticated visitors attempting direct URL access are immediately intercepted and redirected to `pages/login.php?error=auth_required&redirect=...`.
+- Session state retains user identity, course, academic year, full name, and role for authorized rendering.
+
+### 4. Role-Based Access Control (RBAC) & Dynamic Redirection
+- Supports dual system roles: **Student** (`student`) and **Administrator** (`admin`).
+- Post-login dispatch directs users dynamically based on their role:
+  - Administrators -> `pages/admin.php`
+  - Students -> `pages/dashboard.php`
+- Enforces cross-role boundary security:
+  - Students attempting to access `pages/admin.php` are intercepted and redirected to `pages/dashboard.php?error=admin_only`.
+  - Admins can manage users, inspect system statistics, and simulate student views.
+
+### 5. Inactivity Session Timeout (15-Minute Guard)
+- Tracks user interaction via `$_SESSION['last_activity'] = time()`.
+- Automatically terminates the session if inactivity exceeds 900 seconds (15 minutes).
+- Destroys server-side session, deletes session cookie, and redirects user to `pages/login.php?error=session_timeout`.
+- Interactive countdown timer rendered on the dashboard with a "Reset Timer" heartbeat action.
+
+### 6. Secure Remember-Me Token Architecture
+- Optional "Remember Me" checkbox on the login form.
+- Generates a high-entropy 64-character token via `bin2hex(random_bytes(32))`.
+- Stores the **SHA-256 hash** of the token in the MySQL `students` table (`remember_token`) with a 30-day expiration date (`token_expiry`).
+- Issues an `httponly`, `samesite=Lax` cookie storing `base64_encode(userId:rawToken)`.
+- Validates the token against the database hash using `hash_equals()` for timing-safe comparison on subsequent visits.
+
+### 7. Clean Session Termination & Logout (`php/logout.php`)
+- Invalidates and removes the database remember-me token.
+- Clears the remember-me cookie from the client's browser.
+- Clears all session data via `$_SESSION = []`.
+- Deletes the session cookie with an expired timestamp.
+- Calls `session_destroy()` to wipe server session storage.
+- Redirects user to `pages/login.php?message=logged_out`.
+
+## Demo & Testing Accounts
+
+| Role | Username / Email | Password | Landing Page |
+| :--- | :--- | :--- | :--- |
+| **Student** | `rahul_patel` or `rahul.patel@email.com` | `password` | [`pages/dashboard.php`](file:///c:/Users/avipa/OneDrive/Desktop/Student%20Hub/pages/dashboard.php) |
+| **Administrator** | `admin` or `admin@studenthub.com` | `Admin@123` | [`pages/admin.php`](file:///c:/Users/avipa/OneDrive/Desktop/Student%20Hub/pages/admin.php) |
+
+## Practical 10 File Structure
+
+```text
+Student Hub/
+├── css/
+│   └── style.css               # Added login card, password eye toggle, timer badges, RBAC alerts
+├── database/
+│   └── schema.sql              # Added role, remember_token, token_expiry columns, admin & student seeds
+├── docs/
+│   └── ER_MODEL.md             # Updated ER specification with role and remember-me attributes
+├── pages/
+│   ├── login.php               # Protected login page with error alerts, remember-me & auto-fill test buttons
+│   ├── login.html              # HTML fallback auto-redirecting to login.php
+│   ├── dashboard.php           # Protected student dashboard requiring student role & showing session timer
+│   ├── dashboard.html          # HTML fallback auto-redirecting to dashboard.php
+│   ├── admin.php               # Protected administrator console requiring admin role & user table
+│   └── admin.html              # HTML fallback auto-redirecting to admin.php
+└── php/
+    ├── auth_session.php        # Core session security, timeout check, requireLogin(), remember-me & logout
+    ├── login_process.php       # Authenticates via password_verify(), session_regenerate_id(true), RBAC redirect
+    ├── logout.php              # Comprehensive session and token destruction
+    ├── register_process.php    # Integrated role='student' assignment and auth_session helper
+    └── db_connect.php          # Database connectivity for session verification
+```
+
+
 

@@ -58,7 +58,7 @@
         <!-- Login Card -->
         <section class="form-card" style="box-shadow: 0 4px 15px rgba(0,0,0,0.06);">
 
-            <form id="loginForm" onsubmit="event.preventDefault(); handleLogin();" novalidate>
+            <form id="loginForm" action="../php/login_process.php" method="POST">
 
                 <!-- Identifier (Username or Email) -->
                 <div class="form-group">
@@ -111,7 +111,7 @@
                 <!-- Remember Me & Security -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin: 16px 0; font-size: 13px;">
                     <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                        <input type="checkbox" id="rememberMe"> Remember this device
+                        <input type="checkbox" id="rememberMe" name="remember_me" value="1"> Remember this device
                     </label>
                     <span style="color: #16a34a; font-weight: 500;">🔒 Bcrypt Protected</span>
                 </div>

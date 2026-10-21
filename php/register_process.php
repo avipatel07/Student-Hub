@@ -25,6 +25,8 @@ date_default_timezone_set('Asia/Kolkata');
 
 // Load database connection module (provides getMySQLiConnection and getDBConnection)
 require_once __DIR__ . '/db_connect.php';
+// Load authentication & session helper (provides ensureAuthColumnsExist and session utilities)
+require_once __DIR__ . '/auth_session.php';
 
 // Storage file paths
 $dataDir = __DIR__ . '/../data';
@@ -313,18 +315,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // --- A. INSERT INTO MYSQL USING MYSQLi PREPARED STATEMENTS ---
         if ($mysqliAvailable) {
             try {
+                // Ensure auth columns (role, remember_token, token_expiry) exist
+                ensureAuthColumnsExist($mysqli);
+
                 $insertSql = "INSERT INTO students 
-                    (registration_no, username, full_name, email, mobile, password_hash, course, academic_year, gender, terms_accepted, created_at) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    (registration_no, username, full_name, email, mobile, password_hash, course, academic_year, gender, terms_accepted, role, created_at) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                 $insertStmt = $mysqli->prepare($insertSql);
                 if ($insertStmt) {
                     $academicYearInt = (int)$year;
                     $termsAcceptedStr = 'Accepted';
+                    $roleStr = 'student';
 
-                    // Bind parameters: s=string, i=integer
+                    // Bind parameters: s=string, i=integer (12 params: 11 s, 1 i)
                     $insertStmt->bind_param(
-                        "sssssssisss",
+                        "sssssssissss",
                         $registrationId,
                         $username,
                         $studentName,
@@ -335,6 +341,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $academicYearInt,
                         $gender,
                         $termsAcceptedStr,
+                        $roleStr,
                         $registrationDate
                     );
 
@@ -364,6 +371,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'Year',
             'Gender',
             'Terms',
+            'Role',
             'Registration Date'
         ];
 
@@ -378,6 +386,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $year,
             $gender,
             'Accepted',
+            'student',
             $registrationDate
         ];
 
@@ -419,6 +428,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'year'             => $year,
             'gender'           => $gender,
             'terms'            => 'Accepted',
+            'role'             => 'student',
             'registrationDate' => $registrationDate,
             'mysqlStatus'      => $mysqliWriteSuccess ? 'Inserted (ID: ' . $mysqliInsertId . ')' : 'Offline/Pending'
         ];
@@ -717,7 +727,7 @@ if ($isAjax) {
 
                 <!-- Action Buttons -->
                 <div class="form-actions">
-                    <a href="../pages/login.html" class="btn">
+                    <a href="../pages/login.php" class="btn">
                         🔑 Proceed to Login
                     </a>
                     <a href="view_registrations.php" class="btn btn-secondary">

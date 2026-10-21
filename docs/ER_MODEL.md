@@ -27,6 +27,9 @@ erDiagram
         tinyint academic_year "Year 1 to 4"
         enum gender "Male, Female, Other"
         enum terms_accepted "Accepted, Pending"
+        enum role "student, admin (RBAC)"
+        varchar remember_token "SHA-256 Persistent Token Hash"
+        datetime token_expiry "Token Expiration Timestamp"
         timestamp created_at "Account Creation Date"
         timestamp updated_at "Last Modified Timestamp"
     }
