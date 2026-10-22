@@ -65,6 +65,7 @@ CREATE TABLE `events` (
     `total_seats` INT UNSIGNED NOT NULL,
     `available_seats` INT UNSIGNED NOT NULL,
     `status` ENUM('Upcoming', 'Ongoing', 'Completed', 'Cancelled') NOT NULL DEFAULT 'Upcoming',
+    `poster_image` VARCHAR(255) DEFAULT 'default_poster.jpg' COMMENT 'Relative path or filename of event poster image',
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     INDEX `idx_events_date` (`event_date`),
@@ -144,14 +145,14 @@ VALUES
 
 -- Seed Events (from events.json)
 INSERT INTO `events`
-    (`event_id`, `title`, `category`, `event_date`, `event_time`, `location`, `description`, `organizer`, `total_seats`, `available_seats`, `status`)
+    (`event_id`, `title`, `category`, `event_date`, `event_time`, `location`, `description`, `organizer`, `total_seats`, `available_seats`, `status`, `poster_image`)
 VALUES
-    (1, 'Tech Innovation Summit 2026', 'Technology', '2026-10-10', '10:00 AM', 'Main Auditorium', 'Explore emerging technologies, AI innovations and modern software development.', 'Computer Engineering Department', 120, 118, 'Completed'),
-    (2, 'Campus Coding Challenge', 'Competition', '2026-10-15', '02:00 PM', 'Computer Lab 1', 'Participate in an exciting programming competition and solve real-world coding problems.', 'Coding Club', 80, 78, 'Upcoming'),
-    (3, 'Entrepreneurship Workshop', 'Workshop', '2026-10-20', '11:00 AM', 'Seminar Hall', 'Learn how to transform innovative ideas into practical startup opportunities.', 'Innovation Cell', 100, 99, 'Upcoming'),
-    (4, 'Sports Fest 2026', 'Sports', '2026-10-25', '09:00 AM', 'University Ground', 'Take part in various indoor and outdoor sports activities.', 'Sports Committee', 250, 250, 'Upcoming'),
-    (5, 'Web Development Bootcamp', 'Workshop', '2026-11-02', '10:30 AM', 'IT Lab', 'A practical bootcamp covering HTML, CSS, JavaScript and modern web development.', 'IT Department', 60, 59, 'Upcoming'),
-    (6, 'Cultural Night', 'Cultural', '2026-11-08', '06:00 PM', 'Open Air Theatre', 'Celebrate creativity, culture and student talent through performances and activities.', 'Student Council', 300, 298, 'Upcoming');
+    (1, 'Tech Innovation Summit 2026', 'Technology', '2026-10-10', '10:00 AM', 'Main Auditorium', 'Explore emerging technologies, AI innovations and modern software development.', 'Computer Engineering Department', 120, 118, 'Completed', 'tech_summit.jpg'),
+    (2, 'Campus Coding Challenge', 'Competition', '2026-10-15', '02:00 PM', 'Computer Lab 1', 'Participate in an exciting programming competition and solve real-world coding problems.', 'Coding Club', 80, 78, 'Upcoming', 'coding_challenge.jpg'),
+    (3, 'Entrepreneurship Workshop', 'Workshop', '2026-10-20', '11:00 AM', 'Seminar Hall', 'Learn how to transform innovative ideas into practical startup opportunities.', 'Innovation Cell', 100, 99, 'Upcoming', 'default_poster.jpg'),
+    (4, 'Sports Fest 2026', 'Sports', '2026-10-25', '09:00 AM', 'University Ground', 'Take part in various indoor and outdoor sports activities.', 'Sports Committee', 250, 250, 'Upcoming', 'default_poster.jpg'),
+    (5, 'Web Development Bootcamp', 'Workshop', '2026-11-02', '10:30 AM', 'IT Lab', 'A practical bootcamp covering HTML, CSS, JavaScript and modern web development.', 'IT Department', 60, 59, 'Upcoming', 'default_poster.jpg'),
+    (6, 'Cultural Night', 'Cultural', '2026-11-08', '06:00 PM', 'Open Air Theatre', 'Celebrate creativity, culture and student talent through performances and activities.', 'Student Council', 300, 298, 'Upcoming', 'cultural_night.jpg');
 
 -- Seed Event Registrations
 INSERT INTO `event_registrations`

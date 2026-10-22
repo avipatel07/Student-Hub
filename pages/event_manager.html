@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudentHub - Practical 12: Admin Event Management & Poster Uploads</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .event-hero {
+            background: linear-gradient(135deg, #091e3a 0%, #1e3a8a 50%, #4338ca 100%);
+            color: white;
+            padding: 26px 30px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 10px 25px rgba(9, 30, 58, 0.25);
+        }
+        .driver-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .driver-static {
+            background: #eff6ff;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+        .filter-toolbar {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+        }
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr auto;
+            gap: 12px;
+            align-items: end;
+        }
+        @media (max-width: 900px) {
+            .filter-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 600px) {
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .poster-thumb {
+            width: 70px;
+            height: 48px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: transform 0.2s;
+            background: #f1f5f9;
+        }
+        .poster-thumb:hover {
+            transform: scale(1.08);
+        }
+        .table-event-title {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 14px;
+            display: block;
+        }
+        .table-event-cat {
+            font-size: 11px;
+            color: #2563eb;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .action-btn-group {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            white-space: nowrap;
+        }
+        .btn-action {
+            padding: 5px 9px;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-view {
+            background: #eff6ff;
+            color: #1e40af;
+            border-color: #bfdbfe;
+        }
+        .btn-view:hover {
+            background: #1e40af;
+            color: white;
+        }
+        .btn-edit {
+            background: #fef9c3;
+            color: #854d0e;
+            border-color: #fde047;
+        }
+        .btn-edit:hover {
+            background: #ca8a04;
+            color: white;
+        }
+        .btn-delete {
+            background: #fee2e2;
+            color: #991b1b;
+            border-color: #fca5a5;
+        }
+        .btn-delete:hover {
+            background: #dc2626;
+            color: white;
+        }
+        .badge-status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .status-upcoming {
+            background: #dcfce7;
+            color: #15803d;
+        }
+        .status-ongoing {
+            background: #e0e7ff;
+            color: #4338ca;
+        }
+        .status-completed {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        .status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Modals */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .modal-backdrop.active {
+            display: flex;
+        }
+        .modal-card {
+            background: white;
+            border-radius: 12px;
+            max-width: 650px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: modalFadeIn 0.25s ease-out;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .modal-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+            border-radius: 12px 12px 0 0;
+        }
+        .modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #1e293b;
+        }
+        .modal-close {
+            background: transparent;
+            border: none;
+            font-size: 22px;
+            line-height: 1;
+            color: #64748b;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+        }
+        .modal-close:hover {
+            color: #0f172a;
+            background: #e2e8f0;
+        }
+        .modal-body {
+            padding: 24px;
+        }
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 580px) {
+            .form-grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+        }
+        .form-control {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+        .form-control:focus {
+            border-color: #2563eb;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+        .poster-upload-zone {
+            border: 2px dashed #94a3b8;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .poster-upload-zone:hover {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+        .poster-preview-box {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+        .poster-preview-img {
+            width: 90px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #cbd5e1;
+        }
+        .validation-hint {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 4px;
+            display: block;
+        }
+        .validation-error-text {
+            color: #dc2626;
+            font-weight: 600;
+            font-size: 12px;
+            margin-top: 6px;
+            display: none;
+            background: #fef2f2;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #fecaca;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================= SITE HEADER ================= -->
+<header class="site-header">
+    <div class="logo-icon">🎓</div>
+    <h1>StudentHub Events</h1>
+    <p>PRACTICAL 12: Admin Event Management & Poster Uploads</p>
+</header>
+
+<!-- ================= NAVIGATION ================= -->
+<nav class="navbar">
+    <div class="nav-wrapper">
+        <button class="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+            ☰
+        </button>
+
+        <div class="nav-container">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="register.html">Register</a>
+            <a href="login.html">Login</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="student_manager.html">Students (CRUD)</a>
+            <a href="event_manager.html" class="active">Events (Admin CRUD)</a>
+            <a href="events.html">Events (Public)</a>
+            <a href="admin.html">Admin</a>
+            <a href="../php/db_dashboard.php">Database</a>
+            <a href="contact.html">Contact</a>
+        </div>
+
+        <button class="theme-toggle" aria-label="Toggle dark mode">
+            🌙
+        </button>
+    </div>
+</nav>
+
+<!-- ================= MAIN CONTENT ================= -->
+<main>
+    <div class="container" style="margin-top: 25px; margin-bottom: 50px;">
+
+        <!-- FLASH NOTIFICATION ALERT -->
+        <div id="flashAlert" class="alert alert-success" style="display: none; margin-bottom: 22px; border-radius: 8px; padding: 14px 18px; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span id="flashIcon" style="font-size: 20px;">✅</span>
+                <span id="flashText">Operation executed successfully.</span>
+            </div>
+            <button type="button" onclick="document.getElementById('flashAlert').style.display='none'" style="background: transparent; border: none; font-size: 18px; cursor: pointer; color: inherit;">×</button>
+        </div>
+
+        <!-- HERO ADMIN HEADER -->
+        <section class="event-hero">
+            <div>
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <span style="font-size: 11px; font-weight: 700; letter-spacing: 1px; background: rgba(255,255,255,0.2); padding: 3px 10px; border-radius: 20px; text-transform: uppercase;">
+                        Practical 12 • Admin Event Management
+                    </span>
+                    <span class="driver-badge driver-static">⚡ Live Server Interactive Mode</span>
+                </div>
+                <h2 style="margin: 8px 0 4px 0; font-size: 24px; color: #ffffff;">
+                    Campus Events Administration & Poster Uploads
+                </h2>
+                <p style="margin: 0; font-size: 13px; opacity: 0.9;">
+                    Full CRUD operations with client-side & server-side file type (JPG/PNG/WEBP/GIF) and file size (&le; 2MB) validation.
+                </p>
+            </div>
+
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <a href="../php/event_manager.php" class="btn" style="background: white; color: #1e3a8a; font-size: 13px; font-weight: 700; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+                    🐘 Switch to event_manager.php (MySQLi)
+                </a>
+                <button type="button" class="btn" onclick="openAddModal()" style="background: #10b981; color: white; font-weight: 700; border: none; font-size: 13px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);">
+                    + Add New Event
+                </button>
+            </div>
+        </section>
+
+        <!-- KPI METRICS -->
+        <section class="dashboard-grid" style="margin-bottom: 24px;">
+            <div class="stat-card">
+                <div class="number" id="kpiTotalEvents" style="color: #2563eb;">0</div>
+                <div class="label">Total Campus Events</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="kpiFilteredEvents" style="color: #059669;">0</div>
+                <div class="label">Filtered Matches</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="kpiTotalSeats" style="color: #7c3aed;">0</div>
+                <div class="label">Total Seating Capacity</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" style="color: #d97706; font-size: 20px;">Max 2MB</div>
+                <div class="label">File Validation Policy</div>
+            </div>
+        </section>
+
+        <!-- SEARCH & MULTI-CRITERIA FILTERS -->
+        <section class="filter-toolbar">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div style="font-weight: 700; font-size: 14px; color: #1e293b; display: flex; align-items: center; gap: 6px;">
+                    <span>🔎</span> Search & Filter Events
+                </div>
+                <button type="button" onclick="resetFilters()" style="background: none; border: none; font-size: 12px; color: #dc2626; cursor: pointer; font-weight: 600;">
+                    ✕ Clear All Filters
+                </button>
+            </div>
+
+            <div class="filter-grid">
+                <div>
+                    <label for="searchInput" style="display:block; font-size:12px; font-weight:600; color:#475569; margin-bottom:4px;">Search Keyword</label>
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search title, location, organizer..." oninput="applyFilters()">
+                </div>
+
+                <div>
+                    <label for="categoryFilter" style="display:block; font-size:12px; font-weight:600; color:#475569; margin-bottom:4px;">Category</label>
+                    <select id="categoryFilter" class="form-control" onchange="applyFilters()">
+                        <option value="all">All Categories</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Competition">Competition</option>
+                        <option value="Workshop">Workshop</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Cultural">Cultural</option>
+                        <option value="Career">Career</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="statusFilter" style="display:block; font-size:12px; font-weight:600; color:#475569; margin-bottom:4px;">Status</label>
+                    <select id="statusFilter" class="form-control" onchange="applyFilters()">
+                        <option value="all">All Statuses</option>
+                        <option value="Upcoming">Upcoming</option>
+                        <option value="Ongoing">Ongoing</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="sortFilter" style="display:block; font-size:12px; font-weight:600; color:#475569; margin-bottom:4px;">Sort By</label>
+                    <select id="sortFilter" class="form-control" onchange="applyFilters()">
+                        <option value="dateAsc">Date: Earliest First</option>
+                        <option value="dateDesc">Date: Latest First</option>
+                        <option value="nameAsc">Name: A - Z</option>
+                        <option value="nameDesc">Name: Z - A</option>
+                        <option value="seatsDesc">Capacity: High to Low</option>
+                    </select>
+                </div>
+
+                <div>
+                    <button type="button" class="btn btn-secondary" onclick="resetFilters()" style="padding: 9px 16px; font-size: 13px;">
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- EVENTS DATA TABLE -->
+        <section class="card" style="padding: 22px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-radius: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <h3 style="margin: 0; color: #1e293b; font-size: 17px;">
+                        🎪 Campus Events Directory
+                    </h3>
+                    <p id="tableSubtitle" style="margin: 3px 0 0 0; font-size: 13px; color: #64748b;">
+                        Showing events
+                    </p>
+                </div>
+
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn btn-small" onclick="exportEventsCSV()" style="background: #2563eb; color: white;">
+                        📥 Export CSV
+                    </button>
+                    <button type="button" class="btn btn-small" onclick="exportEventsJSON()" style="background: #475569; color: white;">
+                        📜 Export JSON
+                    </button>
+                </div>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="records-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                    <thead>
+                        <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; text-align: left;">
+                            <th style="padding: 12px 14px; width: 80px;">Poster</th>
+                            <th style="padding: 12px 14px;">Event Details</th>
+                            <th style="padding: 12px 14px;">Schedule</th>
+                            <th style="padding: 12px 14px;">Location & Organizer</th>
+                            <th style="padding: 12px 14px;">Seats</th>
+                            <th style="padding: 12px 14px;">Status</th>
+                            <th style="padding: 12px 14px; text-align: center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="eventsTableBody">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<!-- ========================================================================= -->
+<!-- 1. ADD EVENT MODAL (With File Size & File Type Client-Side Validator)       -->
+<!-- ========================================================================= -->
+<div id="addModal" class="modal-backdrop">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>🎪 Add New Campus Event</h3>
+            <button type="button" class="modal-close" onclick="closeModal('addModal')">✕</button>
+        </div>
+
+        <form id="addEventForm" onsubmit="handleAddEvent(event)">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="addTitle">Event Title *</label>
+                    <input type="text" id="addTitle" class="form-control" placeholder="e.g. National Hackathon 2026" required minlength="3">
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="addCategory">Category *</label>
+                        <select id="addCategory" class="form-control" required>
+                            <option value="">Select Category</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Competition">Competition</option>
+                            <option value="Workshop">Workshop</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Cultural">Cultural</option>
+                            <option value="Career">Career</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addStatus">Status *</label>
+                        <select id="addStatus" class="form-control" required>
+                            <option value="Upcoming" selected>Upcoming</option>
+                            <option value="Ongoing">Ongoing</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="addDate">Event Date *</label>
+                        <input type="date" id="addDate" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addTime">Event Time *</label>
+                        <input type="text" id="addTime" class="form-control" placeholder="e.g. 10:00 AM" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="addLocation">Venue / Location *</label>
+                        <input type="text" id="addLocation" class="form-control" placeholder="e.g. Main Auditorium" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addOrganizer">Organizing Body / Department *</label>
+                        <input type="text" id="addOrganizer" class="form-control" placeholder="e.g. Computer Engineering Dept" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="addSeats">Total Capacity (Seats) *</label>
+                        <input type="number" id="addSeats" class="form-control" min="1" max="5000" value="100" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addAvailSeats">Available Seats</label>
+                        <input type="number" id="addAvailSeats" class="form-control" min="0" max="5000" value="100">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="addDesc">Event Description *</label>
+                    <textarea id="addDesc" class="form-control" rows="3" placeholder="Describe the objectives, agenda, and benefits..." required></textarea>
+                </div>
+
+                <!-- POSTER UPLOAD ZONE WITH STRICT VALIDATION -->
+                <div class="form-group">
+                    <label>🖼️ Event Poster Upload (File Type & Size Validated)</label>
+                    <div class="poster-upload-zone" onclick="document.getElementById('addPosterInput').click()">
+                        <div style="font-size: 26px;">📁</div>
+                        <div style="font-weight: 600; font-size: 13px; color: #1e293b; margin-top: 4px;">
+                            Click to select an event poster image
+                        </div>
+                        <span class="validation-hint">
+                            Allowed formats: <strong>JPG, JPEG, PNG, WEBP, GIF</strong> • Max size: <strong>2.0 MB</strong>
+                        </span>
+                    </div>
+
+                    <input type="file" id="addPosterInput" accept=".jpg,.jpeg,.png,.webp,.gif,image/*" style="display: none;" onchange="validateAndPreviewPoster(this, 'addPreviewContainer', 'addPreviewImg', 'addPreviewName', 'addPreviewError')">
+                    
+                    <div id="addPreviewError" class="validation-error-text"></div>
+
+                    <div id="addPreviewContainer" class="poster-preview-box" style="display: none;">
+                        <img id="addPreviewImg" src="" alt="Poster preview" class="poster-preview-img">
+                        <div style="flex-grow: 1;">
+                            <div id="addPreviewName" style="font-size: 13px; font-weight: 600; color: #1e293b;"></div>
+                            <div style="font-size: 11px; color: #15803d; font-weight: 600;">✓ Validated & ready for upload</div>
+                        </div>
+                        <button type="button" onclick="clearPosterUpload('addPosterInput', 'addPreviewContainer', 'addPreviewError')" style="background: none; border: none; color: #dc2626; cursor: pointer; font-size: 16px;">✕</button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; border-radius: 0 0 12px 12px; display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('addModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary" style="background: #10b981; border: none; font-weight: 700;">Save & Publish Event</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- 2. EDIT EVENT MODAL                                                       -->
+<!-- ========================================================================= -->
+<div id="editModal" class="modal-backdrop">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3>✏️ Edit Campus Event</h3>
+            <button type="button" class="modal-close" onclick="closeModal('editModal')">✕</button>
+        </div>
+
+        <form id="editEventForm" onsubmit="handleEditEvent(event)">
+            <input type="hidden" id="editId" value="">
+            <input type="hidden" id="editCurrentPoster" value="">
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="editTitle">Event Title *</label>
+                    <input type="text" id="editTitle" class="form-control" required minlength="3">
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="editCategory">Category *</label>
+                        <select id="editCategory" class="form-control" required>
+                            <option value="Technology">Technology</option>
+                            <option value="Competition">Competition</option>
+                            <option value="Workshop">Workshop</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Cultural">Cultural</option>
+                            <option value="Career">Career</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editStatus">Status *</label>
+                        <select id="editStatus" class="form-control" required>
+                            <option value="Upcoming">Upcoming</option>
+                            <option value="Ongoing">Ongoing</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="editDate">Event Date *</label>
+                        <input type="date" id="editDate" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editTime">Event Time *</label>
+                        <input type="text" id="editTime" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="editLocation">Venue / Location *</label>
+                        <input type="text" id="editLocation" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editOrganizer">Organizing Body *</label>
+                        <input type="text" id="editOrganizer" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="editSeats">Total Capacity *</label>
+                        <input type="number" id="editSeats" class="form-control" min="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editAvailSeats">Available Seats</label>
+                        <input type="number" id="editAvailSeats" class="form-control" min="0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="editDesc">Event Description *</label>
+                    <textarea id="editDesc" class="form-control" rows="3" required></textarea>
+                </div>
+
+                <!-- POSTER REPLACEMENT ZONE -->
+                <div class="form-group">
+                    <label>🖼️ Replace Event Poster (Optional)</label>
+                    <div class="poster-upload-zone" onclick="document.getElementById('editPosterInput').click()">
+                        <div style="font-size: 24px;">🔄</div>
+                        <div style="font-weight: 600; font-size: 13px; color: #1e293b; margin-top: 4px;">
+                            Click to upload new poster (Leaves current poster if unchanged)
+                        </div>
+                        <span class="validation-hint">Max size: <strong>2.0 MB</strong> • Formats: <strong>JPG, PNG, WEBP, GIF</strong></span>
+                    </div>
+
+                    <input type="file" id="editPosterInput" accept=".jpg,.jpeg,.png,.webp,.gif,image/*" style="display: none;" onchange="validateAndPreviewPoster(this, 'editPreviewContainer', 'editPreviewImg', 'editPreviewName', 'editPreviewError')">
+                    
+                    <div id="editPreviewError" class="validation-error-text"></div>
+
+                    <div id="editPreviewContainer" class="poster-preview-box">
+                        <img id="editPreviewImg" src="../uploads/posters/default_poster.jpg" alt="Poster preview" class="poster-preview-img">
+                        <div style="flex-grow: 1;">
+                            <div id="editPreviewName" style="font-size: 13px; font-weight: 600; color: #1e293b;">Current Poster</div>
+                            <div style="font-size: 11px; color: #64748b;">Select a file above to replace this image</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; border-radius: 0 0 12px 12px; display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary" style="font-weight: 700;">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- 3. VIEW EVENT PROFILE MODAL                                               -->
+<!-- ========================================================================= -->
+<div id="viewModal" class="modal-backdrop">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3 id="viewModalHeader">Event Profile</h3>
+            <button type="button" class="modal-close" onclick="closeModal('viewModal')">✕</button>
+        </div>
+
+        <div class="modal-body" style="padding: 20px 24px;">
+            <div style="width: 100%; height: 240px; border-radius: 8px; overflow: hidden; background: #0f172a; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center;">
+                <img id="viewPosterImg" src="" alt="Event Poster" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
+                <div>
+                    <h2 id="viewTitle" style="margin: 0; font-size: 20px; color: #1e293b;"></h2>
+                    <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
+                        <span id="viewCategoryBadge" class="table-event-cat" style="background: #eff6ff; padding: 2px 8px; border-radius: 4px;"></span>
+                        <span id="viewStatusBadge" class="badge-status"></span>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div id="viewSeats" style="font-size: 18px; font-weight: 700; color: #2563eb;"></div>
+                    <div style="font-size: 11px; color: #64748b;">Available Seats</div>
+                </div>
+            </div>
+
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 16px; margin-bottom: 16px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px;">
+                    <div>📅 <strong id="viewDate"></strong></div>
+                    <div>⏰ <strong id="viewTime"></strong></div>
+                    <div>📍 <strong id="viewLocation"></strong></div>
+                    <div>👤 <strong id="viewOrganizer"></strong></div>
+                </div>
+            </div>
+
+            <h4 style="margin: 0 0 6px 0; font-size: 13px; color: #475569; text-transform: uppercase; letter-spacing: 0.5px;">About the Event</h4>
+            <p id="viewDescription" style="margin: 0; font-size: 14px; line-height: 1.6; color: #334155;"></p>
+        </div>
+
+        <div style="padding: 14px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; border-radius: 0 0 12px 12px; display: flex; justify-content: flex-end;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('viewModal')">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- 4. DELETE CONFIRMATION MODAL                                              -->
+<!-- ========================================================================= -->
+<div id="deleteModal" class="modal-backdrop">
+    <div class="modal-card" style="max-width: 450px;">
+        <div class="modal-header" style="background: #fee2e2;">
+            <h3 style="color: #991b1b;">⚠️ Confirm Event Deletion</h3>
+            <button type="button" class="modal-close" onclick="closeModal('deleteModal')">✕</button>
+        </div>
+
+        <div class="modal-body" style="text-align: center; padding: 26px 20px;">
+            <div style="font-size: 42px; margin-bottom: 12px;">🗑️</div>
+            <h3 style="margin: 0 0 8px 0; color: #1e293b;">Delete Event Record?</h3>
+            <p style="margin: 0; color: #64748b; font-size: 13px;">
+                Are you sure you want to permanently delete event <strong id="deleteEventNameText" style="color: #1e293b;"></strong>?
+            </p>
+            <div style="margin-top: 12px; font-size: 12px; color: #dc2626; background: #fef2f2; padding: 8px 12px; border-radius: 6px; border: 1px solid #fecaca;">
+                This operation will remove the event record and delete the associated poster.
+            </div>
+        </div>
+
+        <div style="padding: 14px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; border-radius: 0 0 12px 12px; display: flex; justify-content: flex-end; gap: 10px;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="confirmDeleteEvent()" style="background: #dc2626; border: none; font-weight: 700;">Permanently Delete</button>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- JAVASCRIPT: CLIENT-SIDE STORAGE, FILE VALIDATION & CRUD LOGIC             -->
+<!-- ========================================================================= -->
+<script>
+    const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024; // 2 Megabytes
+    const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+    const STORAGE_KEY = 'studenthub_events_db';
+
+    let allEvents = [];
+    let pendingDeleteId = null;
+    let addUploadedPosterData = null;
+    let editUploadedPosterData = null;
+
+    // Default Seed Events (Synced with data/events.json)
+    const defaultEvents = [
+        {
+            id: 1,
+            title: "Tech Innovation Summit 2026",
+            category: "Technology",
+            date: "2026-10-10",
+            time: "10:00 AM",
+            location: "Main Auditorium",
+            description: "Explore emerging technologies, AI innovations and modern software development.",
+            organizer: "Computer Engineering Department",
+            seats: 120,
+            available_seats: 118,
+            status: "Completed",
+            poster_image: "../uploads/posters/tech_summit.jpg"
+        },
+        {
+            id: 2,
+            title: "Campus Coding Challenge",
+            category: "Competition",
+            date: "2026-10-15",
+            time: "02:00 PM",
+            location: "Computer Lab 1",
+            description: "Participate in an exciting programming competition and solve real-world coding problems.",
+            organizer: "Coding Club",
+            seats: 80,
+            available_seats: 78,
+            status: "Upcoming",
+            poster_image: "../uploads/posters/coding_challenge.jpg"
+        },
+        {
+            id: 3,
+            title: "Entrepreneurship Workshop",
+            category: "Workshop",
+            date: "2026-10-20",
+            time: "11:00 AM",
+            location: "Seminar Hall",
+            description: "Learn how to transform innovative ideas into practical startup opportunities.",
+            organizer: "Innovation Cell",
+            seats: 100,
+            available_seats: 99,
+            status: "Upcoming",
+            poster_image: "../uploads/posters/default_poster.jpg"
+        },
+        {
+            id: 4,
+            title: "Sports Fest 2026",
+            category: "Sports",
+            date: "2026-10-25",
+            time: "09:00 AM",
+            location: "University Ground",
+            description: "Take part in various indoor and outdoor sports activities.",
+            organizer: "Sports Committee",
+            seats: 250,
+            available_seats: 250,
+            status: "Upcoming",
+            poster_image: "../uploads/posters/default_poster.jpg"
+        },
+        {
+            id: 5,
+            title: "Web Development Bootcamp",
+            category: "Workshop",
+            date: "2026-11-02",
+            time: "10:30 AM",
+            location: "IT Lab",
+            description: "A practical bootcamp covering HTML, CSS, JavaScript and modern web development.",
+            organizer: "IT Department",
+            seats: 60,
+            available_seats: 59,
+            status: "Upcoming",
+            poster_image: "../uploads/posters/default_poster.jpg"
+        },
+        {
+            id: 6,
+            title: "Cultural Night",
+            category: "Cultural",
+            date: "2026-11-08",
+            time: "06:00 PM",
+            location: "Open Air Theatre",
+            description: "Celebrate creativity, culture and student talent through performances and activities.",
+            organizer: "Student Council",
+            seats: 300,
+            available_seats: 298,
+            status: "Upcoming",
+            poster_image: "../uploads/posters/cultural_night.jpg"
+        }
+    ];
+
+    // Load initial events from localStorage or JSON
+    async function loadEventsData() {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+            try {
+                allEvents = JSON.parse(stored);
+            } catch (e) {
+                allEvents = defaultEvents;
+            }
+        } else {
+            // Try fetching from ../data/events.json
+            try {
+                const res = await fetch('../data/events.json');
+                if (res.ok) {
+                    const jsonData = await res.json();
+                    allEvents = jsonData.map(ev => ({
+                        id: ev.id,
+                        title: ev.title,
+                        category: ev.category,
+                        date: ev.date,
+                        time: ev.time,
+                        location: ev.location,
+                        description: ev.description,
+                        organizer: ev.organizer,
+                        seats: ev.seats,
+                        available_seats: ev.available_seats || ev.seats,
+                        status: ev.status || 'Upcoming',
+                        poster_image: ev.poster_image ? '../' + ev.poster_image : '../uploads/posters/default_poster.jpg'
+                    }));
+                } else {
+                    allEvents = defaultEvents;
+                }
+            } catch (e) {
+                allEvents = defaultEvents;
+            }
+            saveEventsToStorage();
+        }
+        applyFilters();
+    }
+
+    function saveEventsToStorage() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(allEvents));
+    }
+
+    // Show Flash Alert Banner
+    function showNotification(type, message) {
+        const alertBox = document.getElementById('flashAlert');
+        const icon = document.getElementById('flashIcon');
+        const text = document.getElementById('flashText');
+
+        alertBox.className = `alert alert-${type}`;
+        if (type === 'success') icon.textContent = '✅';
+        else if (type === 'danger') icon.textContent = '❌';
+        else if (type === 'warning') icon.textContent = '⚠️';
+        else icon.textContent = 'ℹ️';
+
+        text.innerHTML = message;
+        alertBox.style.display = 'flex';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        setTimeout(() => {
+            alertBox.style.display = 'none';
+        }, 5000);
+    }
+
+    // Modal Control
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) modal.classList.remove('active');
+    }
+
+    function openAddModal() {
+        document.getElementById('addEventForm').reset();
+        addUploadedPosterData = null;
+        clearPosterUpload('addPosterInput', 'addPreviewContainer', 'addPreviewError');
+        document.getElementById('addModal').classList.add('active');
+    }
+
+    // Client-Side Poster File Type & File Size Validation
+    function validateAndPreviewPoster(fileInput, containerId, imgId, nameId, errorId) {
+        const errorEl = document.getElementById(errorId);
+        const container = document.getElementById(containerId);
+        const img = document.getElementById(imgId);
+        const nameEl = document.getElementById(nameId);
+
+        errorEl.style.display = 'none';
+        errorEl.textContent = '';
+
+        if (!fileInput.files || fileInput.files.length === 0) return;
+
+        const file = fileInput.files[0];
+
+        // 1. FILE EXTENSION VALIDATION
+        const ext = file.name.split('.').pop().toLowerCase();
+        if (!ALLOWED_EXTENSIONS.includes(ext)) {
+            errorEl.innerHTML = `❌ <strong>Invalid File Type (.${ext})</strong>: Only JPG, JPEG, PNG, WEBP, and GIF images are permitted.`;
+            errorEl.style.display = 'block';
+            fileInput.value = '';
+            if (container) container.style.display = 'none';
+            return;
+        }
+
+        // 2. FILE SIZE VALIDATION (Max 2MB)
+        if (file.size > MAX_FILE_SIZE_BYTES) {
+            const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
+            errorEl.innerHTML = `❌ <strong>File Too Large (${sizeMb} MB)</strong>: Maximum permitted poster size is 2.00 MB. Please compress the image.`;
+            errorEl.style.display = 'block';
+            fileInput.value = '';
+            if (container) container.style.display = 'none';
+            return;
+        }
+
+        // 3. READ & PREVIEW BASE64
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const base64Data = e.target.result;
+            img.src = base64Data;
+            nameEl.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+            container.style.display = 'flex';
+
+            if (fileInput.id === 'addPosterInput') {
+                addUploadedPosterData = base64Data;
+            } else if (fileInput.id === 'editPosterInput') {
+                editUploadedPosterData = base64Data;
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function clearPosterUpload(inputId, containerId, errorId) {
+        const input = document.getElementById(inputId);
+        const container = document.getElementById(containerId);
+        const errorEl = document.getElementById(errorId);
+        if (input) input.value = '';
+        if (container) container.style.display = 'none';
+        if (errorEl) errorEl.style.display = 'none';
+        if (inputId === 'addPosterInput') addUploadedPosterData = null;
+        if (inputId === 'editPosterInput') editUploadedPosterData = null;
+    }
+
+    // Filter & Render
+    function applyFilters() {
+        const query = document.getElementById('searchInput').value.trim().toLowerCase();
+        const cat = document.getElementById('categoryFilter').value;
+        const status = document.getElementById('statusFilter').value;
+        const sort = document.getElementById('sortFilter').value;
+
+        let filtered = allEvents.filter(ev => {
+            const matchQuery = !query || 
+                ev.title.toLowerCase().includes(query) || 
+                (ev.description && ev.description.toLowerCase().includes(query)) ||
+                (ev.location && ev.location.toLowerCase().includes(query)) ||
+                (ev.organizer && ev.organizer.toLowerCase().includes(query));
+
+            const matchCat = (cat === 'all' || ev.category === cat);
+            const matchStatus = (status === 'all' || ev.status === status);
+
+            return matchQuery && matchCat && matchStatus;
+        });
+
+        // Sort
+        filtered.sort((a, b) => {
+            if (sort === 'dateDesc') return new Date(b.date) - new Date(a.date);
+            if (sort === 'nameAsc') return a.title.localeCompare(b.title);
+            if (sort === 'nameDesc') return b.title.localeCompare(a.title);
+            if (sort === 'seatsDesc') return (b.seats || 0) - (a.seats || 0);
+            return new Date(a.date) - new Date(b.date);
+        });
+
+        // Update KPIs
+        document.getElementById('kpiTotalEvents').textContent = allEvents.length;
+        document.getElementById('kpiFilteredEvents').textContent = filtered.length;
+        const totalCap = allEvents.reduce((acc, cur) => acc + (parseInt(cur.seats) || 0), 0);
+        document.getElementById('kpiTotalSeats').textContent = totalCap;
+        document.getElementById('tableSubtitle').textContent = `Showing ${filtered.length} of ${allEvents.length} registered events`;
+
+        // Render Table Body
+        const tbody = document.getElementById('eventsTableBody');
+        tbody.innerHTML = '';
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 36px; color: #94a3b8;">
+                        <div style="font-size: 32px; margin-bottom: 8px;">🎪</div>
+                        <div style="font-weight: 600; font-size: 15px; color: #475569;">No events match the selected criteria</div>
+                        <p style="margin: 4px 0 0 0; font-size: 12px;">Try clearing filters or adding a new campus event.</p>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        filtered.forEach(ev => {
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = '1px solid #f1f5f9';
+            const statusClass = `status-${(ev.status || 'upcoming').toLowerCase()}`;
+            const posterSrc = ev.poster_image || '../uploads/posters/default_poster.jpg';
+
+            tr.innerHTML = `
+                <td style="padding: 12px 14px;">
+                    <img src="${posterSrc}" alt="${ev.title}" class="poster-thumb" onclick="openViewModal(${ev.id})" onerror="this.src='../uploads/posters/default_poster.jpg'">
+                </td>
+                <td style="padding: 12px 14px;">
+                    <span class="table-event-title">${escapeHtml(ev.title)}</span>
+                    <span class="table-event-cat">${escapeHtml(ev.category)}</span>
+                    <div style="color: #64748b; font-size: 12px; margin-top: 2px; max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        ${escapeHtml(ev.description || '')}
+                    </div>
+                </td>
+                <td style="padding: 12px 14px; white-space: nowrap;">
+                    <div style="font-weight: 600; color: #1e293b;">📅 ${ev.date}</div>
+                    <div style="color: #64748b; font-size: 12px; margin-top: 2px;">⏰ ${escapeHtml(ev.time || '')}</div>
+                </td>
+                <td style="padding: 12px 14px;">
+                    <div style="font-weight: 500; color: #1e293b;">📍 ${escapeHtml(ev.location || '')}</div>
+                    <div style="color: #64748b; font-size: 12px; margin-top: 2px;">👤 ${escapeHtml(ev.organizer || '')}</div>
+                </td>
+                <td style="padding: 12px 14px;">
+                    <div style="font-weight: 600;">${ev.available_seats !== undefined ? ev.available_seats : ev.seats} / ${ev.seats}</div>
+                    <div style="font-size: 11px; color: #64748b;">available seats</div>
+                </td>
+                <td style="padding: 12px 14px;">
+                    <span class="badge-status ${statusClass}">${ev.status || 'Upcoming'}</span>
+                </td>
+                <td style="padding: 12px 14px; text-align: center;">
+                    <div class="action-btn-group" style="justify-content: center;">
+                        <button type="button" class="btn-action btn-view" onclick="openViewModal(${ev.id})">👁️ View</button>
+                        <button type="button" class="btn-action btn-edit" onclick="openEditModal(${ev.id})">✏️ Edit</button>
+                        <button type="button" class="btn-action btn-delete" onclick="openDeleteModal(${ev.id})">🗑️ Delete</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function resetFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('categoryFilter').value = 'all';
+        document.getElementById('statusFilter').value = 'all';
+        document.getElementById('sortFilter').value = 'dateAsc';
+        applyFilters();
+    }
+
+    // 1. ADD EVENT HANDLER
+    function handleAddEvent(e) {
+        e.preventDefault();
+
+        const title = document.getElementById('addTitle').value.trim();
+        const category = document.getElementById('addCategory').value;
+        const status = document.getElementById('addStatus').value;
+        const date = document.getElementById('addDate').value;
+        const time = document.getElementById('addTime').value.trim();
+        const location = document.getElementById('addLocation').value.trim();
+        const organizer = document.getElementById('addOrganizer').value.trim();
+        const seats = parseInt(document.getElementById('addSeats').value) || 100;
+        const availSeatsInput = document.getElementById('addAvailSeats').value;
+        const availSeats = availSeatsInput !== '' ? parseInt(availSeatsInput) : seats;
+        const description = document.getElementById('addDesc').value.trim();
+
+        const newId = allEvents.length > 0 ? Math.max(...allEvents.map(x => x.id || 0)) + 1 : 1;
+        const posterImg = addUploadedPosterData || '../uploads/posters/default_poster.jpg';
+
+        const newEvent = {
+            id: newId,
+            title,
+            category,
+            date,
+            time,
+            location,
+            organizer,
+            seats,
+            available_seats: availSeats,
+            status,
+            description,
+            poster_image: posterImg
+        };
+
+        allEvents.unshift(newEvent);
+        saveEventsToStorage();
+        closeModal('addModal');
+        applyFilters();
+
+        const posterMsg = addUploadedPosterData ? "with validated custom poster upload" : "with standard poster";
+        showNotification('success', `🎉 Event <strong>${escapeHtml(title)}</strong> created successfully (ID #${newId}) ${posterMsg}!`);
+    }
+
+    // 2. VIEW EVENT
+    function openViewModal(id) {
+        const ev = allEvents.find(x => x.id === id);
+        if (!ev) return;
+
+        document.getElementById('viewModalHeader').textContent = `🎪 ${ev.title}`;
+        document.getElementById('viewTitle').textContent = ev.title;
+        document.getElementById('viewCategoryBadge').textContent = ev.category;
+        document.getElementById('viewSeats').textContent = `${ev.available_seats !== undefined ? ev.available_seats : ev.seats} / ${ev.seats}`;
+        document.getElementById('viewDate').textContent = ev.date;
+        document.getElementById('viewTime').textContent = ev.time;
+        document.getElementById('viewLocation').textContent = ev.location;
+        document.getElementById('viewOrganizer').textContent = ev.organizer;
+        document.getElementById('viewDescription').textContent = ev.description;
+
+        const statusBadge = document.getElementById('viewStatusBadge');
+        statusBadge.textContent = ev.status || 'Upcoming';
+        statusBadge.className = `badge-status status-${(ev.status || 'upcoming').toLowerCase()}`;
+
+        const posterImg = document.getElementById('viewPosterImg');
+        posterImg.src = ev.poster_image || '../uploads/posters/default_poster.jpg';
+        posterImg.onerror = function() {
+            this.src = '../uploads/posters/default_poster.jpg';
+        };
+
+        document.getElementById('viewModal').classList.add('active');
+    }
+
+    // 3. EDIT EVENT
+    function openEditModal(id) {
+        const ev = allEvents.find(x => x.id === id);
+        if (!ev) return;
+
+        document.getElementById('editId').value = ev.id;
+        document.getElementById('editTitle').value = ev.title;
+        document.getElementById('editCategory').value = ev.category;
+        document.getElementById('editStatus').value = ev.status || 'Upcoming';
+        document.getElementById('editDate').value = ev.date;
+        document.getElementById('editTime').value = ev.time;
+        document.getElementById('editLocation').value = ev.location;
+        document.getElementById('editOrganizer').value = ev.organizer;
+        document.getElementById('editSeats').value = ev.seats;
+        document.getElementById('editAvailSeats').value = ev.available_seats !== undefined ? ev.available_seats : ev.seats;
+        document.getElementById('editDesc').value = ev.description;
+
+        const currentPoster = ev.poster_image || '../uploads/posters/default_poster.jpg';
+        document.getElementById('editCurrentPoster').value = currentPoster;
+        document.getElementById('editPreviewImg').src = currentPoster;
+        document.getElementById('editPreviewName').textContent = 'Current Poster Image';
+
+        editUploadedPosterData = null;
+        clearPosterUpload('editPosterInput', 'editPreviewContainer', 'editPreviewError');
+        document.getElementById('editPreviewContainer').style.display = 'flex';
+
+        document.getElementById('editModal').classList.add('active');
+    }
+
+    function handleEditEvent(e) {
+        e.preventDefault();
+
+        const id = parseInt(document.getElementById('editId').value);
+        const idx = allEvents.findIndex(x => x.id === id);
+        if (idx === -1) return;
+
+        const title = document.getElementById('editTitle').value.trim();
+        const category = document.getElementById('editCategory').value;
+        const status = document.getElementById('editStatus').value;
+        const date = document.getElementById('editDate').value;
+        const time = document.getElementById('editTime').value.trim();
+        const location = document.getElementById('editLocation').value.trim();
+        const organizer = document.getElementById('editOrganizer').value.trim();
+        const seats = parseInt(document.getElementById('editSeats').value) || 100;
+        const availSeats = parseInt(document.getElementById('editAvailSeats').value) || 0;
+        const description = document.getElementById('editDesc').value.trim();
+
+        const posterImg = editUploadedPosterData || allEvents[idx].poster_image || '../uploads/posters/default_poster.jpg';
+
+        allEvents[idx] = {
+            ...allEvents[idx],
+            title,
+            category,
+            status,
+            date,
+            time,
+            location,
+            organizer,
+            seats,
+            available_seats: availSeats,
+            description,
+            poster_image: posterImg
+        };
+
+        saveEventsToStorage();
+        closeModal('editModal');
+        applyFilters();
+
+        const posterNote = editUploadedPosterData ? " and updated poster image" : "";
+        showNotification('success', `✏️ Event <strong>${escapeHtml(title)}</strong> (ID #${id}) updated successfully${posterNote}!`);
+    }
+
+    // 4. DELETE EVENT
+    function openDeleteModal(id) {
+        const ev = allEvents.find(x => x.id === id);
+        if (!ev) return;
+        pendingDeleteId = id;
+        document.getElementById('deleteEventNameText').textContent = `"${ev.title}" (ID #${id})`;
+        document.getElementById('deleteModal').classList.add('active');
+    }
+
+    function confirmDeleteEvent() {
+        if (!pendingDeleteId) return;
+        const ev = allEvents.find(x => x.id === pendingDeleteId);
+        const eventTitle = ev ? ev.title : 'Event';
+
+        allEvents = allEvents.filter(x => x.id !== pendingDeleteId);
+        saveEventsToStorage();
+        closeModal('deleteModal');
+        applyFilters();
+        pendingDeleteId = null;
+
+        showNotification('success', `🗑️ Event <strong>${escapeHtml(eventTitle)}</strong> was permanently deleted.`);
+    }
+
+    // Export Helpers
+    function exportEventsCSV() {
+        if (allEvents.length === 0) return alert('No events available to export.');
+        const headers = ['ID', 'Title', 'Category', 'Date', 'Time', 'Location', 'Organizer', 'Total Seats', 'Available Seats', 'Status', 'Description'];
+        const rows = allEvents.map(e => [
+            e.id,
+            `"${(e.title || '').replace(/"/g, '""')}"`,
+            `"${(e.category || '').replace(/"/g, '""')}"`,
+            e.date,
+            `"${(e.time || '').replace(/"/g, '""')}"`,
+            `"${(e.location || '').replace(/"/g, '""')}"`,
+            `"${(e.organizer || '').replace(/"/g, '""')}"`,
+            e.seats,
+            e.available_seats,
+            e.status,
+            `"${(e.description || '').replace(/"/g, '""')}"`
+        ]);
+
+        const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', 'studenthub_events.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function exportEventsJSON() {
+        if (allEvents.length === 0) return alert('No events available to export.');
+        const jsonContent = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(allEvents, null, 2));
+        const link = document.createElement('a');
+        link.setAttribute('href', jsonContent);
+        link.setAttribute('download', 'studenthub_events.json');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    // Backdrop Click Close
+    document.querySelectorAll('.modal-backdrop').forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+    });
+
+    // Initialize
+    loadEventsData();
+</script>
+
+</body>
+</html>

@@ -409,3 +409,22 @@ function ensureAuthColumnsExist(mysqli $mysqli): void {
         error_log("StudentHub Ensure Columns Notice: " . $e->getMessage());
     }
 }
+
+/**
+ * Ensures the poster_image column exists on the events table (Practical 12).
+ */
+function ensureEventPosterColumnExists(mysqli $mysqli): void {
+    static $posterChecked = false;
+    if ($posterChecked) return;
+
+    try {
+        $pCheck = $mysqli->query("SHOW COLUMNS FROM `events` LIKE 'poster_image'");
+        if ($pCheck && $pCheck->num_rows === 0) {
+            $mysqli->query("ALTER TABLE `events` ADD COLUMN `poster_image` VARCHAR(255) DEFAULT 'default_poster.jpg' AFTER `status`");
+        }
+        if ($pCheck) $pCheck->free();
+        $posterChecked = true;
+    } catch (Exception $e) {
+        error_log("StudentHub Ensure Poster Column Notice: " . $e->getMessage());
+    }
+}

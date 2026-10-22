@@ -147,6 +147,7 @@ if (empty($allUsers)) {
             <a href="about.html">About</a>
             <a href="admin.php" class="active">Admin Panel</a>
             <a href="../php/student_manager.php">Students (CRUD)</a>
+            <a href="../php/event_manager.php">Events (Admin CRUD)</a>
             <a href="dashboard.php">Student Dashboard</a>
             <a href="events.html">Events</a>
             <a href="../php/db_dashboard.php">Practical 8 DB</a>
@@ -276,8 +277,11 @@ if (empty($allUsers)) {
                 <h3 style="margin: 0; color: #243b53; font-size: 18px;">
                     👥 User Accounts &amp; Role Directory (Practical 10 RBAC)
                 </h3>
-                <div style="display: flex; gap: 8px;">
-                    <a href="../php/student_manager.php" class="btn btn-small" style="background: #10b981; border: none;">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <a href="../php/event_manager.php" class="btn btn-small" style="background: #2563eb; border: none; color: white;">
+                        🎪 Event Manager (Practical 12 CRUD)
+                    </a>
+                    <a href="../php/student_manager.php" class="btn btn-small" style="background: #10b981; border: none; color: white;">
                         ⚡ Student Manager (Practical 11 CRUD)
                     </a>
                     <a href="../php/view_registrations.php" class="btn btn-secondary btn-small">

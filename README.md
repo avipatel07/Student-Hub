@@ -678,6 +678,122 @@ Student Hub/
     └── schema.sql              # Relational students table definition
 ```
 
+---
+
+# Practical 12 - Admin Event Management & Poster Upload Validation
+
+## Objective
+
+To develop a comprehensive, secure Event Management module for administrator users. The module enables administrators to **Add**, **View**, **Update**, and **Delete** campus events, and upload high-resolution **event posters** protected by strict server-side and client-side **file type** and **file size** validation, parameterized **MySQLi Prepared Statements**, and **Role-Based Access Control (RBAC)**.
+
+## Key Capabilities Implemented
+
+### 1. Role-Based Access Control (RBAC Guard)
+- Strictly limits event management privileges to authorized administrators:
+  ```php
+  requireLogin('admin', '../pages/login.php');
+  ```
+- Non-administrators and unauthorized visitors attempting direct access are automatically intercepted and redirected with explicit access control feedback.
+
+### 2. Event Poster Upload & Validation Engine
+- **File Size Validation**:
+  - Maximum file size limit: **2.00 MB** (`2 * 1024 * 1024` bytes).
+  - Validates `$_FILES['poster']['size']` server-side and `file.size` client-side before upload.
+  - Rejects oversized files with descriptive error alert:
+    *"File size validation failed: Selected poster is X.XX MB. The maximum allowed limit is 2.00 MB."*
+- **File Type & MIME Validation**:
+  - Whitelisted extensions: `.jpg`, `.jpeg`, `.png`, `.webp`, `.gif`.
+  - Whitelisted MIME types verified via `finfo_file()` / `mime_content_type()`:
+    `image/jpeg`, `image/png`, `image/webp`, `image/gif`.
+  - Rejects executable, document, or spoofed files with clear alert:
+    *"Invalid file extension (.ext). Only JPG, JPEG, PNG, WEBP, and GIF image files are allowed."*
+- **Cryptographically Secure Filename Sanitization**:
+  - Prevents directory traversal, collision, and code injection attacks:
+    ```php
+    $safeName = 'poster_' . date('Ymd_His') . '_' . bin2hex(random_bytes(4)) . '.' . $extension;
+    move_uploaded_file($tmpPath, $uploadDir . $safeName);
+    ```
+
+### 3. Add Event (MySQLi Parameterized `INSERT`)
+- Validates title, category, date, time, location, organizer, seats, status, and description.
+- Parameterized MySQLi prepared insertion query:
+  ```php
+  $insStmt = $mysqli->prepare("
+      INSERT INTO events 
+          (title, category, event_date, event_time, location, description, organizer, total_seats, available_seats, status, poster_image) 
+      VALUES 
+          (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  ");
+  $insStmt->bind_param("sssssssiiss", $title, $category, $eventDate, $eventTime, $location, $description, $organizer, $totalSeats, $availableSeats, $status, $posterImageName);
+  $insStmt->execute();
+  ```
+- Issues clear success message: *"🎉 Event [Title] created successfully (ID #[ID]) with verified poster upload!"*
+
+### 4. View Event (MySQLi Parameterized `SELECT` & Interactive Modal)
+- Interactive **"View"** modal displays high-resolution poster, schedule, location, organizer, seating capacity, and description.
+- Asynchronous JSON endpoint backed by parameterized query:
+  ```php
+  $stmt = $mysqli->prepare("SELECT * FROM events WHERE event_id = ? LIMIT 1");
+  $stmt->bind_param("i", $eventId);
+  $stmt->execute();
+  ```
+
+### 5. Update Event & Replace Poster (MySQLi Parameterized `UPDATE`)
+- Form pre-populates all event fields.
+- Allows keeping existing poster or uploading a replacement poster with full validation.
+- Parameterized MySQLi prepared update query:
+  ```php
+  $updStmt = $mysqli->prepare("
+      UPDATE events 
+      SET title = ?, category = ?, event_date = ?, event_time = ?, location = ?, 
+          description = ?, organizer = ?, total_seats = ?, available_seats = ?, 
+          status = ?, poster_image = ? 
+      WHERE event_id = ?
+  ");
+  $updStmt->bind_param("sssssssiissi", $title, $category, $eventDate, $eventTime, $location, $description, $organizer, $totalSeats, $availableSeats, $status, $newPosterName, $eventId);
+  $updStmt->execute();
+  ```
+- Automatically cleans up obsolete custom poster files from the server upon successful replacement.
+
+### 6. Delete Event (MySQLi Parameterized `DELETE` & File Cleanup)
+- Safety confirmation modal before deletion.
+- Executes parameterized MySQLi prepared deletion:
+  ```php
+  $delStmt = $mysqli->prepare("DELETE FROM events WHERE event_id = ?");
+  $delStmt->bind_param("i", $eventId);
+  $delStmt->execute();
+  ```
+- Unlinks uploaded custom poster file from server disk.
+
+### 7. Multi-Criteria Search & Filtering
+- **Keyword Search**: Matches title, description, venue location, or organizer.
+- **Category Filter**: Technology, Competition, Workshop, Sports, Cultural, Career.
+- **Status Filter**: Upcoming, Ongoing, Completed, Cancelled.
+- **Dynamic Sorting**: Date (Earliest / Latest), Title (A-Z / Z-A), Capacity (High to Low).
+
+### 8. Dual Synchronization & Live Server Compatibility
+- Synchronizes with `data/events.json` for lab offline resilience.
+- Standalone interactive frontend available at `pages/event_manager.html` for instant testing with VS Code Live Server.
+
+## Practical 12 File Structure
+
+```text
+Student Hub/
+├── pages/
+│   ├── event_manager.html      # Interactive Admin Event Management page (Live Server compatible)
+│   ├── events.html             # Public events catalog displaying verified event posters
+│   └── admin.html              # Administrator console with Event Management shortcuts
+├── php/
+│   ├── event_manager.php       # PHP MySQLi Event Management CRUD Module with poster upload & validation
+│   └── auth_session.php        # Admin RBAC enforcement & helper functions
+├── uploads/
+│   └── posters/                # Validated event poster storage directory
+├── data/
+│   └── events.json             # Synchronized events dataset
+└── database/
+    └── schema.sql              # Relational schema with poster_image column & seed records
+```
+
 
 
 

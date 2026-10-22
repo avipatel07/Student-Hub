@@ -1332,10 +1332,15 @@ if (eventList) {
                     }
                 );
 
+        const posterSrc = event.poster_image ? '../' + event.poster_image.replace(/^\.\.\//, '') : '../uploads/posters/default_poster.jpg';
 
         return `
 
-            <article class="dynamic-event-card">
+            <article class="dynamic-event-card" style="display: flex; flex-direction: column; overflow: hidden; border-radius: 8px;">
+
+                <div class="event-poster-wrapper" style="width: 100%; height: 160px; overflow: hidden; background: #0f172a; margin-bottom: 12px; border-radius: 6px;">
+                    <img src="${posterSrc}" alt="${event.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='../uploads/posters/default_poster.jpg'">
+                </div>
 
                 <span class="event-category-badge">
 

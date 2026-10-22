@@ -8,7 +8,10 @@
         "location": "Main Auditorium",
         "description": "Explore emerging technologies, AI innovations and modern software development.",
         "organizer": "Computer Engineering Department",
-        "seats": 120
+        "seats": 120,
+        "available_seats": 118,
+        "status": "Completed",
+        "poster_image": "uploads/posters/tech_summit.jpg"
     },
     {
         "id": 2,
@@ -19,7 +22,10 @@
         "location": "Computer Lab 1",
         "description": "Participate in an exciting programming competition and solve real-world coding problems.",
         "organizer": "Coding Club",
-        "seats": 80
+        "seats": 80,
+        "available_seats": 78,
+        "status": "Upcoming",
+        "poster_image": "uploads/posters/coding_challenge.jpg"
     },
     {
         "id": 3,
@@ -30,7 +36,10 @@
         "location": "Seminar Hall",
         "description": "Learn how to transform innovative ideas into practical startup opportunities.",
         "organizer": "Innovation Cell",
-        "seats": 100
+        "seats": 100,
+        "available_seats": 99,
+        "status": "Upcoming",
+        "poster_image": "uploads/posters/default_poster.jpg"
     },
     {
         "id": 4,
@@ -41,7 +50,10 @@
         "location": "University Ground",
         "description": "Take part in various indoor and outdoor sports activities.",
         "organizer": "Sports Committee",
-        "seats": 250
+        "seats": 250,
+        "available_seats": 250,
+        "status": "Upcoming",
+        "poster_image": "uploads/posters/default_poster.jpg"
     },
     {
         "id": 5,
@@ -52,7 +64,10 @@
         "location": "IT Lab",
         "description": "A practical bootcamp covering HTML, CSS, JavaScript and modern web development.",
         "organizer": "IT Department",
-        "seats": 60
+        "seats": 60,
+        "available_seats": 59,
+        "status": "Upcoming",
+        "poster_image": "uploads/posters/default_poster.jpg"
     },
     {
         "id": 6,
@@ -63,7 +78,10 @@
         "location": "Open Air Theatre",
         "description": "Celebrate creativity, culture and student talent through performances and activities.",
         "organizer": "Student Council",
-        "seats": 300
+        "seats": 300,
+        "available_seats": 298,
+        "status": "Upcoming",
+        "poster_image": "uploads/posters/cultural_night.jpg"
     },
     {
         "id": 7,
@@ -74,7 +92,10 @@
         "location": "Conference Hall",
         "description": "Understand current AI and machine learning concepts and their applications.",
         "organizer": "AI Club",
-        "seats": 150
+        "seats": 150,
+        "available_seats": 145,
+        "status": "Upcoming",
+        "poster_image": "uploads/posters/default_poster.jpg"
     },
     {
         "id": 8,
@@ -85,7 +106,10 @@
         "location": "Creative Studio",
         "description": "Showcase your photography skills and capture memorable campus moments.",
         "organizer": "Photography Club",
-        "seats": 50
+        "seats": 50,
+        "available_seats": 48,
+        "status": "Upcoming",
+        "poster_image": "uploads/posters/default_poster.jpg"
     },
     {
         "id": 9,
@@ -96,7 +120,10 @@
         "location": "Seminar Hall",
         "description": "Get guidance about internships, placements, skills and career opportunities.",
         "organizer": "Career Development Cell",
-        "seats": 200
+        "seats": 200,
+        "available_seats": 195,
+        "status": "Upcoming",
+        "poster_image": "uploads/posters/default_poster.jpg"
     },
     {
         "id": 10,
@@ -107,7 +134,10 @@
         "location": "Innovation Center",
         "description": "Build innovative technology solutions with your team during this university hackathon.",
         "organizer": "Innovation Cell",
-        "seats": 100
+        "seats": 100,
+        "available_seats": 94,
+        "status": "Upcoming",
+        "poster_image": "uploads/posters/coding_challenge.jpg"
     },
     {
         "id": 11,
@@ -118,7 +148,10 @@
         "location": "IT Lab 2",
         "description": "Learn the fundamentals of cloud platforms, deployment and modern infrastructure.",
         "organizer": "Cloud Computing Club",
-        "seats": 70
+        "seats": 70,
+        "available_seats": 66,
+        "status": "Upcoming",
+        "poster_image": "uploads/posters/tech_summit.jpg"
     },
     {
         "id": 12,
@@ -129,6 +162,9 @@
         "location": "Main Auditorium",
         "description": "Interact with university alumni and learn from their academic and professional journey.",
         "organizer": "Alumni Association",
-        "seats": 180
+        "seats": 180,
+        "available_seats": 172,
+        "status": "Upcoming",
+        "poster_image": "uploads/posters/default_poster.jpg"
     }
 ]

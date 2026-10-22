@@ -867,6 +867,7 @@ $hasActiveFilters = (!empty($searchQuery) || !empty($filterCourse) || !empty($fi
             <a href="../pages/login.html">Login</a>
             <a href="../pages/dashboard.html">Dashboard</a>
             <a href="student_manager.php" class="active">Students (CRUD)</a>
+            <a href="event_manager.php">Events (Admin CRUD)</a>
             <a href="../pages/admin.html">Admin</a>
             <a href="db_dashboard.php">Practical 8 DB</a>
             <a href="view_registrations.php">Records</a>
