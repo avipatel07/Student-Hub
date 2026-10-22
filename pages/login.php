@@ -88,6 +88,7 @@ if ($messageCode === 'logged_out') {
             <a href="about.html">About</a>
             <a href="register.html">Register</a>
             <a href="login.php" class="active">Login</a>
+            <a href="../php/student_manager.php">Students (CRUD)</a>
             <a href="dashboard.php">Dashboard</a>
             <a href="events.html">Events</a>
             <a href="profile.html">Profile</a>

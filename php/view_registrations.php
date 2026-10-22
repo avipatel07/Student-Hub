@@ -123,6 +123,7 @@ $totalStudents = count($csvRecords);
             <a href="../pages/register.html">Register</a>
             <a href="../pages/login.html">Login</a>
             <a href="../pages/dashboard.html">Dashboard</a>
+            <a href="student_manager.php">Students (CRUD)</a>
             <a href="../pages/events.html">Events</a>
             <a href="../pages/profile.html">Profile</a>
             <a href="../pages/contact.html">Contact</a>
@@ -172,6 +173,9 @@ $totalStudents = count($csvRecords);
             </div>
 
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <a href="student_manager.php" class="btn btn-small" style="background: #10b981; border: none;">
+                    ⚡ Practical 11 CRUD Manager
+                </a>
                 <a href="db_dashboard.php" class="btn btn-secondary btn-small">
                     🗄️ Practical 8 DB
                 </a>

@@ -634,11 +634,44 @@ if (registrationForm) {
                 });
 
                 console.log(
-                    "Student registration successful - submitting to PHP backend"
+                    "Student registration successful - checking environment"
                 );
 
-                // Practical 7: Submit validated form data to PHP backend
-                registrationForm.submit();
+                // Check if running on static preview / Live Server (port 5500, file://)
+                const isStatic = window.location.protocol === 'file:' || 
+                                 window.location.port === '5500' || 
+                                 window.location.port === '5501' || 
+                                 (window.location.port === '8080' && !window.location.pathname.endsWith('.php'));
+
+                if (isStatic) {
+                    try {
+                        const newStudent = {
+                            student_id: Date.now(),
+                            registration_no: 'STU' + new Date().toISOString().slice(0,10).replace(/-/g,'') + Math.floor(Math.random()*900 + 100),
+                            full_name: nameInput.value.trim(),
+                            username: usernameInput.value.trim(),
+                            email: emailInput.value.trim(),
+                            mobile: mobileInput.value.trim(),
+                            course: courseInput.value,
+                            academic_year: yearInput.value,
+                            role: 'student',
+                            password: passwordInput.value
+                        };
+                        const existing = JSON.parse(localStorage.getItem('studenthub_registered_users') || '[]');
+                        existing.push(newStudent);
+                        localStorage.setItem('studenthub_registered_users', JSON.stringify(existing));
+                        console.log("Saved student to localStorage for Live Server demo:", newStudent.username);
+                    } catch (e) {
+                        console.warn("Storage notice:", e);
+                    }
+
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1800);
+                } else {
+                    // Practical 7: Submit validated form data to PHP backend
+                    registrationForm.submit();
+                }
 
             }
 

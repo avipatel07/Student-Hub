@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudentHub - Practical 11: Student Management (CRUD Module)</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .crud-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #2563eb 100%);
+            color: white;
+            padding: 26px 30px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);
+        }
+        .driver-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .driver-static {
+            background: #eff6ff;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+        .filter-toolbar {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+        }
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr auto;
+            gap: 10px;
+            align-items: end;
+        }
+        @media (max-width: 1024px) {
+            .filter-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 640px) {
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .table-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .action-btn-group {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            white-space: nowrap;
+        }
+        .btn-action {
+            padding: 5px 9px;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-view {
+            background: #eff6ff;
+            color: #1e40af;
+            border-color: #bfdbfe;
+        }
+        .btn-view:hover {
+            background: #1e40af;
+            color: white;
+        }
+        .btn-edit {
+            background: #fefce8;
+            color: #854d0e;
+            border-color: #fde047;
+        }
+        .btn-edit:hover {
+            background: #854d0e;
+            color: white;
+        }
+        .btn-delete {
+            background: #fef2f2;
+            color: #991b1b;
+            border-color: #fecaca;
+        }
+        .btn-delete:hover {
+            background: #dc2626;
+            color: white;
+        }
+        /* Modal Overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-box {
+            background: white;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            animation: modalFadeIn 0.25s ease-out;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-16px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .modal-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-body {
+            padding: 22px 24px;
+        }
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            background: #f8fafc;
+            border-radius: 0 0 12px 12px;
+        }
+        .close-modal-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #64748b;
+        }
+        .close-modal-btn:hover { color: #0f172a; }
+        .form-grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        @media (max-width: 540px) {
+            .form-grid-2col { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="site-header">
+    <div class="logo-icon">🎓</div>
+    <h1>StudentHub Management</h1>
+    <p>PRACTICAL 11: Student Management CRUD Module (Live Demo)</p>
+</header>
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar">
+    <div class="nav-wrapper">
+        <button class="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+
+        <div class="nav-container">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="register.html">Register</a>
+            <a href="login.html">Login</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="student_manager.html" class="active">Students (CRUD)</a>
+            <a href="admin.html">Admin</a>
+            <a href="../php/db_dashboard.php">Practical 8 DB</a>
+            <a href="../php/view_registrations.php">Records</a>
+            <a href="contact.html">Contact</a>
+        </div>
+
+        <button class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+    </div>
+</nav>
+
+<!-- ================= MAIN ================= -->
+<main>
+    <div class="container" style="max-width: 1200px; margin: 25px auto 40px auto;">
+
+        <!-- Hero Section -->
+        <section class="crud-hero">
+            <div>
+                <div style="font-size: 13px; color: #93c5fd; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px;">
+                    Practical 11 &bull; Student Management Module
+                </div>
+                <h2 style="margin: 0; font-size: 24px; color: white;">
+                    Student Records Administration (CRUD)
+                </h2>
+                <p style="margin: 6px 0 0 0; font-size: 13px; opacity: 0.9;">
+                    Add, View, Edit, Delete, Search and Filter student records with clear success &amp; failure messaging.
+                </p>
+            </div>
+
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <span class="driver-badge driver-static" title="Live Server Interactive Client Storage Active">
+                    ⚡ Live Server Mode Active
+                </span>
+                <a href="../php/student_manager.php" class="btn btn-secondary" style="background: white; color: #1e293b; font-weight: 600; font-size: 13px;">
+                    🐘 Switch to student_manager.php (MySQLi)
+                </a>
+                <button type="button" class="btn" onclick="openAddModal()" style="background: #10b981; border: none; font-weight: 700; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                    + Add New Student
+                </button>
+            </div>
+        </section>
+
+        <!-- Flash Message Notification Alert Container -->
+        <div id="flashAlertContainer"></div>
+
+        <!-- KPI Summary Cards -->
+        <div class="summary-grid" style="margin-bottom: 22px;">
+            <div class="summary-item" style="border-left: 4px solid #3b82f6;">
+                <div class="summary-label">Total Registered Students</div>
+                <div id="kpiTotalStudents" style="font-size: 26px; font-weight: 700; color: #0f172a; margin-top: 2px;">
+                    4
+                </div>
+                <div style="font-size: 12px; color: #64748b;">Overall registered profiles</div>
+            </div>
+
+            <div class="summary-item" style="border-left: 4px solid #10b981;">
+                <div class="summary-label">Filtered Results</div>
+                <div id="kpiFilteredStudents" style="font-size: 26px; font-weight: 700; color: #0f172a; margin-top: 2px;">
+                    4
+                </div>
+                <div style="font-size: 12px; color: #64748b;">Matching current search &amp; filter criteria</div>
+            </div>
+
+            <div class="summary-item" style="border-left: 4px solid #8b5cf6;">
+                <div class="summary-label">Academic Courses</div>
+                <div id="kpiCoursesCount" style="font-size: 26px; font-weight: 700; color: #0f172a; margin-top: 2px;">
+                    4
+                </div>
+                <div style="font-size: 12px; color: #64748b;">B.Tech IT, B.Tech CSE, BCA, etc.</div>
+            </div>
+
+            <div class="summary-item" style="border-left: 4px solid #f59e0b;">
+                <div class="summary-label">Operations Supported</div>
+                <div style="font-size: 18px; font-weight: 700; color: #0f172a; margin-top: 6px;">
+                    Add &bull; View &bull; Edit &bull; Delete
+                </div>
+                <div style="font-size: 12px; color: #64748b;">Full CRUD &amp; Multi-Criteria Search</div>
+            </div>
+        </div>
+
+        <!-- Search & Filter Controls Toolbar -->
+        <section class="filter-toolbar">
+            <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <div style="font-size: 14px; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 6px;">
+                    <span>🔍</span> Search &amp; Multi-Criteria Filters
+                </div>
+                <button type="button" onclick="resetFilters()" style="background: none; border: none; font-size: 12px; color: #ef4444; font-weight: 600; cursor: pointer; text-decoration: underline;">
+                    ✕ Clear All Filters
+                </button>
+            </div>
+
+            <div class="filter-grid">
+                <!-- Search Input -->
+                <div>
+                    <label for="searchQuery" style="font-size: 12px; font-weight: 600; color: #475569; display: block; margin-bottom: 4px;">
+                        Search Student
+                    </label>
+                    <input
+                        type="text"
+                        id="searchQuery"
+                        placeholder="Search name, username, email, ID..."
+                        oninput="renderStudentTable()"
+                        style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
+                </div>
+
+                <!-- Course Filter -->
+                <div>
+                    <label for="filterCourse" style="font-size: 12px; font-weight: 600; color: #475569; display: block; margin-bottom: 4px;">
+                        Course
+                    </label>
+                    <select
+                        id="filterCourse"
+                        onchange="renderStudentTable()"
+                        style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
+                        <option value="">All Courses</option>
+                        <option value="B.Tech IT">B.Tech IT</option>
+                        <option value="B.Tech CSE">B.Tech CSE</option>
+                        <option value="BCA">BCA</option>
+                        <option value="B.Tech CE">B.Tech CE</option>
+                        <option value="MCA">MCA</option>
+                        <option value="Administration">Administration</option>
+                    </select>
+                </div>
+
+                <!-- Year Filter -->
+                <div>
+                    <label for="filterYear" style="font-size: 12px; font-weight: 600; color: #475569; display: block; margin-bottom: 4px;">
+                        Year
+                    </label>
+                    <select
+                        id="filterYear"
+                        onchange="renderStudentTable()"
+                        style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
+                        <option value="">All Years</option>
+                        <option value="1">Year 1</option>
+                        <option value="2">Year 2</option>
+                        <option value="3">Year 3</option>
+                        <option value="4">Year 4</option>
+                    </select>
+                </div>
+
+                <!-- Role Filter -->
+                <div>
+                    <label for="filterRole" style="font-size: 12px; font-weight: 600; color: #475569; display: block; margin-bottom: 4px;">
+                        Role
+                    </label>
+                    <select
+                        id="filterRole"
+                        onchange="renderStudentTable()"
+                        style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
+                        <option value="">All Roles</option>
+                        <option value="student">Student</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+
+                <!-- Gender Filter -->
+                <div>
+                    <label for="filterGender" style="font-size: 12px; font-weight: 600; color: #475569; display: block; margin-bottom: 4px;">
+                        Gender
+                    </label>
+                    <select
+                        id="filterGender"
+                        onchange="renderStudentTable()"
+                        style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
+                        <option value="">All Genders</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <!-- Sort Dropdown -->
+                <div>
+                    <label for="sortBy" style="font-size: 12px; font-weight: 600; color: #475569; display: block; margin-bottom: 4px;">
+                        Sort By
+                    </label>
+                    <select
+                        id="sortBy"
+                        onchange="renderStudentTable()"
+                        style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="name_asc">Name (A-Z)</option>
+                        <option value="name_desc">Name (Z-A)</option>
+                        <option value="reg_no">Reg. Number</option>
+                        <option value="course">Course &amp; Year</option>
+                    </select>
+                </div>
+
+                <!-- Reset Button -->
+                <div>
+                    <button type="button" class="btn btn-secondary" onclick="resetFilters()" style="padding: 8px 14px; font-size: 13px;">
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Records Table Section -->
+        <section class="summary-card" style="padding: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <h3 style="margin: 0; color: #1e293b; font-size: 18px;">
+                        📋 Student Directory Records
+                    </h3>
+                    <div id="tableRecordStats" style="font-size: 13px; color: #64748b; margin-top: 3px;">
+                        Loading records...
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-secondary btn-small" onclick="exportRecordsCSV()">
+                        ⬇️ Export CSV
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-small" onclick="exportRecordsJSON()">
+                        🔍 Export JSON
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-responsive" style="margin: 0;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Student Profile</th>
+                            <th>Reg. Number</th>
+                            <th>Username</th>
+                            <th>Contact Info</th>
+                            <th>Course &amp; Year</th>
+                            <th>Gender</th>
+                            <th>Role</th>
+                            <th style="text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTableBody">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<!-- =========================================================================
+     MODAL 1: ADD NEW STUDENT (Client & Server Validation)
+     ========================================================================= -->
+<div class="modal-overlay" id="addModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 style="margin: 0; font-size: 18px; color: #1e293b;">
+                ➕ Add New Student Record
+            </h3>
+            <button type="button" class="close-modal-btn" onclick="closeModal('addModal')">&times;</button>
+        </div>
+
+        <form id="addStudentForm" onsubmit="handleAddStudent(event)">
+            <div class="modal-body">
+                <div class="form-grid-2col">
+                    <div class="form-group">
+                        <label for="addFullName">Full Name <span class="required">*</span></label>
+                        <input type="text" id="addFullName" placeholder="e.g. Yashvi Sharma" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addUsername">Username <span class="required">*</span></label>
+                        <input type="text" id="addUsername" placeholder="e.g. yashvi_s" pattern="^[a-zA-Z0-9_]{4,30}$" title="4-30 chars, letters, numbers, underscore" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-2col">
+                    <div class="form-group">
+                        <label for="addEmail">Email Address <span class="required">*</span></label>
+                        <input type="email" id="addEmail" placeholder="e.g. yashvi@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addMobile">Mobile Number <span class="required">*</span></label>
+                        <input type="tel" id="addMobile" placeholder="10-digit mobile" pattern="^[6-9]\d{9}$" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-2col">
+                    <div class="form-group">
+                        <label for="addCourse">Academic Course <span class="required">*</span></label>
+                        <select id="addCourse" required>
+                            <option value="">-- Select Course --</option>
+                            <option value="B.Tech IT">B.Tech IT</option>
+                            <option value="B.Tech CSE">B.Tech CSE</option>
+                            <option value="BCA">BCA</option>
+                            <option value="B.Tech CE">B.Tech CE</option>
+                            <option value="MCA">MCA</option>
+                            <option value="Administration">Administration</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addAcademicYear">Academic Year <span class="required">*</span></label>
+                        <select id="addAcademicYear" required>
+                            <option value="1">Year 1</option>
+                            <option value="2">Year 2</option>
+                            <option value="3" selected>Year 3</option>
+                            <option value="4">Year 4</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid-2col">
+                    <div class="form-group">
+                        <label for="addGender">Gender <span class="required">*</span></label>
+                        <select id="addGender" required>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addRole">System Role <span class="required">*</span></label>
+                        <select id="addRole" required>
+                            <option value="student" selected>Student</option>
+                            <option value="admin">Administrator</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="addPassword">Initial Password (Default: Student@123)</label>
+                    <input type="password" id="addPassword" placeholder="Default: Student@123">
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('addModal')">Cancel</button>
+                <button type="submit" class="btn" style="background: #10b981; border-color: #10b981;">Save Student</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- =========================================================================
+     MODAL 2: EDIT STUDENT
+     ========================================================================= -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 style="margin: 0; font-size: 18px; color: #1e293b;">
+                ✏️ Edit Student Record
+            </h3>
+            <button type="button" class="close-modal-btn" onclick="closeModal('editModal')">&times;</button>
+        </div>
+
+        <form id="editStudentForm" onsubmit="handleEditStudent(event)">
+            <input type="hidden" id="editStudentId" value="">
+
+            <div class="modal-body">
+                <div style="background: #f1f5f9; padding: 10px 14px; border-radius: 8px; margin-bottom: 16px; font-size: 13px; color: #475569;">
+                    Editing Student: <strong id="editBadgeRegNo" style="font-family: monospace; color: #0284c7;">STU...</strong>
+                </div>
+
+                <div class="form-grid-2col">
+                    <div class="form-group">
+                        <label for="editFullName">Full Name <span class="required">*</span></label>
+                        <input type="text" id="editFullName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editUsername">Username <span class="required">*</span></label>
+                        <input type="text" id="editUsername" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-2col">
+                    <div class="form-group">
+                        <label for="editEmail">Email Address <span class="required">*</span></label>
+                        <input type="email" id="editEmail" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editMobile">Mobile Number <span class="required">*</span></label>
+                        <input type="tel" id="editMobile" pattern="^[6-9]\d{9}$" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-2col">
+                    <div class="form-group">
+                        <label for="editCourse">Course <span class="required">*</span></label>
+                        <select id="editCourse" required>
+                            <option value="B.Tech IT">B.Tech IT</option>
+                            <option value="B.Tech CSE">B.Tech CSE</option>
+                            <option value="BCA">BCA</option>
+                            <option value="B.Tech CE">B.Tech CE</option>
+                            <option value="MCA">MCA</option>
+                            <option value="Administration">Administration</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editAcademicYear">Academic Year <span class="required">*</span></label>
+                        <select id="editAcademicYear" required>
+                            <option value="1">Year 1</option>
+                            <option value="2">Year 2</option>
+                            <option value="3">Year 3</option>
+                            <option value="4">Year 4</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid-2col">
+                    <div class="form-group">
+                        <label for="editGender">Gender <span class="required">*</span></label>
+                        <select id="editGender" required>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editRole">System Role <span class="required">*</span></label>
+                        <select id="editRole" required>
+                            <option value="student">Student</option>
+                            <option value="admin">Administrator</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+                <button type="submit" class="btn" style="background: #2563eb; border-color: #2563eb;">Update Record</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- =========================================================================
+     MODAL 3: VIEW STUDENT DETAILS
+     ========================================================================= -->
+<div class="modal-overlay" id="viewModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 style="margin: 0; font-size: 18px; color: #1e293b;">
+                👁️ Student Record Details
+            </h3>
+            <button type="button" class="close-modal-btn" onclick="closeModal('viewModal')">&times;</button>
+        </div>
+
+        <div class="modal-body" id="viewModalBody">
+            <!-- Populated dynamically -->
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('viewModal')">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================================================
+     MODAL 4: CONFIRM DELETE
+     ========================================================================= -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-box" style="max-width: 440px;">
+        <div class="modal-header" style="background: #fef2f2;">
+            <h3 style="margin: 0; font-size: 17px; color: #991b1b;">
+                ⚠️ Confirm Record Deletion
+            </h3>
+            <button type="button" class="close-modal-btn" onclick="closeModal('deleteModal')">&times;</button>
+        </div>
+
+        <div class="modal-body">
+            <p style="margin: 0; font-size: 14px; color: #334155;">
+                Are you sure you want to delete student record for <strong id="deleteDisplayTarget"></strong>?
+            </p>
+            <div style="background: #fff1f2; border: 1px solid #fecdd3; border-radius: 8px; padding: 12px; margin-top: 14px; font-size: 12px; color: #9f1239;">
+                🚨 <strong>Warning:</strong> This permanently deletes the student record. This action cannot be undone.
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+            <button type="button" class="btn" onclick="executeDelete()" style="background: #dc2626; border-color: #dc2626;">Permanently Delete</button>
+        </div>
+    </div>
+</div>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+    <p>© 2026 StudentHub | Digital Campus Portal</p>
+    <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="register.html">Register</a>
+        <a href="student_manager.html">Students</a>
+        <a href="admin.html">Admin</a>
+        <a href="../php/view_registrations.php">Records</a>
+    </div>
+</footer>
+
+<script src="../js/script.js"></script>
+<script>
+// Initial Baseline Seed Data
+const DEFAULT_STUDENTS = [
+    {
+        student_id: 1,
+        registration_no: 'ADM20261001001',
+        username: 'admin',
+        full_name: 'Campus Administrator',
+        email: 'admin@studenthub.com',
+        mobile: '9999999999',
+        course: 'Administration',
+        academic_year: 4,
+        gender: 'Other',
+        role: 'admin',
+        created_at: '2026-10-01 09:00:00'
+    },
+    {
+        student_id: 2,
+        registration_no: 'STU20261012001',
+        username: 'rahul_patel',
+        full_name: 'Rahul Patel',
+        email: 'rahul@example.com',
+        mobile: '9876543210',
+        course: 'B.Tech IT',
+        academic_year: 3,
+        gender: 'Male',
+        role: 'student',
+        created_at: '2026-10-12 10:30:00'
+    },
+    {
+        student_id: 3,
+        registration_no: 'STU20261012002',
+        username: 'priya_shah',
+        full_name: 'Priya Shah',
+        email: 'priya@example.com',
+        mobile: '9876543211',
+        course: 'B.Tech CSE',
+        academic_year: 2,
+        gender: 'Female',
+        role: 'student',
+        created_at: '2026-10-12 10:35:00'
+    },
+    {
+        student_id: 4,
+        registration_no: 'STU20261012003',
+        username: 'aarav_m',
+        full_name: 'Aarav Mehta',
+        email: 'aarav@example.com',
+        mobile: '9876543212',
+        course: 'BCA',
+        academic_year: 1,
+        gender: 'Male',
+        role: 'student',
+        created_at: '2026-10-12 10:40:00'
+    }
+];
+
+let targetDeleteId = null;
+
+// Load all students from localStorage or defaults
+function getAllStudents() {
+    try {
+        const stored = localStorage.getItem('studenthub_all_students');
+        if (stored) {
+            return JSON.parse(stored);
+        }
+    } catch (e) {
+        console.warn(e);
+    }
+    // Initialize with defaults
+    saveStudents(DEFAULT_STUDENTS);
+    return DEFAULT_STUDENTS;
+}
+
+function saveStudents(list) {
+    localStorage.setItem('studenthub_all_students', JSON.stringify(list));
+}
+
+// Show Flash Alert Box
+function showFlashAlert(message, type = 'success') {
+    const container = document.getElementById('flashAlertContainer');
+    container.innerHTML = `
+        <div class="alert-box alert-${type}" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div class="alert-title">
+                    <span>${type === 'success' ? '✅' : (type === 'warning' ? '⚠️' : '❌')}</span>
+                    <span>${type === 'success' ? 'Operation Completed Successfully' : 'Operation Notification'}</span>
+                </div>
+                <p style="margin: 0; font-size: 13px;">${message}</p>
+            </div>
+            <button type="button" onclick="this.parentElement.remove()" style="background:none; border:none; font-size:18px; cursor:pointer;">&times;</button>
+        </div>
+    `;
+    container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// Render Table with Active Search, Filters, and Sort
+function renderStudentTable() {
+    const all = getAllStudents();
+    const search = document.getElementById('searchQuery').value.trim().toLowerCase();
+    const course = document.getElementById('filterCourse').value;
+    const year = document.getElementById('filterYear').value;
+    const role = document.getElementById('filterRole').value;
+    const gender = document.getElementById('filterGender').value;
+    const sort = document.getElementById('sortBy').value;
+
+    let filtered = all.filter(s => {
+        // Search
+        if (search) {
+            const haystack = `${s.full_name} ${s.username} ${s.email} ${s.registration_no} ${s.mobile}`.toLowerCase();
+            if (!haystack.includes(search)) return false;
+        }
+        // Course
+        if (course && s.course !== course) return false;
+        // Year
+        if (year && String(s.academic_year) !== String(year)) return false;
+        // Role
+        if (role && s.role !== role) return false;
+        // Gender
+        if (gender && s.gender !== gender) return false;
+
+        return true;
+    });
+
+    // Sorting
+    filtered.sort((a, b) => {
+        if (sort === 'oldest') return a.student_id - b.student_id;
+        if (sort === 'name_asc') return a.full_name.localeCompare(b.full_name);
+        if (sort === 'name_desc') return b.full_name.localeCompare(a.full_name);
+        if (sort === 'reg_no') return a.registration_no.localeCompare(b.registration_no);
+        if (sort === 'course') return a.course.localeCompare(b.course);
+        return b.student_id - a.student_id; // newest default
+    });
+
+    // Update KPI
+    document.getElementById('kpiTotalStudents').textContent = all.length;
+    document.getElementById('kpiFilteredStudents').textContent = filtered.length;
+    const uniqueCourses = new Set(all.map(s => s.course));
+    document.getElementById('kpiCoursesCount').textContent = uniqueCourses.size;
+
+    document.getElementById('tableRecordStats').textContent = 
+        `Showing ${filtered.length} of ${all.length} total student profiles`;
+
+    const tbody = document.getElementById('studentTableBody');
+    if (filtered.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" style="text-align: center; padding: 36px 20px; color: #64748b;">
+                    <div style="font-size: 32px; margin-bottom: 8px;">🔍</div>
+                    <strong style="font-size: 15px; color: #334155;">No student records found</strong>
+                    <p style="margin: 4px 0 14px 0; font-size: 13px;">
+                        No students matched your search query or filter parameters.
+                    </p>
+                    <button type="button" class="btn btn-secondary btn-small" onclick="resetFilters()">
+                        Reset Filters
+                    </button>
+                    <button type="button" class="btn btn-small" onclick="openAddModal()" style="margin-left: 8px;">
+                        + Add New Student
+                    </button>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = filtered.map(s => {
+        const avatar = s.gender === 'Female' ? '👩‍🎓' : (s.role === 'admin' ? '🛡️' : '👨‍🎓');
+        const roleBadge = s.role === 'admin' 
+            ? `<span class="badge" style="background: #fee2e2; color: #991b1b; font-weight: 700; font-size: 11px;">Administrator</span>`
+            : `<span class="badge badge-primary" style="font-size: 11px;">Student</span>`;
+
+        return `
+            <tr>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="table-avatar">${avatar}</div>
+                        <div>
+                            <div style="font-weight: 700; color: #1e293b;">${s.full_name}</div>
+                            <div style="font-size: 11px; color: #64748b;">ID #${s.student_id}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <span class="badge badge-primary" style="font-family: monospace; font-size: 11px;">
+                        ${s.registration_no}
+                    </span>
+                </td>
+                <td>
+                    <span class="badge badge-success" style="font-size: 11px;">
+                        @${s.username}
+                    </span>
+                </td>
+                <td>
+                    <div style="font-size: 13px; color: #1e293b;">${s.email}</div>
+                    <div style="font-size: 11px; color: #64748b;">📱 ${s.mobile}</div>
+                </td>
+                <td>
+                    <div style="font-weight: 600; font-size: 13px; color: #1e293b;">${s.course}</div>
+                    <div style="font-size: 11px; color: #64748b;">Year ${s.academic_year} of 4</div>
+                </td>
+                <td>
+                    <span class="storage-tag" style="padding: 2px 8px; font-size: 11px;">
+                        ${s.gender}
+                    </span>
+                </td>
+                <td>${roleBadge}</td>
+                <td style="text-align: right;">
+                    <div class="action-btn-group" style="justify-content: flex-end;">
+                        <button type="button" class="btn-action btn-view" onclick="openViewModal(${s.student_id})" title="View complete student profile">
+                            <span>👁️</span> View
+                        </button>
+                        <button type="button" class="btn-action btn-edit" onclick="openEditModal(${s.student_id})" title="Edit student record">
+                            <span>✏️</span> Edit
+                        </button>
+                        <button type="button" class="btn-action btn-delete" onclick="confirmDelete(${s.student_id}, '${s.full_name.replace(/'/g, "\\'")}', '${s.registration_no}')" title="Delete student record">
+                            <span>🗑️</span> Delete
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Reset All Filters
+function resetFilters() {
+    document.getElementById('searchQuery').value = '';
+    document.getElementById('filterCourse').value = '';
+    document.getElementById('filterYear').value = '';
+    document.getElementById('filterRole').value = '';
+    document.getElementById('filterGender').value = '';
+    document.getElementById('sortBy').value = 'newest';
+    renderStudentTable();
+}
+
+// Modal Functions
+function openAddModal() {
+    document.getElementById('addStudentForm').reset();
+    document.getElementById('addModal').classList.add('active');
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+}
+
+// Handle Add Student
+function handleAddStudent(e) {
+    e.preventDefault();
+    const all = getAllStudents();
+
+    const fullName = document.getElementById('addFullName').value.trim();
+    const username = document.getElementById('addUsername').value.trim().toLowerCase();
+    const email = document.getElementById('addEmail').value.trim().toLowerCase();
+    const mobile = document.getElementById('addMobile').value.trim();
+    const course = document.getElementById('addCourse').value;
+    const year = parseInt(document.getElementById('addAcademicYear').value);
+    const gender = document.getElementById('addGender').value;
+    const role = document.getElementById('addRole').value;
+
+    // Check duplicate
+    const duplicate = all.find(s => s.username.toLowerCase() === username || s.email.toLowerCase() === email);
+    if (duplicate) {
+        alert(`Duplicate error: A student with username '@${username}' or email '${email}' already exists.`);
+        return;
+    }
+
+    const nextId = all.length > 0 ? Math.max(...all.map(s => s.student_id)) + 1 : 1;
+    const regNo = 'STU' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + String(Math.floor(Math.random() * 900 + 100));
+
+    const newStudent = {
+        student_id: nextId,
+        registration_no: regNo,
+        username: username,
+        full_name: fullName,
+        email: email,
+        mobile: mobile,
+        course: course,
+        academic_year: year,
+        gender: gender,
+        role: role,
+        created_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
+    };
+
+    all.unshift(newStudent);
+    saveStudents(all);
+
+    closeModal('addModal');
+    renderStudentTable();
+    showFlashAlert(`🎉 Student record added successfully! Registered <strong>${fullName}</strong> as ID <code>${regNo}</code>.`, 'success');
+}
+
+// Open Edit Modal
+function openEditModal(id) {
+    const all = getAllStudents();
+    const s = all.find(item => item.student_id === id);
+    if (!s) return;
+
+    document.getElementById('editStudentId').value = s.student_id;
+    document.getElementById('editBadgeRegNo').textContent = s.registration_no;
+    document.getElementById('editFullName').value = s.full_name;
+    document.getElementById('editUsername').value = s.username;
+    document.getElementById('editEmail').value = s.email;
+    document.getElementById('editMobile').value = s.mobile;
+    document.getElementById('editCourse').value = s.course;
+    document.getElementById('editAcademicYear').value = s.academic_year;
+    document.getElementById('editGender').value = s.gender;
+    document.getElementById('editRole').value = s.role;
+
+    document.getElementById('editModal').classList.add('active');
+}
+
+// Handle Edit Student
+function handleEditStudent(e) {
+    e.preventDefault();
+    const all = getAllStudents();
+    const id = parseInt(document.getElementById('editStudentId').value);
+    const s = all.find(item => item.student_id === id);
+    if (!s) return;
+
+    const username = document.getElementById('editUsername').value.trim().toLowerCase();
+    const email = document.getElementById('editEmail').value.trim().toLowerCase();
+
+    // Check duplicate excluding this student
+    const duplicate = all.find(item => item.student_id !== id && (item.username.toLowerCase() === username || item.email.toLowerCase() === email));
+    if (duplicate) {
+        alert(`Update conflict: Another student already owns that username or email.`);
+        return;
+    }
+
+    s.full_name = document.getElementById('editFullName').value.trim();
+    s.username = username;
+    s.email = email;
+    s.mobile = document.getElementById('editMobile').value.trim();
+    s.course = document.getElementById('editCourse').value;
+    s.academic_year = parseInt(document.getElementById('editAcademicYear').value);
+    s.gender = document.getElementById('editGender').value;
+    s.role = document.getElementById('editRole').value;
+
+    saveStudents(all);
+    closeModal('editModal');
+    renderStudentTable();
+    showFlashAlert(`✏️ Student record for <strong>${s.full_name}</strong> (ID #${s.student_id}) updated successfully!`, 'success');
+}
+
+// Open View Modal
+function openViewModal(id) {
+    const all = getAllStudents();
+    const s = all.find(item => item.student_id === id);
+    if (!s) return;
+
+    const roleBadge = s.role === 'admin' 
+        ? '<span class="badge" style="background:#fee2e2; color:#991b1b; font-weight:700;">Administrator</span>' 
+        : '<span class="badge badge-primary">Student</span>';
+
+    document.getElementById('viewModalBody').innerHTML = `
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #e2e8f0;">
+            <div style="width: 58px; height: 58px; border-radius: 50%; background: #e0f2fe; display: flex; align-items: center; justify-content: center; font-size: 26px;">
+                ${s.gender === 'Female' ? '👩‍🎓' : (s.role === 'admin' ? '🛡️' : '👨‍🎓')}
+            </div>
+            <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <h3 style="margin: 0; font-size: 19px; color: #1e293b;">${s.full_name}</h3>
+                    ${roleBadge}
+                </div>
+                <div style="font-size: 13px; color: #64748b; margin-top: 3px;">
+                    @${s.username} &bull; Reg ID: <code style="color: #0284c7;">${s.registration_no}</code>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; font-size: 13px;">
+            <div style="background: #f8fafc; padding: 10px 12px; border-radius: 6px;">
+                <span style="color: #64748b; font-size: 11px; text-transform: uppercase; font-weight: 600; display: block;">Email Address</span>
+                <span style="color: #0f172a; font-weight: 600;">${s.email}</span>
+            </div>
+
+            <div style="background: #f8fafc; padding: 10px 12px; border-radius: 6px;">
+                <span style="color: #64748b; font-size: 11px; text-transform: uppercase; font-weight: 600; display: block;">Mobile Number</span>
+                <span style="color: #0f172a; font-weight: 600;">+91 ${s.mobile}</span>
+            </div>
+
+            <div style="background: #f8fafc; padding: 10px 12px; border-radius: 6px;">
+                <span style="color: #64748b; font-size: 11px; text-transform: uppercase; font-weight: 600; display: block;">Academic Course</span>
+                <span style="color: #0f172a; font-weight: 600;">${s.course}</span>
+            </div>
+
+            <div style="background: #f8fafc; padding: 10px 12px; border-radius: 6px;">
+                <span style="color: #64748b; font-size: 11px; text-transform: uppercase; font-weight: 600; display: block;">Academic Year</span>
+                <span style="color: #0f172a; font-weight: 600;">Year ${s.academic_year} of 4</span>
+            </div>
+
+            <div style="background: #f8fafc; padding: 10px 12px; border-radius: 6px;">
+                <span style="color: #64748b; font-size: 11px; text-transform: uppercase; font-weight: 600; display: block;">Gender</span>
+                <span style="color: #0f172a; font-weight: 600;">${s.gender}</span>
+            </div>
+
+            <div style="background: #f8fafc; padding: 10px 12px; border-radius: 6px;">
+                <span style="color: #64748b; font-size: 11px; text-transform: uppercase; font-weight: 600; display: block;">Registered Date</span>
+                <span style="color: #0f172a; font-weight: 600;">${s.created_at || 'Recently'}</span>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('viewModal').classList.add('active');
+}
+
+// Confirm Delete
+function confirmDelete(id, name, regNo) {
+    targetDeleteId = id;
+    document.getElementById('deleteDisplayTarget').textContent = `${name} (${regNo})`;
+    document.getElementById('deleteModal').classList.add('active');
+}
+
+// Execute Delete
+function executeDelete() {
+    if (!targetDeleteId) return;
+    const all = getAllStudents();
+    const target = all.find(s => s.student_id === targetDeleteId);
+    const updated = all.filter(s => s.student_id !== targetDeleteId);
+    saveStudents(updated);
+
+    closeModal('deleteModal');
+    renderStudentTable();
+    showFlashAlert(`🗑️ Student record <strong>${target ? target.full_name : ''}</strong> was permanently deleted.`, 'success');
+    targetDeleteId = null;
+}
+
+// Export CSV
+function exportRecordsCSV() {
+    const all = getAllStudents();
+    let csv = 'Student ID,Registration No,Username,Full Name,Email,Mobile,Course,Year,Gender,Role,Created At\n';
+    all.forEach(s => {
+        csv += `"${s.student_id}","${s.registration_no}","${s.username}","${s.full_name}","${s.email}","${s.mobile}","${s.course}","${s.academic_year}","${s.gender}","${s.role}","${s.created_at || ''}"\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'studenthub_students.csv';
+    a.click();
+}
+
+// Export JSON
+function exportRecordsJSON() {
+    const all = getAllStudents();
+    const blob = new Blob([JSON.stringify(all, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'studenthub_students.json';
+    a.click();
+}
+
+// Close modals on escape key or outside click
+window.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+    }
+});
+
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', function (e) {
+        if (e.target === this) this.classList.remove('active');
+    });
+});
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+    renderStudentTable();
+});
+</script>
+
+</body>
+</html>

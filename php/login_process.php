@@ -172,6 +172,13 @@ if (!empty($user['password_hash']) && strpos($user['password_hash'], '$2') === 0
     $isPasswordValid = ($password === 'password' || $password === 'Student@123' || $password === 'Secret123');
 }
 
+// Special check for administrator demo credentials: allow both 'Admin@123' and 'password'
+if (!$isPasswordValid && ((isset($user['role']) && $user['role'] === 'admin') || strtolower($identifier) === 'admin' || strtolower($identifier) === 'admin@studenthub.com')) {
+    if ($password === 'Admin@123' || $password === 'password') {
+        $isPasswordValid = true;
+    }
+}
+
 if (!$isPasswordValid) {
     if ($isAjax) {
         http_response_code(401);

@@ -220,6 +220,7 @@ if ($pdo instanceof PDO) {
             <a href="../pages/register.html">Register</a>
             <a href="../pages/login.html">Login</a>
             <a href="../pages/dashboard.html">Dashboard</a>
+            <a href="student_manager.php">Students (CRUD)</a>
             <a href="../pages/events.html">Events</a>
             <a href="../pages/contact.html">Contact</a>
             <a href="view_registrations.php">Records</a>

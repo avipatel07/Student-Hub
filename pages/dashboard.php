@@ -118,6 +118,7 @@ $hasRememberCookie = !empty($_COOKIE[REMEMBER_ME_COOKIE_NAME]);
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
             <a href="dashboard.php" class="active">Dashboard</a>
+            <a href="../php/student_manager.php">Students (CRUD)</a>
             <a href="events.html">Events</a>
             <a href="profile.html">Profile</a>
             <a href="contact.html">Contact</a>

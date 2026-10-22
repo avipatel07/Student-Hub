@@ -557,11 +557,11 @@ Student Hub/
 │   └── ER_MODEL.md             # Updated ER specification with role and remember-me attributes
 ├── pages/
 │   ├── login.php               # Protected login page with error alerts, remember-me & auto-fill test buttons
-│   ├── login.html              # HTML fallback auto-redirecting to login.php
+│   ├── login.html              # Dual-mode login page (Live Server client auth + PHP POST fallback)
 │   ├── dashboard.php           # Protected student dashboard requiring student role & showing session timer
-│   ├── dashboard.html          # HTML fallback auto-redirecting to dashboard.php
+│   ├── dashboard.html          # Interactive student dashboard with active session rendering
 │   ├── admin.php               # Protected administrator console requiring admin role & user table
-│   └── admin.html              # HTML fallback auto-redirecting to admin.php
+│   └── admin.html              # Full administrator console with KPI metrics and directory table
 └── php/
     ├── auth_session.php        # Core session security, timeout check, requireLogin(), remember-me & logout
     ├── login_process.php       # Authenticates via password_verify(), session_regenerate_id(true), RBAC redirect
@@ -569,6 +569,115 @@ Student Hub/
     ├── register_process.php    # Integrated role='student' assignment and auth_session helper
     └── db_connect.php          # Database connectivity for session verification
 ```
+
+---
+
+# Practical 11 - Student Management CRUD Module with MySQLi Statements
+
+## Objective
+
+To develop a comprehensive, production-ready Student Management module that performs full CRUD operations (**C**reate, **R**ead, **U**pdate, **D**elete), as well as multi-criteria **Search** and **Filtering** on student records. All database transactions strictly utilize parameterized **MySQLi Prepared Statements** with complete SQL injection defense and explicit success/failure feedback alerts.
+
+## Key Capabilities Implemented
+
+### 1. Add Student Record (MySQLi Parameterized `INSERT`)
+- Validates user input both client-side and server-side: full name, unique username (4–30 alphanumeric/underscore), valid email format, 10-digit mobile number, course, academic year (1–4), gender, and role.
+- Executes duplicate check via MySQLi prepared statement before insertion:
+  ```php
+  $dupStmt = $mysqli->prepare("SELECT student_id, username, email FROM students WHERE username = ? OR email = ? LIMIT 1");
+  $dupStmt->bind_param("ss", $username, $email);
+  $dupStmt->execute();
+  ```
+- Hashes password using native Bcrypt (`password_hash($password, PASSWORD_DEFAULT)`).
+- Executes parameterized MySQLi insert query:
+  ```php
+  $insStmt = $mysqli->prepare("
+      INSERT INTO students 
+          (registration_no, username, full_name, email, mobile, password_hash, course, academic_year, gender, terms_accepted, role, created_at) 
+      VALUES 
+          (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Accepted', ?, ?)
+  ");
+  $insStmt->bind_param("ssssssissss", $regNo, $username, $fullName, $email, $mobile, $passwordHash, $course, $academicYear, $gender, $role, $createdAt);
+  $insStmt->execute();
+  ```
+- Issues clear success message: *"🎉 Student record added successfully! Registered [Full Name] as ID [Reg No]."*
+
+### 2. View Student Profile (MySQLi `SELECT` & Interactive Modal)
+- Interactive **"View"** modal displays complete profile attributes: formatted registration ID, avatar icon, full name, username badge, verified email, mobile (+91), course, academic year, gender, and registration timestamp.
+- Backed by parameterized query:
+  ```php
+  $stmt = $mysqli->prepare("SELECT * FROM students WHERE student_id = ? LIMIT 1");
+  $stmt->bind_param("i", $studentId);
+  $stmt->execute();
+  ```
+
+### 3. Edit Student Record (MySQLi Parameterized `UPDATE`)
+- Interactive **"Edit"** modal pre-populates existing student attributes via an asynchronous JSON endpoint.
+- Validates that updated username and email do not conflict with another student record:
+  ```php
+  $dupStmt = $mysqli->prepare("SELECT student_id FROM students WHERE (username = ? OR email = ?) AND student_id != ? LIMIT 1");
+  $dupStmt->bind_param("ssi", $username, $email, $studentId);
+  ```
+- Executes parameterized MySQLi update query:
+  ```php
+  $updStmt = $mysqli->prepare("
+      UPDATE students 
+      SET full_name = ?, username = ?, email = ?, mobile = ?, course = ?, academic_year = ?, gender = ?, role = ? 
+      WHERE student_id = ?
+  ");
+  $updStmt->bind_param("sssssissi", $fullName, $username, $email, $mobile, $course, $academicYear, $gender, $role, $studentId);
+  $updStmt->execute();
+  ```
+- Optionally updates password if a new password is submitted.
+- Issues clear success message: *"✏️ Student record for [Full Name] (ID #[ID]) updated successfully via MySQLi Prepared Statement!"*
+
+### 4. Delete Student Record (MySQLi Parameterized `DELETE`)
+- Modal confirmation guard displaying student name and registration ID to prevent accidental deletions.
+- Executes parameterized MySQLi delete query:
+  ```php
+  $delStmt = $mysqli->prepare("DELETE FROM students WHERE student_id = ?");
+  $delStmt->bind_param("i", $studentId);
+  $delStmt->execute();
+  ```
+- Issues clear deletion message: *"🗑️ Student record [Full Name] (ID #[ID]) was permanently deleted via MySQLi Prepared Statement."*
+
+### 5. Search & Multi-Criteria Filtering
+- **Keyword Search**: Matches search string against student full name, username, email, registration number, or mobile number:
+  ```sql
+  WHERE (full_name LIKE ? OR username LIKE ? OR email LIKE ? OR registration_no LIKE ? OR mobile LIKE ?)
+  ```
+- **Course Filter**: Dynamically filters by B.Tech IT, B.Tech CSE, BCA, B.Tech CE, MCA, etc.
+- **Academic Year Filter**: Filters by Year 1, Year 2, Year 3, or Year 4.
+- **Role Filter**: Filters by Student vs Administrator.
+- **Gender Filter**: Filters by Male, Female, Other.
+- **Dynamic Sorting**: Newest First, Oldest First, Name (A-Z), Name (Z-A), Registration Number, Course & Year.
+- All filters bind dynamically to prepared parameters.
+
+### 6. Clear Success & Failure Messaging
+- Operation feedback displays prominent, color-coded alert banners with descriptive icons:
+  - `alert-success`: Record added, updated, or deleted with affected row details.
+  - `alert-danger`: Duplicate record conflict, validation failure, or database exception.
+  - `alert-warning`: No records matching criteria or deletion confirmation notice.
+
+### 7. Dual Sync & Offline Resilience
+- Automatically updates `data/registrations.json` and `data/registrations.csv` alongside MySQL transactions.
+- Provides fallback rendering in lab environments where MySQL might not be active, with a visible driver status badge (`🟢 MySQLi Connected` vs `🟡 Offline Lab Mode`).
+
+## Practical 11 File Structure
+
+```text
+Student Hub/
+├── pages/
+│   └── student_manager.html    # Interactive client-side CRUD demo with Live Server support
+├── php/
+│   └── student_manager.php     # Full PHP MySQLi Student Management CRUD Module with search & filter
+├── data/
+│   ├── registrations.json      # Synchronized JSON student records
+│   └── registrations.csv       # Synchronized CSV student records
+└── database/
+    └── schema.sql              # Relational students table definition
+```
+
 
 
 
