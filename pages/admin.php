@@ -146,6 +146,7 @@ if (empty($allUsers)) {
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
             <a href="admin.php" class="active">Admin Panel</a>
+            <a href="../php/admin_dashboard.php">Admin Dashboard (P14)</a>
             <a href="../php/student_manager.php">Students (CRUD)</a>
             <a href="../php/event_manager.php">Events (Admin CRUD)</a>
             <a href="dashboard.php">Student Dashboard</a>

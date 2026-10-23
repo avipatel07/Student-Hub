@@ -1041,6 +1041,171 @@ Student Hub/
   curl -X DELETE "http://localhost:8000/php/api_events.php?id=1" -H "Accept: application/json"
   ```
 
+---
+
+# Practical 14 - Administrator Dashboard with Role-Based Access Control (RBAC) & Dynamic Navigation
+
+## Objective
+
+To develop a comprehensive, secure **Administrator Dashboard** for the **StudentHub** digital campus portal that displays **user statistics**, **student count**, **event count**, and **latest registrations**. The module strictly restricts access to **authorized administrator users only** via server-side Role-Based Access Control (RBAC), and renders a **dynamic contextual navigation menu** whose visible links and actions adapt automatically based on the user's authenticated role.
+
+---
+
+## 🏗️ Architecture & RBAC Authorization Flow
+
+```text
+               ┌────────────────────────────────────────────────────────┐
+               │           CLIENT REQUEST / PAGE ACCESS                 │
+               │   (php/admin_dashboard.php / admin_dashboard.html)     │
+               └──────────────────────────┬─────────────────────────────┘
+                                          │
+                                          ▼
+                      ┌───────────────────────────────────────┐
+                      │    AUTHENTICATION GUARD (isLoggedIn)  │
+                      └───────────────────┬───────────────────┘
+                                          │
+                        ┌─────────────────┴─────────────────┐
+                        │ Unauthenticated                   │ Authenticated
+                        ▼                                   ▼
+             ┌─────────────────────┐       ┌─────────────────────────────────┐
+             │ Redirect to Login   │       │   ROLE-BASED AUTHORIZATION      │
+             │ (?error=auth_req)   │       │   requireLogin('admin')         │
+             └─────────────────────┘       └────────────────┬────────────────┘
+                                                            │
+                                  ┌─────────────────────────┴─────────────────────────┐
+                                  │ Role == 'student'                                 │ Role == 'admin'
+                                  ▼                                                   ▼
+            ┌───────────────────────────────────────────────┐       ┌───────────────────────────────────────────────┐
+            │         ACCESS RESTRICTION SCREEN             │       │         AUTHORIZED ADMIN DASHBOARD            │
+            │  - 403 Forbidden / Access Denied Alert        │       │  - Full Access to Admin Statistics & Reports  │
+            │  - Redirects to dashboard.php?error=admin_only│       │  - Aggregated User & Student Metrics          │
+            │  - Student Navigation Menu Active             │       │  - Event Counts & Capacity Utilization        │
+            │  - Administrative links remain HIDDEN         │       │  - Chronological Latest Registrations Feed    │
+            └───────────────────────────────────────────────┘       │  - Administrative Navigation Options Dynamic  │
+                                                                    └───────────────────────────────────────────────┘
+```
+
+---
+
+## 🛡️ Key Capabilities Implemented
+
+### 1. Strict Role-Based Access Control (RBAC Guard)
+- Enforces strict server-side authorization on script entry:
+  ```php
+  requireLogin('admin', '../pages/login.php');
+  ```
+- **Unauthenticated Visitors**: Intercepted and redirected to `login.php?error=auth_required`.
+- **Student Accounts**: Intercepted and blocked with explicit security notification:
+  *"⛔ Access Denied: Administrator privileges are required to view this console. Your account role is 'student'."*
+- **Client & Live Server Parity**: The companion `pages/admin_dashboard.html` features an interactive lock screen that blocks non-administrators and provides an active **Role Switcher Toolbar** (`[🛡️ Admin]`, `[🎓 Student]`, `[👤 Guest]`) for frictionless viva and grading demonstrations.
+
+### 2. Contextual Dynamic Navigation Menu Based on Role
+- The navigation bar builds dynamically depending on the current user's privileges:
+
+| Role | Visible Navigation Links | Hidden / Restricted Links |
+|---|---|---|
+| **Administrator (`admin`)** | 🛡️ Admin Dashboard, 👥 Student Manager (CRUD), 🎪 Event Manager (CRUD), ⚡ JSON API (P13), 🗄️ Database Center, 📋 Records, 👨‍🎓 Student View, 🚪 Sign Out | None |
+| **Student (`student`)** | 🏠 Home, 🎓 My Dashboard, 📅 Campus Events, 👤 My Profile, 💬 Contact, ❓ FAQs, 🚪 Sign Out | 🛡️ Admin Dashboard, 👥 Student Manager, 🎪 Event Manager, 🗄️ Database Center |
+| **Guest / Public (`guest`)** | 🏠 Home, ℹ️ About, 📅 Events, 🔐 Login, 📝 Register, 💬 Contact, ❓ FAQ | All Protected Dashboards & Admin Tools |
+
+- Implemented via reusable PHP generator function:
+  ```php
+  echo renderDynamicNavbar($currentUser, 'admin_dashboard');
+  ```
+  and corresponding reactive JavaScript engine in `pages/admin_dashboard.html`.
+
+### 3. User Statistics Engine
+- **Total Registered Accounts**: Total user count with students vs administrators ratio.
+- **Academic Program Breakdown**: Degree course distribution (B.Tech IT, B.Tech CSE, BCA, B.Tech CE, MCA) with proportional colored progress meters.
+- **Academic Year Distribution**: Student counts grouped by Year 1, Year 2, Year 3, and Year 4.
+- **Gender Demographics**: Breakdown across Male, Female, and Other with percentage distributions.
+
+### 4. Student Count & Academic KPIs
+- Dedicated metric card for enrolled active students.
+- Direct shortcuts to student management, registration search, and export facilities.
+
+### 5. Event Count & Seating Utilization
+- **Total Campus Events**: Count of all registered events across categories.
+- **Categorized Breakdown**: Events organized by Technology, Workshops, Cultural, Sports, and Competitions.
+- **Status Distribution**: Real-time count of Upcoming, Ongoing, and Completed events.
+- **Seating Capacity Utilization**: Visual progress bar tracking total seating capacity vs booked seats.
+
+### 6. Chronological Latest Registrations Feed
+- Displays the most recent student registrations:
+  - Registration Number (e.g. `STU20261012001`)
+  - Full Name & Username handle
+  - Contact details (Email & Mobile)
+  - Degree Course & Academic Year badge
+  - Gender & Account Role badge
+  - Formatted Registration Timestamp
+  - **Quick Action**: Direct button to inspect profile or manage record.
+- Instant client-side search filter for looking up registrations by student name, username, course, or registration code.
+
+### 7. Dual Sync & Offline Lab Resilience
+- Seamlessly queries **MySQL via prepared statements** when online.
+- Automatically falls back to [`data/registrations.json`](file:///c:/Users/avipa/OneDrive/Desktop/Student%20Hub/data/registrations.json) and [`data/events.json`](file:///c:/Users/avipa/OneDrive/Desktop/Student%20Hub/data/events.json) if MySQL is offline.
+- Displays a visible connection badge (`🟢 MySQLi Connected` vs `🟡 Lab Offline Flat-File Mode`).
+
+---
+
+## 📁 Practical 14 File Structure
+
+```text
+Student Hub/
+├── php/
+│   ├── admin_dashboard.php     # Full PHP MySQLi Admin Dashboard with RBAC & Dynamic Menu (Practical 14)
+│   ├── auth_session.php        # Core RBAC verification & requireLogin() guard
+│   ├── student_manager.php     # Practical 11 Student CRUD Module
+│   ├── event_manager.php       # Practical 12 Event Management Module
+│   └── api_events.php          # Practical 13 REST API Endpoint
+├── pages/
+│   ├── admin_dashboard.html    # Interactive Admin Dashboard SPA with Role Simulator (Live Server compatible)
+│   ├── admin.php               # Admin console updated with P14 navigation
+│   ├── admin.html              # Static Admin console updated with P14 showcase card
+│   ├── dashboard.php           # Student Dashboard with access-denied alert handling
+│   ├── dashboard.html          # Student Dashboard updated with P14 links
+│   └── api_crud.html           # Practical 13 Fetch API Client
+├── data/
+│   ├── registrations.json      # Synchronized Students Dataset
+│   └── events.json             # Synchronized Events Dataset
+└── database/
+    └── schema.sql              # Relational database schema with role column & seed accounts
+```
+
+---
+
+## 🧪 Testing & Verification Guide
+
+### Option 1: Testing with VS Code Live Server
+1. Open the workspace in VS Code.
+2. Right-click on [`pages/admin_dashboard.html`](file:///c:/Users/avipa/OneDrive/Desktop/Student%20Hub/pages/admin_dashboard.html) and select **"Open with Live Server"**.
+3. **Test Administrator Privileges (Authorized State)**:
+   - Notice the active toolbar is set to `🛡️ Admin (Full Access)`.
+   - Observe the full Admin navigation menu (Admin Dashboard, Student Manager, Event Manager, JSON API, Database Center).
+   - Inspect the User Statistics, Student Count, Event Count, and Latest Registrations feed.
+   - Use the search bar to filter incoming registrations.
+4. **Test Role Restriction (Access Denied State)**:
+   - In the top simulator toolbar, click **"🎓 Student (Restricted)"**.
+   - Notice that administrative menu options instantly vanish, replaced by the Student Menu (My Dashboard, Events, Profile).
+   - The dashboard transitions to the **Access Denied (403 Forbidden)** lock screen, demonstrating strict RBAC enforcement!
+5. **Test Guest Mode**:
+   - Click **"👤 Guest (Signed Out)"** to view the public navigation menu.
+
+### Option 2: Testing with PHP Built-in Server or Apache (XAMPP)
+1. Run PHP development server:
+   ```bash
+   php -S localhost:8000
+   ```
+2. Open `http://localhost:8000/php/admin_dashboard.php` in your browser.
+3. If not signed in as an administrator, you will be automatically intercepted and redirected to `login.php?error=auth_required`.
+4. Sign in with the administrator credentials:
+   - **Username**: `admin`
+   - **Password**: `password`
+5. Upon successful authentication, you are admitted to the **Admin Dashboard** with real-time MySQL database statistics.
+6. Click **"🔄 Test Student Role (RBAC)"** in the hero banner:
+   - Your session role is switched to `student` and redirected to `dashboard.php`, confirming role enforcement!
+
+
 
 
 
