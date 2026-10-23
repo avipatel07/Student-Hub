@@ -102,6 +102,10 @@
                 Events
             </a>
 
+            <a href="my_registrations.html">
+                My Passes 🎟️
+            </a>
+
             <a href="api_crud.html">
                 JSON API (P13)
             </a>
@@ -570,66 +574,47 @@ document.addEventListener("DOMContentLoaded", function () {
        ================================================= */
 
     async function loadEvents() {
-
         try {
+            eventStatus.textContent = "Loading events...";
+            let fetchedData = null;
 
-            eventStatus.textContent =
-                "Loading events...";
-
-
-            const response =
-                await fetch("../data/events.json");
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "Failed to load events.json"
-                );
-
+            // 1. Try fetching from live PHP API (MySQL backend)
+            try {
+                const apiRes = await fetch("../php/api_events.php");
+                if (apiRes.ok) {
+                    const json = await apiRes.json();
+                    if (json && json.data && Array.isArray(json.data) && json.data.length > 0) {
+                        fetchedData = json.data;
+                    }
+                }
+            } catch (apiErr) {
+                console.log("PHP API not reachable, falling back to data/events.json");
             }
 
+            // 2. Fallback to static JSON file
+            if (!fetchedData) {
+                const response = await fetch("../data/events.json");
+                if (!response.ok) {
+                    throw new Error("Failed to load events.json");
+                }
+                fetchedData = await response.json();
+            }
 
-            allEvents =
-                await response.json();
-
-
-            filteredEvents =
-                [...allEvents];
-
-
+            allEvents = fetchedData;
+            filteredEvents = [...allEvents];
             applySorting(false);
-
             renderEvents();
-
-
-        }
-
-        catch (error) {
-
-            console.error(
-                "Fetch API Error:",
-                error
-            );
-
-
+        } catch (error) {
+            console.error("Fetch API Error:", error);
             eventStatus.innerHTML = `
                 <div class="event-error">
-                    ❌ Unable to load events.
-                    Please make sure
-                    <strong>data/events.json</strong>
-                    exists and the project is running
-                    with Live Server.
+                    ❌ Unable to load events. Please make sure
+                    <strong>data/events.json</strong> or MySQL service is active.
                 </div>
             `;
-
-
             eventList.innerHTML = "";
-
             eventPagination.innerHTML = "";
-
         }
-
     }
 
 
@@ -1357,51 +1342,103 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =================================================
-       CONFIRM REGISTRATION
+       CONFIRM REGISTRATION (REAL BACKEND & SYNC)
        ================================================= */
 
-    confirmEventRegistration
-        .addEventListener(
-            "click",
-            function () {
+    confirmEventRegistration.addEventListener("click", async function () {
+        if (!selectedEvent) return;
 
+        confirmEventRegistration.disabled = true;
+        confirmEventRegistration.textContent = "Processing...";
+        registrationMessage.className = "event-registration-message";
+        registrationMessage.textContent = "Reserving your seat...";
 
-                if (
-                    !selectedEvent
-                ) {
+        let success = false;
+        let responseMsg = "";
+        let regCode = "";
 
-                    return;
+        // 1. Attempt registering via PHP event_register.php
+        try {
+            const res = await fetch("../php/event_register.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ action: "register", event_id: selectedEvent.id })
+            });
 
+            if (res.ok) {
+                const data = await res.json();
+                if (data.success) {
+                    success = true;
+                    responseMsg = data.message || "Registration confirmed!";
+                    regCode = data.registration_code || "";
+                } else {
+                    responseMsg = data.message || "Registration failed.";
+                    // If not logged in, offer quick link to login
+                    if (responseMsg.toLowerCase().includes("logged in")) {
+                        responseMsg += ` <a href="login.php" style="color:#2563eb;font-weight:600;text-decoration:underline;">Click here to Login</a>`;
+                    }
                 }
-
-
-                registrationMessage.textContent =
-                    `🎉 Successfully registered for ${selectedEvent.title}!`;
-
-
-                registrationMessage.classList.add(
-                    "success"
-                );
-
-
-                confirmEventRegistration.disabled =
-                    true;
-
-
-                setTimeout(
-                    function () {
-
-                        closeModal();
-
-                        confirmEventRegistration.disabled =
-                            false;
-
-                    },
-                    1800
-                );
-
             }
-        );
+        } catch (netErr) {
+            console.log("PHP backend unreachable, falling back to local client state.");
+        }
+
+        // 2. Fallback to client localStorage if backend was not reached
+        if (!success && !responseMsg) {
+            let localRegs = JSON.parse(localStorage.getItem("studenthub_registrations") || "[]");
+            const already = localRegs.find(r => r.event_id === selectedEvent.id && r.attendance_status !== "Cancelled");
+            if (already) {
+                responseMsg = `You are already registered for this event! Pass Code: ${already.registration_code}`;
+            } else {
+                regCode = "REG-2026-" + Math.floor(1000 + Math.random() * 9000);
+                localRegs.unshift({
+                    registration_id: Date.now(),
+                    event_id: selectedEvent.id,
+                    registration_code: regCode,
+                    title: selectedEvent.title,
+                    category: selectedEvent.category,
+                    event_date: selectedEvent.date,
+                    event_time: selectedEvent.time,
+                    venue: selectedEvent.location,
+                    attendance_status: "Confirmed",
+                    registration_date: new Date().toISOString().split("T")[0]
+                });
+                localStorage.setItem("studenthub_registrations", JSON.stringify(localRegs));
+                success = true;
+                responseMsg = `🎉 Registration confirmed! Your Pass ID is <strong>${regCode}</strong>.`;
+            }
+        }
+
+        if (success) {
+            registrationMessage.innerHTML = `
+                <div style="background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;padding:12px;border-radius:8px;font-size:13px;margin-top:10px;">
+                    ✅ ${responseMsg}
+                    <div style="margin-top:8px;">
+                        <a href="my_registrations.html" class="btn" style="background:#059669;color:white;padding:5px 12px;font-size:12px;text-decoration:none;border-radius:4px;display:inline-block;">
+                            🎟️ View My Registrations
+                        </a>
+                    </div>
+                </div>
+            `;
+            // Decrement local seat count
+            if (selectedEvent.seats > 0) selectedEvent.seats--;
+            if (selectedEvent.available_seats > 0) selectedEvent.available_seats--;
+            renderEvents();
+
+            setTimeout(() => {
+                confirmEventRegistration.disabled = false;
+                confirmEventRegistration.textContent = "Confirm Registration";
+            }, 3000);
+        } else {
+            registrationMessage.innerHTML = `
+                <div style="background:#fef2f2;border:1px solid #fecaca;color:#991b1b;padding:12px;border-radius:8px;font-size:13px;margin-top:10px;">
+                    ⚠️ ${responseMsg}
+                </div>
+            `;
+            confirmEventRegistration.disabled = false;
+            confirmEventRegistration.textContent = "Confirm Registration";
+        }
+    });
 
 
     /* =================================================

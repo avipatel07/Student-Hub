@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Registrations - StudentHub Campus Portal</title>
+    <link rel="stylesheet" href="../css/portal.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="portal-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="portal-sidebar" id="portalSidebar">
+            <div class="portal-sidebar-brand">
+                <div class="brand-icon">🎓</div>
+                <div>
+                    <div class="brand-text">StudentHub</div>
+                    <div class="brand-subtitle">Campus Digital Portal</div>
+                </div>
+            </div>
+
+            <nav class="portal-sidebar-nav">
+                <div class="nav-section-title">Main Portal</div>
+                <a href="index.html" class="portal-nav-item">
+                    <span class="nav-item-icon">🏠</span>
+                    <span>Home</span>
+                </a>
+                <a href="dashboard.html" class="portal-nav-item">
+                    <span class="nav-item-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="events.html" class="portal-nav-item">
+                    <span class="nav-item-icon">📅</span>
+                    <span>Explore Events</span>
+                </a>
+                <a href="my_registrations.html" class="portal-nav-item active">
+                    <span class="nav-item-icon">🎟️</span>
+                    <span>My Registrations</span>
+                </a>
+                <a href="profile.html" class="portal-nav-item">
+                    <span class="nav-item-icon">👤</span>
+                    <span>My Profile</span>
+                </a>
+
+                <div class="nav-section-title">Administration</div>
+                <a href="admin_dashboard.html" class="portal-nav-item" id="adminNavItem">
+                    <span class="nav-item-icon">🛡️</span>
+                    <span>Admin Dashboard</span>
+                    <span class="nav-badge" style="background:#fee2e2;color:#991b1b;">RBAC</span>
+                </a>
+                <a href="student_manager.html" class="portal-nav-item">
+                    <span class="nav-item-icon">👥</span>
+                    <span>Student Records</span>
+                </a>
+                <a href="event_manager.html" class="portal-nav-item">
+                    <span class="nav-item-icon">🎪</span>
+                    <span>Manage Events</span>
+                </a>
+                <a href="api_crud.html" class="portal-nav-item">
+                    <span class="nav-item-icon">⚡</span>
+                    <span>REST API Console</span>
+                </a>
+
+                <div class="nav-section-title">Support &amp; Help</div>
+                <a href="faq.html" class="portal-nav-item">
+                    <span class="nav-item-icon">❓</span>
+                    <span>FAQs &amp; Help</span>
+                </a>
+                <a href="contact.html" class="portal-nav-item">
+                    <span class="nav-item-icon">💬</span>
+                    <span>Help Desk &amp; Feedback</span>
+                </a>
+            </nav>
+
+            <div class="portal-sidebar-footer">
+                <div class="user-mini-card">
+                    <div class="user-avatar-circle" id="sidebarAvatar">RP</div>
+                    <div class="user-mini-info">
+                        <div class="user-mini-name" id="sidebarUserName">Rahul Patel</div>
+                        <div class="user-mini-role" id="sidebarUserRole">🎓 Student</div>
+                    </div>
+                    <button type="button" onclick="logoutPortal()" title="Sign Out" class="btn-portal-danger" style="padding:4px 8px;font-size:11px;border:none;cursor:pointer;">🚪</button>
+                </div>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="togglePortalSidebar()"></div>
+
+        <!-- Main Content Wrapper -->
+        <div class="portal-main">
+            <!-- Topbar Navigation -->
+            <header class="portal-topbar">
+                <div class="topbar-left">
+                    <button type="button" class="topbar-mobile-toggle" onclick="togglePortalSidebar()" aria-label="Toggle Navigation">☰</button>
+                    <div class="topbar-breadcrumb">
+                        <a href="index.html">StudentHub</a>
+                        <span>/</span>
+                        <span>Events</span>
+                        <span>/</span>
+                        <span class="current">My Registrations</span>
+                    </div>
+                </div>
+
+                <div class="topbar-right">
+                    <span class="topbar-role-badge badge-student" id="topbarRoleBadge">🎓 Student</span>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <div class="user-avatar-circle" id="topbarAvatar" style="width:32px;height:32px;font-size:12px;">RP</div>
+                        <span style="font-size:13px;font-weight:600;color:var(--sh-text-primary);" class="hidden-mobile" id="topbarUsername">rahul_patel</span>
+                    </div>
+                    <button onclick="logoutPortal()" class="btn-signout-topbar">Sign Out 🚪</button>
+                </div>
+            </header>
+
+            <main class="portal-content">
+                <!-- Alert notification -->
+                <div id="alertBox" style="display:none;margin-bottom:20px;"></div>
+
+                <!-- Welcome Header -->
+                <div class="portal-welcome-card" style="margin-bottom:24px;">
+                    <div class="portal-welcome-content">
+                        <h2>My Event Passes &amp; Registrations 🎟️</h2>
+                        <p>View your confirmed campus event tickets, admission passes, and participation records.</p>
+                    </div>
+                    <div style="display:flex;gap:10px;">
+                        <a href="my_registrations.php" class="btn-portal-secondary hidden-mobile" title="PHP Native Session mode">
+                            🐘 Open in PHP Mode
+                        </a>
+                        <a href="events.html" class="btn-portal-primary">
+                            <span>🔍 Browse Events</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- KPI Metric Grid -->
+                <div class="portal-kpi-grid" style="margin-bottom:24px;">
+                    <div class="kpi-card">
+                        <div class="kpi-icon-wrapper" style="background:#eff6ff;color:#1e40af;">🎟️</div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">Total Registrations</span>
+                            <span class="kpi-value" id="kpiTotal">0</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-icon-wrapper" style="background:#ecfdf5;color:#059669;">✅</div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">Confirmed Passes</span>
+                            <span class="kpi-value" id="kpiConfirmed">0</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-icon-wrapper" style="background:#fef2f2;color:#dc2626;">❌</div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">Cancelled Bookings</span>
+                            <span class="kpi-value" id="kpiCancelled">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Registrations Table Card -->
+                <div class="portal-card">
+                    <div class="portal-card-header">
+                        <div>
+                            <h3 class="portal-card-title">Registration History</h3>
+                            <p class="portal-card-subtitle">Active and past registrations recorded for your account.</p>
+                        </div>
+                    </div>
+
+                    <div id="regsTableArea">
+                        <div class="portal-empty-state" id="loadingState">
+                            <div class="empty-icon">⏳</div>
+                            <div class="empty-title">Loading your event passes...</div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        function togglePortalSidebar() {
+            const sb = document.getElementById("portalSidebar");
+            const ov = document.getElementById("sidebarOverlay");
+            if (sb) sb.classList.toggle("open");
+            if (ov) ov.classList.toggle("open");
+        }
+
+        function showAlert(type, message) {
+            const box = document.getElementById('alertBox');
+            box.className = 'portal-alert ' + (type === 'success' ? 'portal-alert-success' : 'portal-alert-error');
+            box.innerHTML = `<span>${type === 'success' ? '✅' : '⚠️'}</span><div>${message}</div>`;
+            box.style.display = 'flex';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => { box.style.display = 'none'; }, 6000);
+        }
+
+        let userRegistrations = [];
+
+        async function initRegistrations() {
+            // Load user identity
+            let currentUser = null;
+            try {
+                const raw = sessionStorage.getItem('studenthub_user') || localStorage.getItem('studenthub_user');
+                if (raw) currentUser = JSON.parse(raw);
+            } catch (e) {}
+
+            if (currentUser) {
+                const initials = (currentUser.full_name || 'SH').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                document.getElementById('sidebarAvatar').textContent = initials;
+                document.getElementById('topbarAvatar').textContent = initials;
+                document.getElementById('sidebarUserName').textContent = currentUser.full_name || 'Student';
+                document.getElementById('topbarUsername').textContent = currentUser.username || 'student';
+                if (currentUser.role === 'admin') {
+                    document.getElementById('topbarRoleBadge').className = 'topbar-role-badge badge-admin';
+                    document.getElementById('topbarRoleBadge').textContent = '🛡️ Administrator';
+                    document.getElementById('sidebarUserRole').textContent = '🛡️ Administrator';
+                }
+            }
+
+            // Fetch registrations from PHP API first
+            let fetchedFromServer = false;
+            try {
+                const res = await fetch('../php/event_register.php?action=my_registrations');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success && Array.isArray(data.registrations)) {
+                        userRegistrations = data.registrations;
+                        fetchedFromServer = true;
+                    }
+                }
+            } catch (e) {
+                console.log('Backend API unreachable, falling back to local client state.');
+            }
+
+            // Fallback to localStorage if not fetched from server
+            if (!fetchedFromServer) {
+                try {
+                    const localRegs = JSON.parse(localStorage.getItem('studenthub_registrations') || '[]');
+                    if (Array.isArray(localRegs) && localRegs.length > 0) {
+                        userRegistrations = localRegs;
+                    } else {
+                        // Seed realistic initial registrations for demo user if empty
+                        userRegistrations = [
+                            {
+                                registration_id: 101,
+                                registration_code: 'REG-2026-0042',
+                                title: 'National Web Tech Hackathon 2026',
+                                category: 'Technical',
+                                event_date: '2026-03-25',
+                                event_time: '09:00:00',
+                                venue: 'Campus Auditorium A',
+                                attendance_status: 'Confirmed',
+                                registration_date: '2026-02-15'
+                            },
+                            {
+                                registration_id: 102,
+                                registration_code: 'REG-2026-0088',
+                                title: 'AI & Machine Learning Masterclass',
+                                category: 'Workshop',
+                                event_date: '2026-04-10',
+                                event_time: '14:00:00',
+                                venue: 'CS Lab 3 & Online',
+                                attendance_status: 'Confirmed',
+                                registration_date: '2026-02-20'
+                            }
+                        ];
+                        localStorage.setItem('studenthub_registrations', JSON.stringify(userRegistrations));
+                    }
+                } catch (e) {
+                    userRegistrations = [];
+                }
+            }
+
+            renderRegistrationsTable();
+        }
+
+        function renderRegistrationsTable() {
+            const tableArea = document.getElementById('regsTableArea');
+            
+            // Calculate KPIs
+            const total = userRegistrations.length;
+            const confirmed = userRegistrations.filter(r => r.attendance_status === 'Confirmed').length;
+            const cancelled = userRegistrations.filter(r => r.attendance_status === 'Cancelled').length;
+
+            document.getElementById('kpiTotal').textContent = total;
+            document.getElementById('kpiConfirmed').textContent = confirmed;
+            document.getElementById('kpiCancelled').textContent = cancelled;
+
+            if (total === 0) {
+                tableArea.innerHTML = `
+                    <div class="portal-empty-state">
+                        <div class="empty-icon">🎫</div>
+                        <div class="empty-title">You Haven't Registered For Any Events Yet</div>
+                        <div class="empty-desc">Discover technical workshops, hackathons, guest lectures, and cultural fests happening across campus.</div>
+                        <a href="events.html" class="btn-portal-primary" style="margin-top:16px;">
+                            <span>Browse Upcoming Events</span>
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            let rowsHtml = '';
+            userRegistrations.forEach((reg, index) => {
+                const status = reg.attendance_status || 'Confirmed';
+                const badgeClass = status === 'Confirmed' ? 'badge-confirmed' : (status === 'Cancelled' ? 'badge-cancelled' : 'badge-pending');
+                const isCancelled = (status === 'Cancelled');
+
+                rowsHtml += `
+                    <tr>
+                        <td>
+                            <span class="code-badge">${escapeHtml(reg.registration_code || ('REG-2026-' + (index + 1)))}</span>
+                        </td>
+                        <td>
+                            <div style="font-weight:600;color:var(--sh-text-primary);font-size:14px;">
+                                ${escapeHtml(reg.title || 'Campus Event')}
+                            </div>
+                            <div style="font-size:12px;color:var(--sh-text-muted);display:flex;align-items:center;gap:6px;margin-top:2px;">
+                                <span style="background:#e0e7ff;color:#3730a3;padding:2px 6px;border-radius:4px;font-weight:500;">
+                                    ${escapeHtml(reg.category || 'General')}
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="font-size:13px;color:var(--sh-text-primary);font-weight:500;">
+                                📅 ${reg.event_date || 'Upcoming'}
+                            </div>
+                            <div style="font-size:12px;color:var(--sh-text-muted);">
+                                ⏰ ${(reg.event_time || '10:00:00').substring(0, 5)} &nbsp;•&nbsp; 📍 ${escapeHtml(reg.venue || 'Campus Auditorium')}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge ${badgeClass}">
+                                ${escapeHtml(status)}
+                            </span>
+                        </td>
+                        <td style="font-size:12px;color:var(--sh-text-secondary);">
+                            ${reg.registration_date || 'Recent'}
+                        </td>
+                        <td style="text-align:right;">
+                            ${!isCancelled ? `
+                                <button type="button" class="btn-portal-danger" style="font-size:12px;padding:6px 12px;cursor:pointer;" onclick="cancelRegistration(${reg.registration_id || index}, '${escapeHtml(reg.title || 'this event')}')">
+                                    Cancel Pass
+                                </button>
+                            ` : `
+                                <span style="font-size:12px;color:var(--sh-text-muted);font-style:italic;">Pass Cancelled</span>
+                            `}
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableArea.innerHTML = `
+                <div class="portal-table-container">
+                    <table class="portal-table">
+                        <thead>
+                            <tr>
+                                <th>Ticket Pass ID</th>
+                                <th>Event Title &amp; Details</th>
+                                <th>Schedule &amp; Venue</th>
+                                <th>Status</th>
+                                <th>Registered On</th>
+                                <th style="text-align:right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rowsHtml}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        async function cancelRegistration(regId, title) {
+            if (!confirm(`Are you sure you want to cancel your pass for "${title}"? Your seat will be made available to other students.`)) {
+                return;
+            }
+
+            // Try cancelling via server API
+            try {
+                const res = await fetch('../php/event_register.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'cancel', registration_id: regId })
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success) {
+                        showAlert('success', data.message || 'Pass cancelled successfully.');
+                        initRegistrations();
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.log('Server cancel failed, cancelling in local storage state.');
+            }
+
+            // Update in local state
+            userRegistrations = userRegistrations.map(r => {
+                if (r.registration_id === regId) {
+                    return { ...r, attendance_status: 'Cancelled' };
+                }
+                return r;
+            });
+            localStorage.setItem('studenthub_registrations', JSON.stringify(userRegistrations));
+            showAlert('success', 'Your pass has been cancelled and seat released.');
+            renderRegistrationsTable();
+        }
+
+        function logoutPortal() {
+            sessionStorage.removeItem('studenthub_user');
+            localStorage.removeItem('studenthub_user');
+            window.location.href = '../php/logout.php';
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        document.addEventListener('DOMContentLoaded', initRegistrations);
+    </script>
+</body>
+</html>

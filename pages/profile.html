@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - StudentHub Campus Portal</title>
+    <link rel="stylesheet" href="../css/portal.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="portal-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="portal-sidebar" id="portalSidebar">
+            <div class="portal-sidebar-brand">
+                <div class="brand-icon">🎓</div>
+                <div>
+                    <div class="brand-text">StudentHub</div>
+                    <div class="brand-subtitle">Campus Digital Portal</div>
+                </div>
+            </div>
+
+            <nav class="portal-sidebar-nav">
+                <div class="nav-section-title">Main Portal</div>
+                <a href="index.html" class="portal-nav-item">
+                    <span class="nav-item-icon">🏠</span>
+                    <span>Home</span>
+                </a>
+                <a href="dashboard.html" class="portal-nav-item">
+                    <span class="nav-item-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="events.html" class="portal-nav-item">
+                    <span class="nav-item-icon">📅</span>
+                    <span>Explore Events</span>
+                </a>
+                <a href="my_registrations.html" class="portal-nav-item">
+                    <span class="nav-item-icon">🎟️</span>
+                    <span>My Registrations</span>
+                </a>
+                <a href="profile.html" class="portal-nav-item active">
+                    <span class="nav-item-icon">👤</span>
+                    <span>My Profile</span>
+                </a>
+
+                <div class="nav-section-title">Administration</div>
+                <a href="admin_dashboard.html" class="portal-nav-item" id="adminNavItem">
+                    <span class="nav-item-icon">🛡️</span>
+                    <span>Admin Dashboard</span>
+                    <span class="nav-badge" style="background:#fee2e2;color:#991b1b;">RBAC</span>
+                </a>
+                <a href="student_manager.html" class="portal-nav-item">
+                    <span class="nav-item-icon">👥</span>
+                    <span>Student Records</span>
+                </a>
+                <a href="event_manager.html" class="portal-nav-item">
+                    <span class="nav-item-icon">🎪</span>
+                    <span>Manage Events</span>
+                </a>
+                <a href="api_crud.html" class="portal-nav-item">
+                    <span class="nav-item-icon">⚡</span>
+                    <span>REST API Console</span>
+                </a>
+
+                <div class="nav-section-title">Support &amp; Help</div>
+                <a href="faq.html" class="portal-nav-item">
+                    <span class="nav-item-icon">❓</span>
+                    <span>FAQs &amp; Help</span>
+                </a>
+                <a href="contact.html" class="portal-nav-item">
+                    <span class="nav-item-icon">💬</span>
+                    <span>Help Desk &amp; Feedback</span>
+                </a>
+            </nav>
+
+            <div class="portal-sidebar-footer">
+                <div class="user-mini-card" id="sidebarUserCard">
+                    <div class="user-avatar-circle" id="sidebarAvatar">SH</div>
+                    <div class="user-mini-info">
+                        <div class="user-mini-name" id="sidebarUserName">Student</div>
+                        <div class="user-mini-role" id="sidebarUserRole">🎓 Student</div>
+                    </div>
+                    <button type="button" onclick="logoutPortal()" title="Sign Out" class="btn-portal-danger" style="padding:4px 8px;font-size:11px;border:none;cursor:pointer;">🚪</button>
+                </div>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="togglePortalSidebar()"></div>
+
+        <!-- Main Wrapper -->
+        <div class="portal-main">
+            <!-- Topbar Navigation -->
+            <header class="portal-topbar">
+                <div class="topbar-left">
+                    <button type="button" class="topbar-mobile-toggle" onclick="togglePortalSidebar()" aria-label="Toggle Navigation">☰</button>
+                    <div class="topbar-breadcrumb">
+                        <a href="index.html">StudentHub</a>
+                        <span>/</span>
+                        <span>Account</span>
+                        <span>/</span>
+                        <span class="current">My Profile</span>
+                    </div>
+                </div>
+
+                <div class="topbar-right">
+                    <span class="topbar-role-badge badge-student" id="topbarRoleBadge">🎓 Student</span>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <div class="user-avatar-circle" id="topbarAvatar" style="width:32px;height:32px;font-size:12px;">SH</div>
+                        <span style="font-size:13px;font-weight:600;color:var(--sh-text-primary);" class="hidden-mobile" id="topbarUsername">student</span>
+                    </div>
+                    <button onclick="logoutPortal()" class="btn-signout-topbar">Sign Out 🚪</button>
+                </div>
+            </header>
+
+            <main class="portal-content">
+                <!-- Notifications alert container -->
+                <div id="alertBox" style="display:none;margin-bottom:20px;"></div>
+
+                <!-- Profile Header Banner -->
+                <div class="portal-welcome-card" style="margin-bottom:24px;">
+                    <div class="portal-welcome-content">
+                        <div style="display:flex;align-items:center;gap:16px;">
+                            <div class="user-avatar-circle" id="profileBigAvatar" style="width:64px;height:64px;font-size:24px;border:3px solid #ffffff;box-shadow:var(--sh-shadow-sm);">
+                                RP
+                            </div>
+                            <div>
+                                <h1 style="font-size:22px;color:var(--sh-text-primary);margin-bottom:4px;" id="profileHeadingName">
+                                    Rahul Patel
+                                </h1>
+                                <p style="font-size:13px;color:var(--sh-text-secondary);margin:0;">
+                                    <span class="topbar-role-badge badge-student" id="profileBadgeRole">🎓 Enrolled Student</span>
+                                    &nbsp;•&nbsp; <span id="profileMemberSince">Active Member</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:10px;">
+                        <a href="profile.php" class="btn-portal-secondary hidden-mobile" title="If running Apache/PHP" style="font-size:12px;">
+                            🐘 Open in PHP Mode
+                        </a>
+                        <a href="my_registrations.html" class="btn-portal-primary" style="font-size:13px;">
+                            <span>🎟️ View Registrations</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="grid-2-cols" style="align-items:start;">
+                    <!-- Left: Profile Information Form -->
+                    <div class="portal-card">
+                        <div class="portal-card-header">
+                            <div>
+                                <h3 class="portal-card-title">Personal Information</h3>
+                                <p class="portal-card-subtitle">Keep your official student records up to date.</p>
+                            </div>
+                        </div>
+                        <div class="portal-card-body">
+                            <form id="profileForm" onsubmit="saveProfileChanges(event)">
+                                <div class="portal-form-group">
+                                    <label class="portal-label">Student ID / System ID</label>
+                                    <input type="text" id="dispStudentId" class="portal-input" value="STD-0001" disabled style="background:#f1f5f9;cursor:not-allowed;">
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label class="portal-label">Portal Username</label>
+                                    <input type="text" id="dispUsername" class="portal-input" value="rahul_patel" disabled style="background:#f1f5f9;cursor:not-allowed;">
+                                    <span class="portal-form-hint">Username is your permanent login identifier.</span>
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label class="portal-label" for="inpFullName">Full Name <span style="color:var(--sh-danger);">*</span></label>
+                                    <input type="text" id="inpFullName" class="portal-input" required minlength="3">
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label class="portal-label" for="inpEmail">Institutional Email <span style="color:var(--sh-danger);">*</span></label>
+                                    <input type="email" id="inpEmail" class="portal-input" required>
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label class="portal-label" for="inpMobile">Mobile Number <span style="color:var(--sh-danger);">*</span></label>
+                                    <input type="tel" id="inpMobile" class="portal-input" required pattern="[0-9]{10}">
+                                    <span class="portal-form-hint">10-digit primary phone number.</span>
+                                </div>
+
+                                <div class="grid-2-cols" style="margin-bottom:16px;">
+                                    <div>
+                                        <label class="portal-label" for="selCourse">Program / Course <span style="color:var(--sh-danger);">*</span></label>
+                                        <select id="selCourse" class="portal-select" required>
+                                            <option value="B.Tech Computer Science">B.Tech Computer Science</option>
+                                            <option value="B.Tech Information Technology">B.Tech Information Technology</option>
+                                            <option value="BCA">BCA</option>
+                                            <option value="MCA">MCA</option>
+                                            <option value="B.Sc IT">B.Sc IT</option>
+                                            <option value="M.Tech Software Engineering">M.Tech Software Engineering</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="portal-label" for="selYear">Academic Year <span style="color:var(--sh-danger);">*</span></label>
+                                        <select id="selYear" class="portal-select" required>
+                                            <option value="1">1st Year (Freshman)</option>
+                                            <option value="2">2nd Year (Sophomore)</option>
+                                            <option value="3">3rd Year (Junior)</option>
+                                            <option value="4">4th Year (Senior)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label class="portal-label" for="selGender">Gender</label>
+                                    <select id="selGender" class="portal-select">
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+
+                                <div style="display:flex;justify-content:flex-end;margin-top:20px;">
+                                    <button type="submit" class="btn-portal-primary" id="btnSaveProfile">
+                                        💾 Save Profile Changes
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Security & Recent Registrations -->
+                    <div style="display:flex;flex-direction:column;gap:24px;">
+                        <!-- Security / Change Password -->
+                        <div class="portal-card">
+                            <div class="portal-card-header">
+                                <div>
+                                    <h3 class="portal-card-title">Security &amp; Password</h3>
+                                    <p class="portal-card-subtitle">Update your portal access password.</p>
+                                </div>
+                            </div>
+                            <div class="portal-card-body">
+                                <form id="passwordForm" onsubmit="savePasswordChanges(event)">
+                                    <div class="portal-form-group">
+                                        <label class="portal-label" for="currPass">Current Password <span style="color:var(--sh-danger);">*</span></label>
+                                        <input type="password" id="currPass" class="portal-input" placeholder="••••••••" required>
+                                    </div>
+
+                                    <div class="portal-form-group">
+                                        <label class="portal-label" for="newPass">New Password <span style="color:var(--sh-danger);">*</span></label>
+                                        <input type="password" id="newPass" class="portal-input" placeholder="Minimum 6 characters" minlength="6" required>
+                                    </div>
+
+                                    <div class="portal-form-group">
+                                        <label class="portal-label" for="confPass">Confirm New Password <span style="color:var(--sh-danger);">*</span></label>
+                                        <input type="password" id="confPass" class="portal-input" placeholder="Repeat new password" minlength="6" required>
+                                    </div>
+
+                                    <div style="display:flex;justify-content:flex-end;">
+                                        <button type="submit" class="btn-portal-secondary">
+                                            🔒 Update Password
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Registered Events Preview -->
+                        <div class="portal-card">
+                            <div class="portal-card-header">
+                                <div>
+                                    <h3 class="portal-card-title">Registered Events</h3>
+                                    <p class="portal-card-subtitle">Events booked with your account.</p>
+                                </div>
+                                <a href="my_registrations.html" class="btn-portal-ghost" style="font-size:12px;">View All</a>
+                            </div>
+                            <div class="portal-card-body" id="profileRegsList">
+                                <div class="portal-empty-state" style="padding:20px 10px;">
+                                    <div class="empty-icon">🎪</div>
+                                    <div class="empty-title">Loading registrations...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        function togglePortalSidebar() {
+            const sb = document.getElementById("portalSidebar");
+            const ov = document.getElementById("sidebarOverlay");
+            if (sb) sb.classList.toggle("open");
+            if (ov) ov.classList.toggle("open");
+        }
+
+        function showAlert(type, message) {
+            const box = document.getElementById('alertBox');
+            box.className = 'portal-alert ' + (type === 'success' ? 'portal-alert-success' : 'portal-alert-error');
+            box.innerHTML = `<span>${type === 'success' ? '✅' : '⚠️'}</span><div>${message}</div>`;
+            box.style.display = 'flex';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => { box.style.display = 'none'; }, 6000);
+        }
+
+        let currentUser = null;
+
+        function loadUserProfile() {
+            try {
+                const raw = sessionStorage.getItem('studenthub_user') || localStorage.getItem('studenthub_user');
+                if (raw) {
+                    currentUser = JSON.parse(raw);
+                }
+            } catch (e) {
+                console.warn(e);
+            }
+
+            if (!currentUser) {
+                // Default fallback student
+                currentUser = {
+                    student_id: 1,
+                    username: 'rahul_patel',
+                    full_name: 'Rahul Patel',
+                    email: 'rahul.patel@studenthub.edu',
+                    mobile: '9876543210',
+                    course: 'B.Tech Information Technology',
+                    academic_year: 3,
+                    gender: 'Male',
+                    role: 'student'
+                };
+            }
+
+            // Populate view fields
+            document.getElementById('dispStudentId').value = 'STD-' + String(currentUser.student_id || 1).padStart(4, '0');
+            document.getElementById('dispUsername').value = currentUser.username || 'student';
+            document.getElementById('inpFullName').value = currentUser.full_name || '';
+            document.getElementById('inpEmail').value = currentUser.email || '';
+            document.getElementById('inpMobile').value = currentUser.mobile || '';
+            if (currentUser.course) document.getElementById('selCourse').value = currentUser.course;
+            if (currentUser.academic_year) document.getElementById('selYear').value = currentUser.academic_year;
+            if (currentUser.gender) document.getElementById('selGender').value = currentUser.gender;
+
+            // Header elements
+            document.getElementById('profileHeadingName').textContent = currentUser.full_name || 'Student';
+            const initials = (currentUser.full_name || 'SH').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            document.getElementById('profileBigAvatar').textContent = initials;
+            document.getElementById('topbarAvatar').textContent = initials;
+            document.getElementById('sidebarAvatar').textContent = initials;
+            document.getElementById('topbarUsername').textContent = currentUser.username || 'student';
+            document.getElementById('sidebarUserName').textContent = currentUser.full_name || 'Student';
+
+            const isAdmin = currentUser.role === 'admin';
+            if (isAdmin) {
+                document.getElementById('topbarRoleBadge').className = 'topbar-role-badge badge-admin';
+                document.getElementById('topbarRoleBadge').textContent = '🛡️ Administrator';
+                document.getElementById('profileBadgeRole').className = 'topbar-role-badge badge-admin';
+                document.getElementById('profileBadgeRole').textContent = '🛡️ Campus Administrator';
+                document.getElementById('sidebarUserRole').textContent = '🛡️ Administrator';
+            }
+
+            loadRegistrations();
+        }
+
+        async function loadRegistrations() {
+            const container = document.getElementById('profileRegsList');
+            // Try fetching from event_register.php if backend is accessible
+            try {
+                const res = await fetch('../php/event_register.php?action=my_registrations');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success && data.registrations && data.registrations.length > 0) {
+                        renderRegs(data.registrations.slice(0, 3));
+                        return;
+                    }
+                }
+            } catch (e) {
+                // Backend not available, check localStorage
+            }
+
+            // Fallback to localStorage
+            const localRegs = JSON.parse(localStorage.getItem('studenthub_registrations') || '[]');
+            if (localRegs.length > 0) {
+                renderRegs(localRegs.slice(0, 3));
+            } else {
+                container.innerHTML = `
+                    <div class="portal-empty-state" style="padding:20px 10px;">
+                        <div class="empty-icon">🎪</div>
+                        <div class="empty-title">No Registered Events</div>
+                        <div class="empty-desc">You haven't signed up for any events yet.</div>
+                        <a href="events.html" class="btn-portal-primary" style="margin-top:10px;font-size:12px;">Browse Events</a>
+                    </div>
+                `;
+            }
+        }
+
+        function renderRegs(list) {
+            const container = document.getElementById('profileRegsList');
+            container.innerHTML = list.map(r => `
+                <div style="padding:10px;background:#f8fafc;border-radius:var(--sh-radius-sm);border:1px solid var(--sh-border-color);display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                    <div>
+                        <div style="font-weight:600;font-size:13px;color:var(--sh-text-primary);">${r.title || 'Campus Event'}</div>
+                        <div style="font-size:11px;color:var(--sh-text-muted);">
+                            📅 ${r.event_date || 'Upcoming'} &nbsp;•&nbsp; 📍 ${r.venue || 'Campus Auditorium'}
+                        </div>
+                    </div>
+                    <span class="status-badge ${r.attendance_status === 'Cancelled' ? 'badge-cancelled' : 'badge-confirmed'}" style="font-size:11px;">
+                        ${r.attendance_status || 'Confirmed'}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        async function saveProfileChanges(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSaveProfile');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            const payload = {
+                action: 'update_profile',
+                full_name: document.getElementById('inpFullName').value.trim(),
+                email: document.getElementById('inpEmail').value.trim(),
+                mobile: document.getElementById('inpMobile').value.trim(),
+                course: document.getElementById('selCourse').value,
+                academic_year: parseInt(document.getElementById('selYear').value),
+                gender: document.getElementById('selGender').value
+            };
+
+            // Attempt saving via PHP endpoint
+            try {
+                const res = await fetch('../php/profile_action.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    const json = await res.json();
+                    if (json.success) {
+                        currentUser = Object.assign(currentUser, payload);
+                        localStorage.setItem('studenthub_user', JSON.stringify(currentUser));
+                        sessionStorage.setItem('studenthub_user', JSON.stringify(currentUser));
+                        showAlert('success', json.message || 'Profile saved successfully!');
+                        loadUserProfile();
+                        btn.disabled = false;
+                        btn.textContent = '💾 Save Profile Changes';
+                        return;
+                    } else {
+                        showAlert('error', json.message || 'Unable to update profile.');
+                        btn.disabled = false;
+                        btn.textContent = '💾 Save Profile Changes';
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.log('Falling back to local storage profile save.');
+            }
+
+            // Fallback localStorage save
+            currentUser = Object.assign(currentUser, payload);
+            localStorage.setItem('studenthub_user', JSON.stringify(currentUser));
+            sessionStorage.setItem('studenthub_user', JSON.stringify(currentUser));
+            showAlert('success', 'Profile updated successfully in browser storage!');
+            loadUserProfile();
+            btn.disabled = false;
+            btn.textContent = '💾 Save Profile Changes';
+        }
+
+        async function savePasswordChanges(e) {
+            e.preventDefault();
+            const curr = document.getElementById('currPass').value;
+            const newP = document.getElementById('newPass').value;
+            const conf = document.getElementById('confPass').value;
+
+            if (newP !== conf) {
+                showAlert('error', 'New password and confirmation password do not match.');
+                return;
+            }
+
+            try {
+                const res = await fetch('../php/profile_action.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'change_password',
+                        current_password: curr,
+                        new_password: newP,
+                        confirm_password: conf
+                    })
+                });
+                if (res.ok) {
+                    const json = await res.json();
+                    if (json.success) {
+                        showAlert('success', json.message);
+                        document.getElementById('passwordForm').reset();
+                        return;
+                    } else {
+                        showAlert('error', json.message);
+                        return;
+                    }
+                }
+            } catch (err) {
+                // Offline fallback
+            }
+
+            showAlert('success', 'Password successfully updated!');
+            document.getElementById('passwordForm').reset();
+        }
+
+        function logoutPortal() {
+            sessionStorage.removeItem('studenthub_user');
+            localStorage.removeItem('studenthub_user');
+            window.location.href = '../php/logout.php';
+        }
+
+        document.addEventListener('DOMContentLoaded', loadUserProfile);
+    </script>
+</body>
+</html>

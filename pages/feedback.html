@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Feedback - StudentHub Campus Portal</title>
+    <link rel="stylesheet" href="../css/portal.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="portal-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="portal-sidebar" id="portalSidebar">
+            <div class="portal-sidebar-brand">
+                <div class="brand-icon">🎓</div>
+                <div>
+                    <div class="brand-text">StudentHub</div>
+                    <div class="brand-subtitle">Campus Digital Portal</div>
+                </div>
+            </div>
+
+            <nav class="portal-sidebar-nav">
+                <div class="nav-section-title">Main Portal</div>
+                <a href="index.html" class="portal-nav-item">
+                    <span class="nav-item-icon">🏠</span>
+                    <span>Home</span>
+                </a>
+                <a href="dashboard.html" class="portal-nav-item">
+                    <span class="nav-item-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="events.html" class="portal-nav-item">
+                    <span class="nav-item-icon">📅</span>
+                    <span>Explore Events</span>
+                </a>
+                <a href="my_registrations.html" class="portal-nav-item">
+                    <span class="nav-item-icon">🎟️</span>
+                    <span>My Registrations</span>
+                </a>
+                <a href="profile.html" class="portal-nav-item">
+                    <span class="nav-item-icon">👤</span>
+                    <span>My Profile</span>
+                </a>
+
+                <div class="nav-section-title">Administration</div>
+                <a href="admin_dashboard.html" class="portal-nav-item">
+                    <span class="nav-item-icon">🛡️</span>
+                    <span>Admin Dashboard</span>
+                </a>
+                <a href="student_manager.html" class="portal-nav-item">
+                    <span class="nav-item-icon">👥</span>
+                    <span>Student Records</span>
+                </a>
+                <a href="event_manager.html" class="portal-nav-item">
+                    <span class="nav-item-icon">🎪</span>
+                    <span>Manage Events</span>
+                </a>
+
+                <div class="nav-section-title">Support &amp; Feedback</div>
+                <a href="faq.html" class="portal-nav-item">
+                    <span class="nav-item-icon">❓</span>
+                    <span>FAQs &amp; Help</span>
+                </a>
+                <a href="contact.html" class="portal-nav-item">
+                    <span class="nav-item-icon">📞</span>
+                    <span>Contact Directory</span>
+                </a>
+                <a href="feedback.html" class="portal-nav-item active">
+                    <span class="nav-item-icon">💬</span>
+                    <span>Campus Feedback</span>
+                </a>
+            </nav>
+
+            <div class="portal-sidebar-footer">
+                <div class="user-mini-card">
+                    <div class="user-avatar-circle" id="sidebarAvatar">SH</div>
+                    <div class="user-mini-info">
+                        <div class="user-mini-name" id="sidebarUserName">Student</div>
+                        <div class="user-mini-role" id="sidebarUserRole">🎓 Student</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="togglePortalSidebar()"></div>
+
+        <!-- Main Content Wrapper -->
+        <div class="portal-main">
+            <!-- Topbar Navigation -->
+            <header class="portal-topbar">
+                <div class="topbar-left">
+                    <button type="button" class="topbar-mobile-toggle" onclick="togglePortalSidebar()" aria-label="Toggle Navigation">☰</button>
+                    <div class="topbar-breadcrumb">
+                        <a href="index.html">StudentHub</a>
+                        <span>/</span>
+                        <span>Campus Services</span>
+                        <span>/</span>
+                        <span class="current">Student Feedback</span>
+                    </div>
+                </div>
+
+                <div class="topbar-right">
+                    <span class="topbar-role-badge badge-student" id="topbarRoleBadge">🎓 Student</span>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <div class="user-avatar-circle" id="topbarAvatar" style="width:32px;height:32px;font-size:12px;">SH</div>
+                        <span style="font-size:13px;font-weight:600;color:var(--sh-text-primary);" class="hidden-mobile" id="topbarUsername">student</span>
+                    </div>
+                </div>
+            </header>
+
+            <main class="portal-content">
+                <!-- Notifications Alert Box -->
+                <div id="alertBox" style="display:none;margin-bottom:20px;"></div>
+
+                <!-- Welcome Header -->
+                <div class="portal-welcome-card" style="margin-bottom:24px;">
+                    <div class="portal-welcome-content">
+                        <h2>Campus Voice &amp; Feedback Portal 💬</h2>
+                        <p>Share your suggestions, report campus facility concerns, or review your academic experiences.</p>
+                    </div>
+                    <div>
+                        <a href="faq.html" class="btn-portal-secondary">
+                            <span>❓ Browse FAQs First</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="grid-2-cols" style="align-items:start;">
+                    <!-- Feedback Form Card -->
+                    <div class="portal-card">
+                        <div class="portal-card-header">
+                            <div>
+                                <h3 class="portal-card-title">Submit Your Feedback</h3>
+                                <p class="portal-card-subtitle">All submissions are reviewed directly by the Dean of Student Affairs.</p>
+                            </div>
+                        </div>
+                        <div class="portal-card-body">
+                            <form id="feedbackForm" onsubmit="handleFeedbackSubmit(event)">
+                                <div class="portal-form-group">
+                                    <label class="portal-label" for="contactName">Full Name <span style="color:var(--sh-danger);">*</span></label>
+                                    <input type="text" id="contactName" name="contactName" class="portal-input" placeholder="e.g. Rahul Patel" required minlength="3">
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label class="portal-label" for="contactEmail">Student Email <span style="color:var(--sh-danger);">*</span></label>
+                                    <input type="email" id="contactEmail" name="contactEmail" class="portal-input" placeholder="e.g. rahul.patel@studenthub.edu" required>
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label class="portal-label" for="contactMobile">Mobile Number</label>
+                                    <input type="tel" id="contactMobile" name="contactMobile" class="portal-input" placeholder="10-digit number" pattern="[6-9][0-9]{9}">
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label class="portal-label" for="contactSubject">Feedback Category <span style="color:var(--sh-danger);">*</span></label>
+                                    <select id="contactSubject" name="contactSubject" class="portal-select" required>
+                                        <option value="Portal Experience">Portal Experience &amp; Features</option>
+                                        <option value="Academic Quality">Curriculum &amp; Academics</option>
+                                        <option value="Campus Facilities">Campus Facilities &amp; Labs</option>
+                                        <option value="Event Organization">Event Organization &amp; Hackathons</option>
+                                        <option value="General Inquiry">General Suggestions</option>
+                                    </select>
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label class="portal-label" for="contactMessage">Detailed Comments &amp; Recommendations <span style="color:var(--sh-danger);">*</span></label>
+                                    <textarea id="contactMessage" name="contactMessage" class="portal-textarea" rows="4" placeholder="Please describe your experience or suggestion in detail..." required minlength="10"></textarea>
+                                </div>
+
+                                <div style="display:flex;justify-content:flex-end;">
+                                    <button type="submit" class="btn-portal-primary" id="btnSubmitFeedback">
+                                        ✉️ Submit Feedback
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Information & Guidelines -->
+                    <div style="display:flex;flex-direction:column;gap:20px;">
+                        <!-- Feedback Guidelines Card -->
+                        <div class="portal-card">
+                            <div class="portal-card-header">
+                                <div>
+                                    <h3 class="portal-card-title">Feedback Guidelines</h3>
+                                    <p class="portal-card-subtitle">How your feedback creates real impact.</p>
+                                </div>
+                            </div>
+                            <div class="portal-card-body" style="font-size:13px;color:var(--sh-text-secondary);line-height:1.6;">
+                                <div style="display:flex;gap:12px;margin-bottom:12px;">
+                                    <div style="font-size:20px;">🔒</div>
+                                    <div>
+                                        <strong style="color:var(--sh-text-primary);">Confidential &amp; Constructive:</strong>
+                                        Your input is routed confidentially to student representatives and department heads.
+                                    </div>
+                                </div>
+
+                                <div style="display:flex;gap:12px;margin-bottom:12px;">
+                                    <div style="font-size:20px;">⏱️</div>
+                                    <div>
+                                        <strong style="color:var(--sh-text-primary);">Quick Turnaround:</strong>
+                                        Academic and facility feedback is addressed within 48 business hours.
+                                    </div>
+                                </div>
+
+                                <div style="display:flex;gap:12px;">
+                                    <div style="font-size:20px;">💡</div>
+                                    <div>
+                                        <strong style="color:var(--sh-text-primary);">Direct Development:</strong>
+                                        Features in StudentHub portal are regularly implemented based on student votes.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Campus Helpdesk Quick Contacts -->
+                        <div class="portal-card">
+                            <div class="portal-card-header">
+                                <div>
+                                    <h3 class="portal-card-title">Immediate Assistance</h3>
+                                    <p class="portal-card-subtitle">Urgent campus support channels.</p>
+                                </div>
+                            </div>
+                            <div class="portal-card-body" style="display:flex;flex-direction:column;gap:10px;font-size:13px;">
+                                <div style="padding:10px;background:#f8fafc;border-radius:6px;border:1px solid var(--sh-border-color);">
+                                    <span style="color:var(--sh-text-muted);display:block;font-size:11px;">IT Support Helpdesk</span>
+                                    <strong>support@studenthub.edu</strong> &bull; Ext: 402
+                                </div>
+                                <div style="padding:10px;background:#f8fafc;border-radius:6px;border:1px solid var(--sh-border-color);">
+                                    <span style="color:var(--sh-text-muted);display:block;font-size:11px;">Academic Affairs Office</span>
+                                    <strong>academics@studenthub.edu</strong> &bull; Ext: 104
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        function togglePortalSidebar() {
+            const sb = document.getElementById("portalSidebar");
+            const ov = document.getElementById("sidebarOverlay");
+            if (sb) sb.classList.toggle("open");
+            if (ov) ov.classList.toggle("open");
+        }
+
+        function showAlert(type, message) {
+            const box = document.getElementById('alertBox');
+            box.className = 'portal-alert ' + (type === 'success' ? 'portal-alert-success' : 'portal-alert-error');
+            box.innerHTML = `<span>${type === 'success' ? '✅' : '⚠️'}</span><div>${message}</div>`;
+            box.style.display = 'flex';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => { box.style.display = 'none'; }, 6000);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                const raw = sessionStorage.getItem('studenthub_user') || localStorage.getItem('studenthub_user');
+                if (raw) {
+                    const u = JSON.parse(raw);
+                    if (u.full_name) document.getElementById('contactName').value = u.full_name;
+                    if (u.email) document.getElementById('contactEmail').value = u.email;
+                    if (u.mobile) document.getElementById('contactMobile').value = u.mobile;
+                    const initials = (u.full_name || 'SH').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                    document.getElementById('sidebarAvatar').textContent = initials;
+                    document.getElementById('topbarAvatar').textContent = initials;
+                    document.getElementById('sidebarUserName').textContent = u.full_name || 'Student';
+                    document.getElementById('topbarUsername').textContent = u.username || 'student';
+                }
+            } catch (e) {}
+        });
+
+        async function handleFeedbackSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmitFeedback');
+            btn.disabled = true;
+            btn.textContent = 'Submitting...';
+
+            const form = document.getElementById('feedbackForm');
+            const formData = new FormData(form);
+
+            // Attempt submitting to contact_process.php
+            try {
+                const res = await fetch('../php/contact_process.php', {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    body: formData
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success) {
+                        showAlert('success', data.message || 'Thank you! Your feedback has been recorded.');
+                        form.reset();
+                        btn.disabled = false;
+                        btn.textContent = '✉️ Submit Feedback';
+                        return;
+                    } else if (data.errors) {
+                        const errList = Object.values(data.errors).join(' ');
+                        showAlert('error', errList);
+                        btn.disabled = false;
+                        btn.textContent = '✉️ Submit Feedback';
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.log('Server unreachable, saving feedback to local storage.');
+            }
+
+            // Fallback to local storage
+            const feedbackItem = {
+                id: Date.now(),
+                name: document.getElementById('contactName').value,
+                email: document.getElementById('contactEmail').value,
+                mobile: document.getElementById('contactMobile').value,
+                subject: document.getElementById('contactSubject').value,
+                message: document.getElementById('contactMessage').value,
+                date: new Date().toISOString()
+            };
+
+            const existing = JSON.parse(localStorage.getItem('studenthub_feedback') || '[]');
+            existing.push(feedbackItem);
+            localStorage.setItem('studenthub_feedback', JSON.stringify(existing));
+
+            showAlert('success', 'Thank you! Your feedback has been successfully submitted and stored.');
+            form.reset();
+            btn.disabled = false;
+            btn.textContent = '✉️ Submit Feedback';
+        }
+    </script>
+</body>
+</html>

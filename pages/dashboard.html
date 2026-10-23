@@ -1,273 +1,444 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudentHub - Student Dashboard</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <style>
-        .dashboard-hero {
-            background: linear-gradient(135deg, #0d47a1 0%, #1976d2 100%);
-            color: white;
-            padding: 24px 28px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-            box-shadow: 0 8px 20px rgba(13, 71, 161, 0.18);
-        }
-        .user-avatar-badge {
-            width: 54px;
-            height: 54px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-        }
-        .profile-pill {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        .btn-logout {
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: background 0.2s;
-            text-decoration: none;
-        }
-        .btn-logout:hover {
-            background: #dc2626;
-        }
-    </style>
+    <title>Student Dashboard - StudentHub Campus Portal</title>
+    <link rel="stylesheet" href="../css/portal.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
-
-<!-- ================= HEADER ================= -->
-<header class="site-header">
-    <div class="logo-icon">🎓</div>
-    <h1>StudentHub</h1>
-    <p>Your Digital Campus Portal</p>
-</header>
-
-<!-- ================= NAVBAR ================= -->
-<nav class="navbar">
-    <div class="nav-wrapper">
-        <button class="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
-            ☰
-        </button>
-
-        <div class="nav-container">
-            <a href="index.html">Home</a>
-            <a href="about.html">About</a>
-            <a href="register.html">Register</a>
-            <a href="login.html">Login</a>
-            <a href="dashboard.html" class="active">Dashboard</a>
-            <a href="student_manager.html">Students</a>
-            <a href="event_manager.html">Event Manager</a>
-            <a href="events.html">Events</a>
-            <a href="api_crud.html">JSON API (P13)</a>
-            <a href="profile.html">Profile</a>
-            <a href="contact.html">Contact</a>
-            <a href="admin.html">Admin</a>
-            <a href="admin_dashboard.html">Admin Dashboard (P14)</a>
-            <a href="../php/db_dashboard.php">Database</a>
-            <a href="faq.html">FAQ</a>
-            <a href="feedback.html">Feedback</a>
-        </div>
-
-        <button class="theme-toggle" aria-label="Toggle dark mode">
-            🌙
-        </button>
-    </div>
-</nav>
-
-<!-- ================= MAIN ================= -->
-<main>
-    <div class="container" style="margin-top: 25px; margin-bottom: 40px;">
-
-        <!-- Dashboard User Welcome Hero -->
-        <section class="dashboard-hero">
-            <div style="display: flex; align-items: center; gap: 16px;">
-                <div class="user-avatar-badge" id="avatarBadge">👨‍🎓</div>
+    <div class="portal-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="portal-sidebar" id="portalSidebar">
+            <div class="portal-sidebar-brand">
+                <div class="brand-icon">🎓</div>
                 <div>
-                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                        <h2 style="margin: 0; font-size: 22px; color: #ffffff;" id="studentFullName">Welcome back, Student!</h2>
-                        <span class="profile-pill" id="studentRolePill">🎓 Student</span>
-                    </div>
-                    <div style="font-size: 13px; opacity: 0.9; margin-top: 4px; display: flex; gap: 12px; flex-wrap: wrap;">
-                        <span>Reg No: <strong id="studentRegNo">STU20261012001</strong></span>
-                        <span>&bull;</span>
-                        <span>Course: <strong id="studentCourse">B.Tech IT (Year 3)</strong></span>
-                        <span>&bull;</span>
-                        <span>Email: <strong id="studentEmail">student@example.com</strong></span>
-                    </div>
+                    <div class="brand-text">StudentHub</div>
+                    <div class="brand-subtitle">Campus Digital Portal</div>
                 </div>
             </div>
 
-            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                <a href="events.html" class="btn" style="background: white; color: #0d47a1; font-weight: 600; padding: 8px 14px; font-size: 13px;">
-                    📅 Explore Events
+            <nav class="portal-sidebar-nav">
+                <div class="nav-section-title">Main Portal</div>
+                <a href="index.html" class="portal-nav-item">
+                    <span class="nav-item-icon">🏠</span>
+                    <span>Home</span>
                 </a>
-                <button type="button" class="btn-logout" onclick="logoutStudent()">
-                    <span>Sign Out</span>
-                    <span>🚪</span>
-                </button>
-            </div>
-        </section>
+                <a href="dashboard.html" class="portal-nav-item active">
+                    <span class="nav-item-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="events.html" class="portal-nav-item">
+                    <span class="nav-item-icon">📅</span>
+                    <span>Explore Events</span>
+                </a>
+                <a href="my_registrations.html" class="portal-nav-item">
+                    <span class="nav-item-icon">🎟️</span>
+                    <span>My Registrations</span>
+                </a>
+                <a href="profile.html" class="portal-nav-item">
+                    <span class="nav-item-icon">👤</span>
+                    <span>My Profile</span>
+                </a>
 
-        <!-- Stats Grid -->
-        <section class="dashboard-grid">
-            <div class="stat-card">
-                <div class="number">08</div>
-                <div class="label">Enrolled Courses</div>
-            </div>
+                <div class="nav-section-title">Administration</div>
+                <a href="admin_dashboard.html" class="portal-nav-item" id="adminNavItem">
+                    <span class="nav-item-icon">🛡️</span>
+                    <span>Admin Dashboard</span>
+                    <span class="nav-badge" style="background:#fee2e2;color:#991b1b;">RBAC</span>
+                </a>
+                <a href="student_manager.html" class="portal-nav-item">
+                    <span class="nav-item-icon">👥</span>
+                    <span>Student Records</span>
+                </a>
+                <a href="event_manager.html" class="portal-nav-item">
+                    <span class="nav-item-icon">🎪</span>
+                    <span>Manage Events</span>
+                </a>
+                <a href="api_crud.html" class="portal-nav-item">
+                    <span class="nav-item-icon">⚡</span>
+                    <span>REST API Console</span>
+                </a>
 
-            <div class="stat-card">
-                <div class="number">12</div>
-                <div class="label">Pending Assignments</div>
-            </div>
+                <div class="nav-section-title">Support &amp; Help</div>
+                <a href="faq.html" class="portal-nav-item">
+                    <span class="nav-item-icon">❓</span>
+                    <span>FAQs &amp; Help</span>
+                </a>
+                <a href="contact.html" class="portal-nav-item">
+                    <span class="nav-item-icon">💬</span>
+                    <span>Help Desk &amp; Feedback</span>
+                </a>
+            </nav>
 
-            <div class="stat-card">
-                <div class="number">05</div>
-                <div class="label">Campus Events</div>
+            <div class="portal-sidebar-footer">
+                <div class="user-mini-card">
+                    <div class="user-avatar-circle" id="sidebarAvatar">RP</div>
+                    <div class="user-mini-info">
+                        <div class="user-mini-name" id="sidebarUserName">Rahul Patel</div>
+                        <div class="user-mini-role" id="sidebarUserRole">🎓 Student</div>
+                    </div>
+                    <button type="button" onclick="logoutStudent()" title="Sign Out" class="btn-portal-danger" style="padding:4px 8px;font-size:11px;border:none;cursor:pointer;">🚪</button>
+                </div>
             </div>
-
-            <div class="stat-card">
-                <div class="number">92%</div>
-                <div class="label">Attendance Ratio</div>
-            </div>
-        </section>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="togglePortalSidebar()"></div>
 
         <!-- Main Content Area -->
-        <section class="dashboard-content" style="margin-top: 24px;">
-
-            <!-- Left: Recent Activities -->
-            <div class="card" style="padding: 22px;">
-                <h3 style="margin-top: 0; color: #1e293b; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">
-                    📌 Recent Activities
-                </h3>
-
-                <ul class="activity-list" style="list-style: none; padding: 0; margin: 16px 0 0 0; display: grid; gap: 12px;">
-                    <li style="padding: 10px 12px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #1677e8; font-size: 14px;">
-                        📚 Assignment 4 (Database Architecture) submitted successfully
-                    </li>
-                    <li style="padding: 10px 12px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #10b981; font-size: 14px;">
-                        📅 Registered for "Tech Innovation Summit 2026"
-                    </li>
-                    <li style="padding: 10px 12px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #f59e0b; font-size: 14px;">
-                        📢 Mid-semester examination datesheet announced
-                    </li>
-                    <li style="padding: 10px 12px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #8b5cf6; font-size: 14px;">
-                        📝 Student profile and contact details verified
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Right: Announcements -->
-            <aside class="card" style="padding: 22px;">
-                <h3 style="margin-top: 0; color: #1e293b; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">
-                    📢 Campus Announcements
-                </h3>
-
-                <div style="display: grid; gap: 14px; margin-top: 16px;">
-                    <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px; font-size: 13px;">
-                        <strong style="color: #1e40af; display: block; margin-bottom: 4px;">🎯 Practical 10 Evaluation:</strong>
-                        Secure Authentication, PHP Session Inactivity Timeout (15m), and password_verify() active.
-                    </div>
-
-                    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px; font-size: 13px;">
-                        <strong style="color: #166534; display: block; margin-bottom: 4px;">🏆 Campus Hackathon 2026:</strong>
-                        Registration is open for all computer science and IT students. Check the Events tab.
+        <div class="portal-main">
+            <!-- Topbar Navigation -->
+            <header class="portal-topbar">
+                <div class="topbar-left">
+                    <button type="button" class="topbar-mobile-toggle" onclick="togglePortalSidebar()" aria-label="Toggle Navigation">☰</button>
+                    <div class="topbar-breadcrumb">
+                        <a href="index.html">StudentHub</a>
+                        <span>/</span>
+                        <span>Student Portal</span>
+                        <span>/</span>
+                        <span class="current">Dashboard</span>
                     </div>
                 </div>
 
-                <!-- PHP Switch Notice -->
-                <div style="margin-top: 20px; padding: 12px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; font-size: 12px; color: #64748b; text-align: center;">
-                    Running with XAMPP or Apache?
-                    <a href="dashboard.php" style="color: #1677e8; font-weight: 600; text-decoration: underline; display: block; margin-top: 4px;">
-                        Open Protected dashboard.php (PHP Sessions)
-                    </a>
+                <div class="topbar-right">
+                    <span class="topbar-role-badge badge-student" id="topbarRoleBadge">🎓 Student</span>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <div class="user-avatar-circle" id="topbarAvatar" style="width:32px;height:32px;font-size:12px;">RP</div>
+                        <span style="font-size:13px;font-weight:600;color:var(--sh-text-primary);" class="hidden-mobile" id="topbarUsername">rahul_patel</span>
+                    </div>
+                    <button onclick="logoutStudent()" class="btn-signout-topbar">Sign Out 🚪</button>
                 </div>
-            </aside>
+            </header>
 
-        </section>
+            <main class="portal-content">
+                <!-- Welcome Card -->
+                <div class="portal-welcome-card" style="margin-bottom:24px;">
+                    <div class="portal-welcome-content">
+                        <h2>Welcome back, <span id="welcomeName">Rahul Patel</span>! 👋</h2>
+                        <p id="welcomeSubtitle">
+                            Enrolled in <strong>B.Tech Information Technology</strong> (Year 3) &nbsp;•&nbsp; Registration ID: <strong>STD-0001</strong>
+                        </p>
+                    </div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                        <a href="dashboard.php" class="btn-portal-secondary hidden-mobile" title="PHP Native Session mode">
+                            🐘 Open in PHP Mode
+                        </a>
+                        <a href="events.html" class="btn-portal-primary">
+                            <span>🔍 Explore Events</span>
+                        </a>
+                        <a href="my_registrations.html" class="btn-portal-ghost" style="border:1px solid var(--sh-border-color);">
+                            <span>🎟️ My Passes</span>
+                        </a>
+                        <a href="profile.html" class="btn-portal-ghost" style="border:1px solid var(--sh-border-color);">
+                            <span>👤 Edit Profile</span>
+                        </a>
+                    </div>
+                </div>
 
+                <!-- KPI Metric Grid -->
+                <div class="portal-kpi-grid" style="margin-bottom:24px;">
+                    <div class="kpi-card">
+                        <div class="kpi-icon-wrapper" style="background:#eff6ff;color:#1e40af;">📅</div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">Available Events</span>
+                            <span class="kpi-value" id="kpiEvents">6</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-icon-wrapper" style="background:#ecfdf5;color:#059669;">🎟️</div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">My Registered Passes</span>
+                            <span class="kpi-value" id="kpiPasses">2</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-icon-wrapper" style="background:#fef3c7;color:#d97706;">🎓</div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">Enrolled Program</span>
+                            <span class="kpi-value" id="kpiProgram" style="font-size:14px;line-height:1.2;font-weight:600;margin-top:4px;">
+                                B.Tech IT
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-icon-wrapper" style="background:#f5f3ff;color:#7c3aed;">⏱️</div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">Active Session Guard</span>
+                            <span class="kpi-value" style="color:#7c3aed;font-size:16px;">
+                                15m Idle Check
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2-cols" style="align-items:start;">
+                    <!-- Left: My Passes & Announcements -->
+                    <div style="display:flex;flex-direction:column;gap:24px;">
+                        <!-- My Active Passes -->
+                        <div class="portal-card">
+                            <div class="portal-card-header">
+                                <div>
+                                    <h3 class="portal-card-title">My Registered Event Passes</h3>
+                                    <p class="portal-card-subtitle">Verified tickets issued to your student account.</p>
+                                </div>
+                                <a href="my_registrations.html" class="btn-portal-ghost" style="font-size:12px;">View All</a>
+                            </div>
+                            <div class="portal-card-body" id="dashboardPassesList">
+                                <div class="portal-empty-state" style="padding:20px 10px;">
+                                    <div class="empty-icon">⏳</div>
+                                    <div class="empty-title">Loading your tickets...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Campus Announcements Card -->
+                        <div class="portal-card">
+                            <div class="portal-card-header">
+                                <div>
+                                    <h3 class="portal-card-title">Campus Announcements 📢</h3>
+                                    <p class="portal-card-subtitle">Official university notices and academic alerts.</p>
+                                </div>
+                            </div>
+                            <div class="portal-card-body" style="display:flex;flex-direction:column;gap:12px;">
+                                <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:var(--sh-radius-sm);padding:12px;">
+                                    <div style="font-weight:600;font-size:13px;color:#1e40af;margin-bottom:2px;">
+                                        🎯 Campus Web Tech Hackathon 2026
+                                    </div>
+                                    <div style="font-size:12px;color:var(--sh-text-secondary);line-height:1.4;">
+                                        Registrations are now open for all IT and Computer Science students. Compete for cash prizes and industry internships.
+                                    </div>
+                                </div>
+
+                                <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--sh-radius-sm);padding:12px;">
+                                    <div style="font-weight:600;font-size:13px;color:#166534;margin-bottom:2px;">
+                                        🏆 Mid-Term Examination Schedule Released
+                                    </div>
+                                    <div style="font-size:12px;color:var(--sh-text-secondary);line-height:1.4;">
+                                        Semester practical evaluations are scheduled for next month. Ensure all lab records are verified.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Upcoming Events -->
+                    <div class="portal-card">
+                        <div class="portal-card-header">
+                            <div>
+                                <h3 class="portal-card-title">Featured Upcoming Events</h3>
+                                <p class="portal-card-subtitle">Seminars, workshops, and campus activities.</p>
+                            </div>
+                            <a href="events.html" class="btn-portal-ghost" style="font-size:12px;">Browse All</a>
+                        </div>
+                        <div class="portal-card-body" id="dashboardEventsList">
+                            <div class="portal-empty-state" style="padding:20px 10px;">
+                                <div class="empty-icon">⏳</div>
+                                <div class="empty-title">Loading campus events...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
-</main>
 
-<!-- ================= FOOTER ================= -->
-<footer>
-    <p>© 2026 StudentHub | Digital Campus Portal</p>
-    <div class="footer-links">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="register.html">Register</a>
-        <a href="login.html">Login</a>
-        <a href="../php/view_registrations.php">Records</a>
-        <a href="contact.html">Contact</a>
-    </div>
-</footer>
+    <script>
+        function togglePortalSidebar() {
+            const sb = document.getElementById("portalSidebar");
+            const ov = document.getElementById("sidebarOverlay");
+            if (sb) sb.classList.toggle("open");
+            if (ov) ov.classList.toggle("open");
+        }
 
-<script src="../js/script.js"></script>
-<script>
-// Load authenticated student details from sessionStorage / localStorage
-(function initDashboard() {
-    let user = null;
-    try {
-        const raw = sessionStorage.getItem('studenthub_user') || localStorage.getItem('studenthub_user');
-        if (raw) {
-            user = JSON.parse(raw);
-        }
-    } catch (e) {
-        console.warn('Could not parse stored session:', e);
-    }
+        let currentUser = null;
 
-    if (user) {
-        if (user.full_name) {
-            document.getElementById('studentFullName').textContent = `Welcome back, ${user.full_name}!`;
-        }
-        if (user.registration_no) {
-            document.getElementById('studentRegNo').textContent = user.registration_no;
-        }
-        if (user.course) {
-            const yr = user.academic_year ? ` (Year ${user.academic_year})` : '';
-            document.getElementById('studentCourse').textContent = `${user.course}${yr}`;
-        }
-        if (user.email) {
-            document.getElementById('studentEmail').textContent = user.email;
-        }
-        if (user.role === 'admin') {
-            document.getElementById('studentRolePill').textContent = '🛡️ Administrator';
-            document.getElementById('studentRolePill').style.background = 'rgba(239, 68, 68, 0.3)';
-        }
-    }
-})();
+        async function initDashboard() {
+            // Load user identity from storage
+            try {
+                const raw = sessionStorage.getItem('studenthub_user') || localStorage.getItem('studenthub_user');
+                if (raw) currentUser = JSON.parse(raw);
+            } catch (e) {}
 
-function logoutStudent() {
-    sessionStorage.removeItem('studenthub_user');
-    localStorage.removeItem('studenthub_user');
-    window.location.href = 'login.html';
-}
-</script>
+            if (!currentUser) {
+                currentUser = {
+                    student_id: 1,
+                    username: 'rahul_patel',
+                    full_name: 'Rahul Patel',
+                    course: 'B.Tech Information Technology',
+                    academic_year: 3,
+                    registration_no: 'STD-2026-0042',
+                    role: 'student'
+                };
+            }
 
+            document.getElementById('welcomeName').textContent = currentUser.full_name || 'Student';
+            document.getElementById('welcomeSubtitle').innerHTML = `
+                Enrolled in <strong>${escapeHtml(currentUser.course || 'B.Tech Information Technology')}</strong> 
+                (Year ${currentUser.academic_year || 3}) &nbsp;•&nbsp; Registration ID: <strong>${escapeHtml(currentUser.registration_no || 'STD-0001')}</strong>
+            `;
+            document.getElementById('kpiProgram').textContent = (currentUser.course || 'B.Tech IT').replace('B.Tech ', '');
+
+            const initials = (currentUser.full_name || 'SH').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            document.getElementById('sidebarAvatar').textContent = initials;
+            document.getElementById('topbarAvatar').textContent = initials;
+            document.getElementById('sidebarUserName').textContent = currentUser.full_name || 'Student';
+            document.getElementById('topbarUsername').textContent = currentUser.username || 'student';
+
+            if (currentUser.role === 'admin') {
+                document.getElementById('topbarRoleBadge').className = 'topbar-role-badge badge-admin';
+                document.getElementById('topbarRoleBadge').textContent = '🛡️ Administrator';
+                document.getElementById('sidebarUserRole').textContent = '🛡️ Administrator';
+            }
+
+            loadPasses();
+            loadEvents();
+        }
+
+        async function loadPasses() {
+            const container = document.getElementById('dashboardPassesList');
+            let passes = [];
+
+            // Try server API
+            try {
+                const res = await fetch('../php/event_register.php?action=my_registrations');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success && Array.isArray(data.registrations)) {
+                        passes = data.registrations;
+                    }
+                }
+            } catch (e) {}
+
+            if (passes.length === 0) {
+                passes = JSON.parse(localStorage.getItem('studenthub_registrations') || '[]');
+                if (passes.length === 0) {
+                    passes = [
+                        {
+                            registration_id: 101,
+                            registration_code: 'REG-2026-0042',
+                            title: 'National Web Tech Hackathon 2026',
+                            event_date: '2026-03-25',
+                            venue: 'Campus Auditorium A',
+                            attendance_status: 'Confirmed'
+                        },
+                        {
+                            registration_id: 102,
+                            registration_code: 'REG-2026-0088',
+                            title: 'AI & Machine Learning Masterclass',
+                            event_date: '2026-04-10',
+                            venue: 'CS Lab 3 & Online',
+                            attendance_status: 'Confirmed'
+                        }
+                    ];
+                    localStorage.setItem('studenthub_registrations', JSON.stringify(passes));
+                }
+            }
+
+            const activePasses = passes.filter(p => p.attendance_status !== 'Cancelled');
+            document.getElementById('kpiPasses').textContent = activePasses.length;
+
+            if (activePasses.length === 0) {
+                container.innerHTML = `
+                    <div class="portal-empty-state" style="padding:24px 12px;">
+                        <div class="empty-icon">🎫</div>
+                        <div class="empty-title">No Active Passes Found</div>
+                        <div class="empty-desc">You have not registered for any upcoming events yet.</div>
+                        <a href="events.html" class="btn-portal-primary" style="margin-top:12px;font-size:13px;">Browse Events</a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = activePasses.slice(0, 3).map(p => `
+                <div style="padding:14px;background:#f8fafc;border-radius:var(--sh-radius-sm);border:1px solid var(--sh-border-color);display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                    <div>
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                            <span class="code-badge" style="font-size:11px;">${escapeHtml(p.registration_code || 'REG-2026-001')}</span>
+                            <span class="status-badge badge-confirmed" style="font-size:11px;">Confirmed</span>
+                        </div>
+                        <div style="font-weight:600;font-size:14px;color:var(--sh-text-primary);">${escapeHtml(p.title)}</div>
+                        <div style="font-size:12px;color:var(--sh-text-muted);margin-top:2px;">
+                            📅 ${p.event_date || 'Upcoming'} &nbsp;•&nbsp; 📍 ${escapeHtml(p.venue || 'Campus Auditorium')}
+                        </div>
+                    </div>
+                    <a href="my_registrations.html" class="btn-portal-ghost" style="font-size:12px;">View Pass</a>
+                </div>
+            `).join('');
+        }
+
+        async function loadEvents() {
+            const container = document.getElementById('dashboardEventsList');
+            let events = [];
+
+            // Try loading from api_events.php or events.json
+            try {
+                const res = await fetch('../php/api_events.php');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.status === 'success' && Array.isArray(data.data)) {
+                        events = data.data;
+                    }
+                }
+            } catch (e) {}
+
+            if (events.length === 0) {
+                try {
+                    const res = await fetch('../data/events.json');
+                    if (res.ok) events = await res.json();
+                } catch (e) {}
+            }
+
+            if (events.length > 0) {
+                document.getElementById('kpiEvents').textContent = events.length;
+                container.innerHTML = events.slice(0, 4).map(ev => `
+                    <div style="border:1px solid var(--sh-border-color);border-radius:var(--sh-radius-md);padding:14px;background:#ffffff;box-shadow:var(--sh-shadow-sm);margin-bottom:12px;">
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
+                            <span style="background:#e0e7ff;color:#3730a3;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;">
+                                ${escapeHtml(ev.category || 'Technical')}
+                            </span>
+                            <span style="font-size:12px;color:var(--sh-text-muted);">
+                                ${ev.available_seats || 50} seats left
+                            </span>
+                        </div>
+                        <h4 style="margin:8px 0 4px 0;font-size:15px;color:var(--sh-text-primary);">
+                            ${escapeHtml(ev.title)}
+                        </h4>
+                        <p style="margin:0 0 10px 0;font-size:12px;color:var(--sh-text-secondary);line-height:1.4;">
+                            ${escapeHtml((ev.description || '').substring(0, 95))}...
+                        </p>
+                        <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--sh-text-muted);border-top:1px solid #f1f5f9;padding-top:10px;">
+                            <div>📅 ${ev.event_date || 'Upcoming'} &bull; 📍 ${escapeHtml(ev.venue || 'Campus')}</div>
+                            <a href="events.html" class="btn-portal-primary" style="font-size:11px;padding:4px 10px;">Register</a>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = `
+                    <div class="portal-empty-state">
+                        <div class="empty-icon">🎪</div>
+                        <div class="empty-title">No Events Scheduled</div>
+                    </div>
+                `;
+            }
+        }
+
+        function logoutStudent() {
+            sessionStorage.removeItem('studenthub_user');
+            localStorage.removeItem('studenthub_user');
+            window.location.href = 'login.html';
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
 </body>
 </html>
