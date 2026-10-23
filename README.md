@@ -794,6 +794,254 @@ Student Hub/
     └── schema.sql              # Relational schema with poster_image column & seed records
 ```
 
+---
+
+# Practical 13 - Asynchronous PHP JSON REST API & Fetch API Integration
+
+## Objective
+
+To develop lightweight, RESTful **PHP JSON API endpoints** for events and students, and consume them asynchronously using the JavaScript **Fetch API**. All **List**, **Add**, **Update**, and **Delete** (CRUD) operations execute seamlessly **without full page reload**, providing an interactive Single Page Application (SPA) experience with real-time feedback, network transaction inspection, parameterized MySQLi database persistence, and flat-file dual-synchronization.
+
+---
+
+## 🏗️ Architecture & Asynchronous Flow
+
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│               FRONTEND CLIENT (pages/api_crud.html)                   │
+│                                                                        │
+│   [ UI Table / Cards ] ──(Trigger Action: List, Add, Edit, Delete)──┐  │
+│            ▲                                                        │  │
+│            │ (DOM Update with Animation - ZERO Page Reload)          │  │
+│            │                                                        ▼  │
+│     [ Fetch API ]  ◄──(async / await)──►  [ Network Inspector ]        │
+└────────────┬───────────────────────────────────────────────────────────┘
+             │ HTTP Request (GET, POST, PUT, DELETE)
+             │ Header: Content-Type: application/json
+             ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│             BACKEND REST API CONTROLLERS (php/api_*.php)               │
+│                                                                        │
+│   • php/api_events.php    • php/api_students.php                       │
+│                                                                        │
+│   - CORS & JSON Header Dispatch (application/json)                     │
+│   - HTTP Method Inspection (GET, POST, PUT, DELETE, OPTIONS)           │
+│   - Request Payload Decoding (php://input JSON parser)                 │
+│   - Server-Side Field Validation & Sanitization                        │
+│   - Standard HTTP Status Codes (200, 201, 400, 404, 405, 500)          │
+└────────────┬───────────────────────────────────────────┬───────────────┘
+             │ Parameterized Prepared Statements         │ File Sync
+             ▼                                           ▼
+┌───────────────────────────┐               ┌───────────────────────────┐
+│  MySQL Database (InnoDB)  │               │   Flat JSON Datastores    │
+│  - events table           │ ◄───────────► │   - data/events.json      │
+│  - students table         │               │   - data/registrations.json│
+└───────────────────────────┘               └───────────────────────────┘
+```
+
+---
+
+## 📡 REST API Endpoints Reference
+
+### 1. Events API (`/php/api_events.php`)
+
+| Method | Endpoint | Query / Body Payload | HTTP Status | Description |
+|---|---|---|---|---|
+| `GET` | `/php/api_events.php` | Optional: `?search=&category=&status=&sort=` | `200 OK` | Retrieves array of all campus events matching filter criteria. |
+| `GET` | `/php/api_events.php?id={id}` | Query: `id` | `200 OK` / `404 Not Found` | Retrieves single event details by primary key ID. |
+| `POST` | `/php/api_events.php` | JSON Body: `{ title, category, date, time, location, organizer, seats, status, description }` | `201 Created` / `400 Bad Request` | Validates and inserts a new event using parameterized MySQLi statement. |
+| `PUT` | `/php/api_events.php?id={id}` | JSON Body: `{ title, category, date, time, location, organizer, seats, status, description }` | `200 OK` / `400 Bad Request` / `404 Not Found` | Updates existing event attributes in-place. |
+| `DELETE` | `/php/api_events.php?id={id}` | Query: `id` (or JSON `{ "id": id }`) | `200 OK` / `404 Not Found` | Deletes the event record from database and flat file. |
+| `OPTIONS` | `/php/api_events.php` | None | `204 No Content` | Responds to browser CORS preflight requests. |
+
+### 2. Students API (`/php/api_students.php`)
+
+| Method | Endpoint | Query / Body Payload | HTTP Status | Description |
+|---|---|---|---|---|
+| `GET` | `/php/api_students.php` | Optional: `?search=&course=&year=&sort=` | `200 OK` | Lists registered students with multi-criteria filtering. |
+| `GET` | `/php/api_students.php?id={id}` | Query: `id` (Numeric ID or Registration No) | `200 OK` / `404 Not Found` | Retrieves single student profile. |
+| `POST` | `/php/api_students.php` | JSON Body: `{ name, username, email, mobile, course, year, gender }` | `201 Created` / `409 Conflict` | Adds new student with duplicate checks and bcrypt password hashing. |
+| `PUT` | `/php/api_students.php?id={id}` | JSON Body: `{ name, email, mobile, course, year, gender, role }` | `200 OK` | Updates student demographic and academic profile. |
+| `DELETE` | `/php/api_students.php?id={id}` | Query: `id` | `200 OK` / `404 Not Found` | Removes student account from portal. |
+
+---
+
+## ⚡ Asynchronous Fetch API Implementation (No Page Reload)
+
+### 1. Asynchronous List Retrieval (`GET`)
+```javascript
+async function fetchRecords() {
+    const response = await fetch('../php/api_events.php', {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+    });
+    const result = await response.json();
+    if (result.success) {
+        renderTableBody(result.data);
+        updateKpiCounters(result.count);
+    }
+}
+```
+
+### 2. Asynchronous Record Creation (`POST`)
+```javascript
+async function addEventAsync(eventData) {
+    const response = await fetch('../php/api_events.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(eventData)
+    });
+    const result = await response.json();
+    if (response.status === 201 && result.success) {
+        prependTableRow(result.data); // Dynamic DOM insertion
+        showToast("🎉 Event added successfully via POST!", "success");
+    }
+}
+```
+
+### 3. Asynchronous Record Update (`PUT`)
+```javascript
+async function updateEventAsync(eventId, updatedData) {
+    const response = await fetch(`../php/api_events.php?id=${eventId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(updatedData)
+    });
+    const result = await response.json();
+    if (response.status === 200 && result.success) {
+        updateTableRowInPlace(eventId, result.data); // In-place DOM update with flash highlight
+        showToast("✏️ Event updated successfully via PUT!", "success");
+    }
+}
+```
+
+### 4. Asynchronous Record Deletion (`DELETE`)
+```javascript
+async function deleteEventAsync(eventId) {
+    const response = await fetch(`../php/api_events.php?id=${eventId}`, {
+        method: 'DELETE',
+        headers: { 'Accept': 'application/json' }
+    });
+    const result = await response.json();
+    if (response.status === 200 && result.success) {
+        animateAndRemoveRow(eventId); // Slide-out exit animation before removal
+        showToast("🗑️ Event deleted successfully via DELETE!", "warning");
+    }
+}
+```
+
+---
+
+## 🛠️ Key Capabilities Implemented
+
+### 1. Zero Full Page Reloads (SPA Experience)
+- Every CRUD interaction triggers standard asynchronous `fetch()` promises.
+- Data changes update the active DOM immediately:
+  - **Newly inserted records** appear at the top of the table with a soft **green glowing fade-in animation**.
+  - **Updated records** flash with an **amber update animation** in their existing table row.
+  - **Deleted records** trigger a **red slide-out exit animation** before being removed from the DOM.
+- Floating toast alert notifications communicate real-time operation status without modal disruption.
+
+### 2. Live REST API Network Inspector Console
+- Embedded, collapsible developer console displaying live HTTP network activity:
+  - **Client Fetch Request**: HTTP Method pill (`GET`, `POST`, `PUT`, `DELETE`), Request URL, Request Headers (`Content-Type: application/json`), and formatted Request Body JSON.
+  - **Server Response**: HTTP Status Code (`200 OK`, `201 Created`, `400 Bad Request`, `404 Not Found`), round-trip latency timer in milliseconds, response headers, and colorized syntax-highlighted JSON payload.
+  - **Copy cURL Button**: Instantly copies the exact cURL command to clipboard for testing in terminal or Postman.
+
+### 3. Strict HTTP Status Code Compliance
+- `200 OK`: Successful retrieval (`GET`), update (`PUT`), or deletion (`DELETE`).
+- `201 Created`: Successful resource creation (`POST`).
+- `400 Bad Request`: Validation failure (missing required fields, string length violations, capacity &le; 0).
+- `404 Not Found`: Requested ID does not exist in the database or datastore.
+- `405 Method Not Allowed`: Request with unsupported HTTP method.
+- `409 Conflict`: Attempted insertion of duplicate email or username.
+- `500 Internal Server Error`: Unhandled server-side or database exception.
+
+### 4. Dual Sync & Offline Lab Resilience
+- When hosted on **Apache / PHP** (e.g. XAMPP, WAMP, or `php -S`):
+  - Direct database queries execute via **parameterized MySQLi prepared statements**.
+  - Transactions automatically synchronize to `data/events.json` and `data/registrations.json`.
+- When tested via **VS Code Live Server**:
+  - The client runtime probe detects static hosting and activates **Offline / Live Server Client Mode**.
+  - Simulated Fetch requests read and write to local cache with the exact same JSON format, request logging, and status codes.
+  - Displays a visible runtime driver status badge (`🟢 Live PHP JSON API (MySQL)` vs `🟡 Offline / Live Server Client Mode`).
+
+---
+
+## 📁 Practical 13 File Structure
+
+```text
+Student Hub/
+├── pages/
+│   ├── api_crud.html           # Interactive Asynchronous Fetch API CRUD Application (Practical 13)
+│   ├── event_manager.html      # Practical 12 Admin Event Manager
+│   ├── student_manager.html    # Practical 11 Student Manager
+│   ├── dashboard.html          # Student Dashboard (Updated with P13 navigation)
+│   └── admin.html              # Admin Console (Updated with P13 Action Card & Nav)
+├── php/
+│   ├── api_events.php          # PHP JSON REST API Endpoint for Events (GET, POST, PUT, DELETE)
+│   ├── api_students.php        # PHP JSON REST API Endpoint for Students (GET, POST, PUT, DELETE)
+│   ├── db_connect.php          # MySQLi & PDO Database Connection Module
+│   └── event_manager.php       # Practical 12 Backend CRUD Module
+├── data/
+│   ├── events.json             # Synchronized Events JSON Datastore
+│   └── registrations.json      # Synchronized Students JSON Datastore
+└── database/
+    └── schema.sql              # Relational Schema with Events and Students tables
+```
+
+---
+
+## 🧪 Testing & Verification Guide
+
+### Option 1: Testing with VS Code Live Server
+1. Open the project root in VS Code.
+2. Right-click on `pages/api_crud.html` and select **"Open with Live Server"**.
+3. The page will load and show `🟡 Offline / Live Server Client Mode`.
+4. Test asynchronous operations:
+   - Click **"➕ Add Record (POST)"** &rarr; Submit form &rarr; Notice new record inserted with green glow without page reload!
+   - Click **"✏️ Edit"** on any record &rarr; Modify details &rarr; Save &rarr; Notice in-place update!
+   - Click **"🗑️ Delete"** &rarr; Confirm &rarr; Notice row slides out and disappears smoothly!
+   - Inspect the **REST API Network Inspector** drawer at the bottom to view the real-time request and response payloads!
+
+### Option 2: Testing with PHP Built-in Server / Apache (XAMPP)
+1. In terminal, navigate to the `Student Hub` folder and run:
+   ```bash
+   php -S localhost:8000
+   ```
+2. Open `http://localhost:8000/pages/api_crud.html` in the browser.
+3. The status badge will display `🟢 Live PHP JSON API (MySQL / Server)` with measured server round-trip latency.
+4. Execute GET, POST, PUT, and DELETE operations &rarr; Records are written directly to MySQL and mirrored in `data/events.json`!
+
+### Option 3: Testing Endpoints via cURL or Postman
+- **List Events (GET)**:
+  ```bash
+  curl -X GET "http://localhost:8000/php/api_events.php" -H "Accept: application/json"
+  ```
+- **Add Event (POST)**:
+  ```bash
+  curl -X POST "http://localhost:8000/php/api_events.php" \
+    -H "Content-Type: application/json" \
+    -d '{"title":"Hackathon 2026","category":"Competition","date":"2026-11-20","time":"09:00 AM","location":"Lab 3","organizer":"Coding Club","seats":100,"status":"Upcoming","description":"Annual campus hackathon"}'
+  ```
+- **Update Event (PUT)**:
+  ```bash
+  curl -X PUT "http://localhost:8000/php/api_events.php?id=1" \
+    -H "Content-Type: application/json" \
+    -d '{"title":"Tech Innovation Summit 2026 (Updated)","category":"Technology","date":"2026-10-10","time":"10:00 AM","location":"Main Auditorium","organizer":"Computer Engineering","seats":150,"status":"Completed","description":"Updated event summary"}'
+  ```
+- **Delete Event (DELETE)**:
+  ```bash
+  curl -X DELETE "http://localhost:8000/php/api_events.php?id=1" -H "Accept: application/json"
+  ```
+
+
 
 
 

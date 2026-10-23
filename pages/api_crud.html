@@ -1,0 +1,2163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="StudentHub Practical 13 - Asynchronous PHP JSON REST API & Fetch API Integration">
+    <title>StudentHub - Practical 13: Asynchronous PHP JSON REST API & Fetch API</title>
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        /* ====================================================================
+           PRACTICAL 13 CUSTOM STYLING & DESIGN TOKENS
+           ==================================================================== */
+        :root {
+            --api-primary: #2563eb;
+            --api-primary-hover: #1d4ed8;
+            --api-secondary: #0ea5e9;
+            --api-success: #10b981;
+            --api-warning: #f59e0b;
+            --api-danger: #ef4444;
+            --api-dark: #0f172a;
+            --api-card-bg: #ffffff;
+            --api-border: #e2e8f0;
+            --api-text-main: #1e293b;
+            --api-text-muted: #64748b;
+        }
+
+        body.dark {
+            --api-card-bg: #1e293b;
+            --api-border: #334155;
+            --api-text-main: #f8fafc;
+            --api-text-muted: #94a3b8;
+        }
+
+        .api-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #3b82f6 100%);
+            color: #ffffff;
+            padding: 26px 30px;
+            border-radius: 14px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .api-hero::after {
+            content: "";
+            position: absolute;
+            right: -40px;
+            bottom: -40px;
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .api-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            transition: all 0.2s ease;
+        }
+
+        .badge-live {
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .badge-simulated {
+            background: #fffbeb;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        .badge-method-get {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+        }
+
+        .badge-method-post {
+            background: #f0fdf4;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+        }
+
+        .badge-method-put {
+            background: #fff7ed;
+            color: #c2410c;
+            border: 1px solid #fed7aa;
+        }
+
+        .badge-method-delete {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
+        /* Entity Switcher Tabs */
+        .entity-nav {
+            display: flex;
+            gap: 8px;
+            background: #f1f5f9;
+            padding: 6px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 20px;
+            max-width: 480px;
+        }
+
+        body.dark .entity-nav {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        .entity-tab {
+            flex: 1;
+            padding: 9px 16px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--api-text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .entity-tab.active {
+            background: #ffffff;
+            color: var(--api-primary);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        body.dark .entity-tab.active {
+            background: #334155;
+            color: #60a5fa;
+        }
+
+        /* KPI Grid */
+        .api-kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .kpi-card {
+            background: var(--api-card-bg);
+            border: 1px solid var(--api-border);
+            border-radius: 12px;
+            padding: 18px 20px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+        }
+
+        .kpi-icon-bubble {
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .kpi-val {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--api-text-main);
+            line-height: 1.1;
+        }
+
+        .kpi-label {
+            font-size: 12px;
+            color: var(--api-text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+
+        /* Toolbar */
+        .api-toolbar {
+            background: var(--api-card-bg);
+            border: 1px solid var(--api-border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .filter-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            flex: 1;
+        }
+
+        .search-box-wrap {
+            position: relative;
+            min-width: 240px;
+            flex: 1;
+        }
+
+        .search-box-wrap input {
+            width: 100%;
+            padding: 8px 12px 8px 36px;
+            border-radius: 8px;
+            border: 1px solid var(--api-border);
+            font-size: 13px;
+            background: #ffffff;
+            color: var(--api-text-main);
+        }
+
+        body.dark .search-box-wrap input {
+            background: #0f172a;
+            border-color: #334155;
+            color: #f8fafc;
+        }
+
+        .search-icon-symbol {
+            position: absolute;
+            left: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: var(--api-text-muted);
+            pointer-events: none;
+        }
+
+        .custom-select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--api-border);
+            font-size: 13px;
+            background: #ffffff;
+            color: var(--api-text-main);
+            cursor: pointer;
+        }
+
+        body.dark .custom-select {
+            background: #0f172a;
+            border-color: #334155;
+            color: #f8fafc;
+        }
+
+        .toolbar-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* Buttons */
+        .btn-api-primary {
+            background: var(--api-primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+
+        .btn-api-primary:hover {
+            background: var(--api-primary-hover);
+        }
+
+        .btn-api-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-api-secondary {
+            background: #ffffff;
+            color: var(--api-text-main);
+            border: 1px solid var(--api-border);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        body.dark .btn-api-secondary {
+            background: #1e293b;
+            color: #f8fafc;
+            border-color: #334155;
+        }
+
+        .btn-api-secondary:hover {
+            background: #f1f5f9;
+        }
+
+        body.dark .btn-api-secondary:hover {
+            background: #334155;
+        }
+
+        /* Main Data Table */
+        .table-card {
+            background: var(--api-card-bg);
+            border: 1px solid var(--api-border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+            margin-bottom: 24px;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .api-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .api-table th {
+            background: #f8fafc;
+            color: var(--api-text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.6px;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--api-border);
+            white-space: nowrap;
+        }
+
+        body.dark .api-table th {
+            background: #0f172a;
+            border-color: #334155;
+            color: #94a3b8;
+        }
+
+        .api-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--api-border);
+            color: var(--api-text-main);
+            vertical-align: middle;
+        }
+
+        .api-table tbody tr {
+            transition: background 0.15s ease;
+        }
+
+        .api-table tbody tr:hover {
+            background: rgba(37, 99, 235, 0.03);
+        }
+
+        body.dark .api-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Highlight animation for added / updated records */
+        @keyframes highlightSuccess {
+            0% { background: #dcfce7; }
+            100% { background: transparent; }
+        }
+
+        @keyframes highlightUpdate {
+            0% { background: #fef3c7; }
+            100% { background: transparent; }
+        }
+
+        @keyframes fadeOutDelete {
+            0% { opacity: 1; transform: translateX(0); background: #fee2e2; }
+            100% { opacity: 0; transform: translateX(30px); background: #fee2e2; }
+        }
+
+        .row-added {
+            animation: highlightSuccess 2s ease-out;
+        }
+
+        .row-updated {
+            animation: highlightUpdate 2s ease-out;
+        }
+
+        .row-deleting {
+            animation: fadeOutDelete 0.4s ease-out forwards;
+        }
+
+        .record-thumb {
+            width: 50px;
+            height: 38px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 1px solid #cbd5e1;
+            background: #f1f5f9;
+        }
+
+        .record-title {
+            font-weight: 700;
+            color: var(--api-text-main);
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .record-sub {
+            font-size: 12px;
+            color: var(--api-text-muted);
+        }
+
+        .action-cell {
+            white-space: nowrap;
+        }
+
+        .btn-table-action {
+            padding: 5px 9px;
+            border-radius: 6px;
+            border: 1px solid var(--api-border);
+            background: #ffffff;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 4px;
+            transition: all 0.15s ease;
+        }
+
+        body.dark .btn-table-action {
+            background: #1e293b;
+            color: #f8fafc;
+            border-color: #334155;
+        }
+
+        .btn-table-action:hover {
+            border-color: var(--api-primary);
+            color: var(--api-primary);
+        }
+
+        .btn-table-delete:hover {
+            border-color: var(--api-danger);
+            color: var(--api-danger);
+            background: #fef2f2;
+        }
+
+        /* REST API Network Inspector Console */
+        .api-inspector-card {
+            background: #0f172a;
+            color: #f8fafc;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+            border: 1px solid #334155;
+        }
+
+        .inspector-header {
+            background: #1e293b;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #334155;
+        }
+
+        .inspector-title {
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #93c5fd;
+            font-family: monospace;
+        }
+
+        .inspector-body {
+            padding: 16px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 860px) {
+            .inspector-body {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .console-pane {
+            background: #090d16;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 12px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 260px;
+            overflow-y: auto;
+        }
+
+        .console-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .json-syntax {
+            white-space: pre-wrap;
+            word-break: break-all;
+            color: #38bdf8;
+            line-height: 1.45;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-dialog {
+            background: var(--api-card-bg);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 580px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--api-border);
+            transform: scale(0.95);
+            transition: transform 0.25s ease;
+        }
+
+        .modal-overlay.active .modal-dialog {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--api-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--api-text-main);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--api-text-muted);
+            cursor: pointer;
+            padding: 4px;
+            line-height: 1;
+        }
+
+        .modal-body {
+            padding: 22px 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            background: #f8fafc;
+            border-top: 1px solid var(--api-border);
+            border-radius: 0 0 14px 14px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        body.dark .modal-footer {
+            background: #0f172a;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        @media (max-width: 540px) {
+            .form-grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--api-text-main);
+            margin-bottom: 5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 9px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--api-border);
+            font-size: 13px;
+            background: #ffffff;
+            color: var(--api-text-main);
+            transition: border-color 0.15s ease;
+        }
+
+        body.dark .form-input {
+            background: #0f172a;
+            border-color: #334155;
+            color: #f8fafc;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--api-primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        /* Floating Toast Alerts */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast-msg {
+            background: #0f172a;
+            color: #ffffff;
+            padding: 12px 18px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            pointer-events: auto;
+            border-left: 4px solid var(--api-primary);
+            animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            max-width: 380px;
+        }
+
+        .toast-msg.toast-success { border-left-color: var(--api-success); }
+        .toast-msg.toast-error { border-left-color: var(--api-danger); }
+        .toast-msg.toast-warning { border-left-color: var(--api-warning); }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Loading skeleton */
+        .skeleton-row {
+            height: 20px;
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: skeletonLoading 1.5s infinite;
+            border-radius: 4px;
+        }
+
+        body.dark .skeleton-row {
+            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+            background-size: 200% 100%;
+        }
+
+        @keyframes skeletonLoading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+    <header class="site-header">
+        <div class="logo-icon">🎓</div>
+        <h1>StudentHub</h1>
+        <p>Your Digital Campus Portal</p>
+    </header>
+
+    <!-- ================= NAVBAR ================= -->
+    <nav class="navbar">
+        <div class="nav-wrapper">
+            <button class="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+                ☰ Menu
+            </button>
+
+            <div class="nav-container">
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="register.html">Register</a>
+                <a href="login.html">Login</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="student_manager.html">Students</a>
+                <a href="event_manager.html">Events (Admin)</a>
+                <a href="events.html">Events</a>
+                <a href="api_crud.html" class="active">JSON API (P13)</a>
+                <a href="profile.html">Profile</a>
+                <a href="contact.html">Contact</a>
+                <a href="admin.html">Admin</a>
+                <a href="../php/db_dashboard.php">Database</a>
+                <a href="faq.html">FAQ</a>
+            </div>
+
+            <button class="theme-toggle" aria-label="Toggle dark mode">
+                🌙 Dark Mode
+            </button>
+        </div>
+    </nav>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main>
+        <div class="container" style="margin-top: 25px; margin-bottom: 40px;">
+
+            <!-- HERO SECTION -->
+            <section class="api-hero">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap;">
+                        <span class="api-badge" style="background: rgba(255, 255, 255, 0.2); color: white;">
+                            ⚡ Practical 13
+                        </span>
+                        <span id="runtimeBadge" class="api-badge badge-live">
+                            <span style="font-size: 10px;">🟢</span> Probing PHP API Endpoint...
+                        </span>
+                        <span id="latencyBadge" class="api-badge" style="background: rgba(0, 0, 0, 0.25); color: #93c5fd; font-family: monospace;">
+                            ⏱️ -- ms
+                        </span>
+                    </div>
+                    <h2 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.3px;">
+                        Asynchronous PHP JSON REST API & Fetch API
+                    </h2>
+                    <p style="margin: 6px 0 0 0; font-size: 14px; opacity: 0.9; max-width: 680px;">
+                        Execute asynchronous <strong>GET</strong>, <strong>POST</strong>, <strong>PUT</strong>, and <strong>DELETE</strong> operations against server-side PHP JSON endpoints without full page reloads.
+                    </p>
+                </div>
+
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button type="button" class="btn-api-primary" onclick="openAddModal()">
+                        <span>➕ Add Record (POST)</span>
+                    </button>
+                    <button type="button" class="btn-api-secondary" onclick="fetchRecords(true)" style="background: rgba(255, 255, 255, 0.15); color: white; border-color: rgba(255, 255, 255, 0.3);">
+                        <span id="refreshIcon">🔄</span> Fetch Data (GET)
+                    </button>
+                </div>
+            </section>
+
+            <!-- ENTITY SWITCHER TABS -->
+            <div class="entity-nav">
+                <button type="button" class="entity-tab active" id="tabEvents" onclick="switchEntity('events')">
+                    <span>📅</span> Campus Events API
+                </button>
+                <button type="button" class="entity-tab" id="tabStudents" onclick="switchEntity('students')">
+                    <span>👨‍🎓</span> Student Directory API
+                </button>
+            </div>
+
+            <!-- KPI STATISTICS CARDS -->
+            <section class="api-kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-icon-bubble" style="background: #eff6ff; color: #2563eb;">
+                        📊
+                    </div>
+                    <div>
+                        <div class="kpi-val" id="kpiTotalCount">0</div>
+                        <div class="kpi-label" id="kpiTotalLabel">Total Events</div>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-icon-bubble" style="background: #f0fdf4; color: #16a34a;">
+                        🎯
+                    </div>
+                    <div>
+                        <div class="kpi-val" id="kpiActiveCount">0</div>
+                        <div class="kpi-label" id="kpiActiveLabel">Upcoming Events</div>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-icon-bubble" style="background: #fef3c7; color: #d97706;">
+                        🚀
+                    </div>
+                    <div>
+                        <div class="kpi-val" id="kpiApiOps">0</div>
+                        <div class="kpi-label">Async Requests Made</div>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-icon-bubble" style="background: #f3e8ff; color: #9333ea;">
+                        🌐
+                    </div>
+                    <div>
+                        <div class="kpi-val" id="kpiLastStatus" style="font-size: 20px;">200 OK</div>
+                        <div class="kpi-label">Last HTTP Status</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEARCH, FILTER, AND ACTION TOOLBAR -->
+            <section class="api-toolbar">
+                <div class="filter-controls">
+                    <div class="search-box-wrap">
+                        <span class="search-icon-symbol">🔍</span>
+                        <input type="text" id="apiSearchInput" placeholder="Search by keyword..." oninput="handleSearchFilter()">
+                    </div>
+
+                    <select id="apiCategoryFilter" class="custom-select" onchange="handleSearchFilter()">
+                        <option value="all">All Categories</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Competition">Competition</option>
+                        <option value="Workshop">Workshop</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Cultural">Cultural</option>
+                        <option value="Career">Career</option>
+                    </select>
+
+                    <select id="apiStatusFilter" class="custom-select" onchange="handleSearchFilter()">
+                        <option value="all">All Statuses</option>
+                        <option value="Upcoming">Upcoming</option>
+                        <option value="Ongoing">Ongoing</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+
+                    <select id="apiSortSelect" class="custom-select" onchange="handleSearchFilter()">
+                        <option value="dateAsc">Date: Earliest First</option>
+                        <option value="dateDesc">Date: Latest First</option>
+                        <option value="nameAsc">Name: A to Z</option>
+                        <option value="nameDesc">Name: Z to A</option>
+                        <option value="seatsDesc">Capacity: High to Low</option>
+                    </select>
+                </div>
+
+                <div class="toolbar-buttons">
+                    <button type="button" class="btn-api-secondary" onclick="toggleNetworkInspector()">
+                        <span>📡</span> <span id="inspectorToggleText">Hide Inspector</span>
+                    </button>
+                    <button type="button" class="btn-api-secondary" onclick="exportDataJson()">
+                        <span>📥</span> Export JSON
+                    </button>
+                </div>
+            </section>
+
+            <!-- ASYNCHRONOUS DATA TABLE -->
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table class="api-table" id="dataTable">
+                        <thead id="tableHead">
+                            <!-- Dynamic Table Headers based on Entity -->
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 40px;">
+                                    <div class="skeleton-row" style="margin-bottom: 10px;"></div>
+                                    <div class="skeleton-row" style="width: 80%; margin: 0 auto 10px;"></div>
+                                    <div style="font-size: 13px; color: var(--api-text-muted); margin-top: 14px;">
+                                        Loading records asynchronously via Fetch API...
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="padding: 12px 18px; background: #f8fafc; border-top: 1px solid var(--api-border); display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--api-text-muted);" id="tableFooterBar">
+                    <span id="resultsCount">Showing 0 records</span>
+                    <span>Single-Page AJAX Fetch • Zero Page Reloads</span>
+                </div>
+            </div>
+
+            <!-- REST API NETWORK INSPECTOR CONSOLE -->
+            <div class="api-inspector-card" id="networkInspectorCard">
+                <div class="inspector-header">
+                    <div class="inspector-title">
+                        <span>📡</span>
+                        <span>REST API Network Inspector & Transaction Log</span>
+                        <span id="lastMethodPill" class="api-badge badge-method-get" style="font-size: 10px; padding: 2px 8px;">GET</span>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button type="button" class="btn-table-action" onclick="copyCurlCommand()" style="font-size: 11px; padding: 3px 8px;">
+                            📋 Copy cURL
+                        </button>
+                        <button type="button" class="btn-table-action" onclick="clearInspectorLogs()" style="font-size: 11px; padding: 3px 8px;">
+                            🧹 Clear
+                        </button>
+                    </div>
+                </div>
+
+                <div class="inspector-body">
+                    <!-- Request Pane -->
+                    <div class="console-pane">
+                        <div class="console-label">
+                            <span>Client Fetch Request</span>
+                            <span id="reqTimestamp" style="color: #64748b;">--:--:--</span>
+                        </div>
+                        <div style="color: #a5b4fc; margin-bottom: 6px; font-weight: 600;" id="reqUrl">
+                            GET /php/api_events.php
+                        </div>
+                        <div style="color: #94a3b8; font-size: 11px; margin-bottom: 8px;" id="reqHeaders">
+                            Accept: application/json<br>
+                            Content-Type: application/json
+                        </div>
+                        <div class="console-label" style="margin-top: 8px;">Payload Body:</div>
+                        <pre class="json-syntax" id="reqBody">{ "mode": "fetch_all" }</pre>
+                    </div>
+
+                    <!-- Response Pane -->
+                    <div class="console-pane">
+                        <div class="console-label">
+                            <span>Server JSON Response</span>
+                            <span id="resStatusBadge" class="api-badge badge-live" style="font-size: 10px; padding: 2px 6px;">200 OK</span>
+                        </div>
+                        <div style="color: #6ee7b7; margin-bottom: 6px; font-weight: 600;" id="resSummary">
+                            Latency: ~22ms • Source: PHP Server / MySQLi
+                        </div>
+                        <div class="console-label">Response JSON:</div>
+                        <pre class="json-syntax" id="resBody">// Waiting for response...</pre>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- 1. ADD RECORD MODAL (POST) -->
+    <div class="modal-overlay" id="addModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 class="modal-title" id="addModalTitle">➕ Add New Event (POST)</h3>
+                <button type="button" class="modal-close-btn" onclick="closeModal('addModal')">&times;</button>
+            </div>
+            <form id="addRecordForm" onsubmit="handleFormSubmit(event, 'POST')">
+                <div class="modal-body" id="addModalBody">
+                    <!-- Dynamic form fields populated based on current entity -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-api-secondary" onclick="closeModal('addModal')">Cancel</button>
+                    <button type="submit" class="btn-api-primary" id="addSubmitBtn">
+                        <span>Save Record (POST)</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. EDIT RECORD MODAL (PUT) -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 class="modal-title" id="editModalTitle">✏️ Update Event (PUT)</h3>
+                <button type="button" class="modal-close-btn" onclick="closeModal('editModal')">&times;</button>
+            </div>
+            <form id="editRecordForm" onsubmit="handleFormSubmit(event, 'PUT')">
+                <input type="hidden" id="editRecordId">
+                <div class="modal-body" id="editModalBody">
+                    <!-- Dynamic form fields populated with existing record -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-api-secondary" onclick="closeModal('editModal')">Cancel</button>
+                    <button type="submit" class="btn-api-primary" id="editSubmitBtn">
+                        <span>Save Changes (PUT)</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. VIEW DETAIL MODAL (GET Single) -->
+    <div class="modal-overlay" id="viewModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 class="modal-title" id="viewModalTitle">👁️ Record Details (GET)</h3>
+                <button type="button" class="modal-close-btn" onclick="closeModal('viewModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="viewModalBody">
+                <!-- Detailed view -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-api-primary" onclick="closeModal('viewModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. DELETE CONFIRMATION MODAL (DELETE) -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-dialog" style="max-width: 440px;">
+            <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
+                <h3 class="modal-title" style="color: var(--api-danger);">🗑️ Confirm Deletion (DELETE)</h3>
+                <button type="button" class="modal-close-btn" onclick="closeModal('deleteModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 14px; color: var(--api-text-main); margin-bottom: 12px;">
+                    Are you sure you want to delete this record via the REST API?
+                </p>
+                <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 12px; font-size: 13px;">
+                    <strong id="deleteTargetTitle" style="color: #991b1b;">Event Title</strong>
+                    <div style="font-size: 11px; color: #b91c1c; margin-top: 4px;" id="deleteTargetMeta">ID #0</div>
+                </div>
+                <p style="font-size: 12px; color: var(--api-text-muted); margin-top: 10px;">
+                    This asynchronous operation will send an HTTP <code>DELETE</code> request to the server and remove the record without a page reload.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-api-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+                <button type="button" class="btn-api-primary" style="background: var(--api-danger);" id="confirmDeleteBtn" onclick="executeDeleteRecord()">
+                    <span>Delete Record (DELETE)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOATING TOAST CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="site-footer" style="margin-top: 40px; padding: 25px 0; background: #0f172a; color: #94a3b8; text-align: center; font-size: 13px;">
+        <div class="container">
+            <p>🎓 StudentHub Portal &bull; Practical 13: Asynchronous PHP JSON REST API & JavaScript Fetch API</p>
+            <p style="margin-top: 4px; font-size: 12px; opacity: 0.8;">Zero Page Reload CRUD Operations &bull; Parameterized MySQLi Statements &bull; Fallback Synchronization</p>
+        </div>
+    </footer>
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+        /**
+         * ====================================================================
+         * PRACTICAL 13 ASYNCHRONOUS FETCH API CLIENT
+         * ====================================================================
+         * Features:
+         * - Clean async/await Fetch API invocations for GET, POST, PUT, DELETE
+         * - Zero full page reloads with live DOM updates
+         * - Dual-mode engine: Probes PHP endpoint; if running on Apache/PHP, talks
+         *   directly to PHP; if running static/Live Server, seamlessly simulates
+         *   the Fetch API lifecycle with data/events.json & local state.
+         * - Real-time Network Inspector & Transaction Log
+         * - Supports both Events API and Students API
+         * ====================================================================
+         */
+
+        // Current Entity State ('events' or 'students')
+        let currentEntity = 'events';
+        let records = [];
+        let totalApiRequests = 0;
+        let isLivePhpServer = false;
+        let deleteTargetId = null;
+        let lastCurlCommand = 'curl -X GET "http://localhost/Student Hub/php/api_events.php"';
+
+        // Endpoint Configurations
+        const ENDPOINTS = {
+            events: {
+                phpUrl: '../php/api_events.php',
+                fallbackJson: '../data/events.json',
+                storageKey: 'studenthub_p13_events'
+            },
+            students: {
+                phpUrl: '../php/api_students.php',
+                fallbackJson: '../data/registrations.json',
+                storageKey: 'studenthub_p13_students'
+            }
+        };
+
+        // --------------------------------------------------------------------
+        // INITIALIZATION
+        // --------------------------------------------------------------------
+        document.addEventListener('DOMContentLoaded', async () => {
+            setupThemeToggle();
+            await probeApiRuntime();
+            renderTableStructure();
+            await fetchRecords();
+        });
+
+        // Theme Toggle Setup
+        function setupThemeToggle() {
+            const btn = document.querySelector('.theme-toggle');
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    document.body.classList.toggle('dark');
+                    const isDark = document.body.classList.contains('dark');
+                    btn.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+                    localStorage.setItem('studenthub_theme', isDark ? 'dark' : 'light');
+                });
+                if (localStorage.getItem('studenthub_theme') === 'dark') {
+                    document.body.classList.add('dark');
+                    btn.textContent = '☀️ Light Mode';
+                }
+            }
+        }
+
+        // Probe PHP API Runtime to identify environment (Apache vs Live Server)
+        async function probeApiRuntime() {
+            const badge = document.getElementById('runtimeBadge');
+            const latencyBadge = document.getElementById('latencyBadge');
+            const t0 = performance.now();
+
+            try {
+                const testRes = await fetch('../php/api_events.php?id=999999', {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                const latency = Math.round(performance.now() - t0);
+                const contentType = testRes.headers.get('content-type') || '';
+
+                if (contentType.includes('application/json')) {
+                    isLivePhpServer = true;
+                    badge.className = 'api-badge badge-live';
+                    badge.innerHTML = '<span>🟢</span> Live PHP JSON API (MySQL / Server)';
+                    latencyBadge.textContent = `⏱️ ${latency}ms latency`;
+                    return;
+                }
+            } catch (e) {
+                // PHP server not responding or cross-origin / file protocol
+            }
+
+            isLivePhpServer = false;
+            badge.className = 'api-badge badge-simulated';
+            badge.innerHTML = '<span>🟡</span> Offline / Live Server Client Mode';
+            latencyBadge.textContent = '⏱️ Simulated ~12ms';
+        }
+
+        // --------------------------------------------------------------------
+        // ASYNCHRONOUS CRUD OPERATIONS (FETCH API)
+        // --------------------------------------------------------------------
+
+        /**
+         * 1. GET: Fetch list of records asynchronously
+         */
+        async function fetchRecords(isManualRefresh = false) {
+            const refreshIcon = document.getElementById('refreshIcon');
+            if (refreshIcon) refreshIcon.style.animation = 'spin 1s infinite linear';
+
+            const config = ENDPOINTS[currentEntity];
+            const url = isLivePhpServer ? config.phpUrl : config.fallbackJson;
+            const startTime = performance.now();
+
+            logInspectorRequest('GET', url, { 'Accept': 'application/json' }, null);
+
+            try {
+                let responseData;
+                let statusCode = 200;
+
+                if (isLivePhpServer) {
+                    const res = await fetch(url, {
+                        method: 'GET',
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    statusCode = res.status;
+                    const json = await res.json();
+                    responseData = json.data || json;
+                    logInspectorResponse(statusCode, Math.round(performance.now() - startTime), json);
+                } else {
+                    // Simulated / Fallback Mode (reads cached or initial JSON)
+                    const localData = localStorage.getItem(config.storageKey);
+                    if (localData) {
+                        responseData = JSON.parse(localData);
+                    } else {
+                        const res = await fetch(config.fallbackJson);
+                        statusCode = res.status;
+                        const json = await res.json();
+                        responseData = json;
+                        localStorage.setItem(config.storageKey, JSON.stringify(responseData));
+                    }
+                    logInspectorResponse(statusCode, Math.round(performance.now() - startTime), {
+                        success: true,
+                        status: 200,
+                        message: `${currentEntity} retrieved from client datastore.`,
+                        data: responseData,
+                        count: responseData.length
+                    });
+                }
+
+                records = normalizeDataArray(responseData);
+                renderTableBody(records);
+                updateKpis();
+
+                if (isManualRefresh) {
+                    showToast(`Fetched ${records.length} ${currentEntity} asynchronously (GET 200 OK)!`, 'success');
+                }
+            } catch (err) {
+                console.error("Fetch Error:", err);
+                logInspectorResponse(500, Math.round(performance.now() - startTime), { error: err.message });
+                showToast(`Fetch error: ${err.message}`, 'error');
+            } finally {
+                if (refreshIcon) refreshIcon.style.animation = 'none';
+                totalApiRequests++;
+                document.getElementById('kpiApiOps').textContent = totalApiRequests;
+            }
+        }
+
+        /**
+         * 2. POST / PUT: Handle form submission for Add or Update
+         */
+        async function handleFormSubmit(event, method) {
+            event.preventDefault();
+            const submitBtn = method === 'POST' ? document.getElementById('addSubmitBtn') : document.getElementById('editSubmitBtn');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<span>⏳ Processing ${method}...</span>`;
+
+            const config = ENDPOINTS[currentEntity];
+            const startTime = performance.now();
+            let payload = {};
+
+            if (currentEntity === 'events') {
+                const prefix = method === 'POST' ? 'add' : 'edit';
+                payload = {
+                    title: document.getElementById(`${prefix}EventTitle`).value.trim(),
+                    category: document.getElementById(`${prefix}EventCategory`).value,
+                    date: document.getElementById(`${prefix}EventDate`).value,
+                    time: document.getElementById(`${prefix}EventTime`).value.trim(),
+                    location: document.getElementById(`${prefix}EventLocation`).value.trim(),
+                    organizer: document.getElementById(`${prefix}EventOrganizer`).value.trim(),
+                    seats: parseInt(document.getElementById(`${prefix}EventSeats`).value, 10),
+                    status: document.getElementById(`${prefix}EventStatus`).value,
+                    description: document.getElementById(`${prefix}EventDesc`).value.trim(),
+                    poster_image: 'uploads/posters/default_poster.jpg'
+                };
+
+                if (method === 'PUT') {
+                    payload.id = parseInt(document.getElementById('editRecordId').value, 10);
+                }
+            } else {
+                // Students Entity
+                const prefix = method === 'POST' ? 'add' : 'edit';
+                payload = {
+                    name: document.getElementById(`${prefix}StudentName`).value.trim(),
+                    username: document.getElementById(`${prefix}StudentUsername`).value.trim(),
+                    email: document.getElementById(`${prefix}StudentEmail`).value.trim(),
+                    mobile: document.getElementById(`${prefix}StudentMobile`).value.trim(),
+                    course: document.getElementById(`${prefix}StudentCourse`).value,
+                    year: parseInt(document.getElementById(`${prefix}StudentYear`).value, 10),
+                    gender: document.getElementById(`${prefix}StudentGender`).value,
+                    role: 'student'
+                };
+
+                if (method === 'PUT') {
+                    payload.id = document.getElementById('editRecordId').value;
+                }
+            }
+
+            const targetUrl = method === 'PUT' 
+                ? `${config.phpUrl}?id=${payload.id}` 
+                : config.phpUrl;
+
+            logInspectorRequest(method, targetUrl, { 'Content-Type': 'application/json' }, payload);
+
+            try {
+                let responseJson = null;
+                let statusCode = method === 'POST' ? 201 : 200;
+
+                if (isLivePhpServer) {
+                    const res = await fetch(targetUrl, {
+                        method: method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                    statusCode = res.status;
+                    responseJson = await res.json();
+                } else {
+                    // Client Simulation
+                    await new Promise(r => setTimeout(r, 120)); // Simulated network latency
+                    if (method === 'POST') {
+                        payload.id = Date.now();
+                        payload.event_id = payload.id;
+                        records.unshift(payload);
+                        responseJson = { success: true, status: 201, message: "Record added to local storage store.", data: payload };
+                    } else {
+                        const idx = records.findIndex(r => String(r.id) === String(payload.id));
+                        if (idx >= 0) {
+                            records[idx] = { ...records[idx], ...payload };
+                        }
+                        responseJson = { success: true, status: 200, message: "Record updated in local storage store.", data: payload };
+                    }
+                    localStorage.setItem(config.storageKey, JSON.stringify(records));
+                }
+
+                logInspectorResponse(statusCode, Math.round(performance.now() - startTime), responseJson);
+
+                if (responseJson && responseJson.success) {
+                    closeModal(method === 'POST' ? 'addModal' : 'editModal');
+                    showToast(`🎉 Record ${method === 'POST' ? 'added' : 'updated'} successfully (${method} ${statusCode})!`, 'success');
+                    
+                    if (isLivePhpServer) {
+                        await fetchRecords();
+                    } else {
+                        renderTableBody(records);
+                        updateKpis();
+                    }
+
+                    // Highlight the modified row
+                    const modifiedId = payload.id || (responseJson.data ? responseJson.data.id : null);
+                    if (modifiedId) {
+                        setTimeout(() => {
+                            const tr = document.getElementById(`row-${modifiedId}`);
+                            if (tr) tr.classList.add(method === 'POST' ? 'row-added' : 'row-updated');
+                        }, 50);
+                    }
+                } else {
+                    showToast(responseJson.message || "Operation failed", 'error');
+                }
+            } catch (err) {
+                console.error("Submit error:", err);
+                logInspectorResponse(500, Math.round(performance.now() - startTime), { error: err.message });
+                showToast(`Network error: ${err.message}`, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+                totalApiRequests++;
+                document.getElementById('kpiApiOps').textContent = totalApiRequests;
+            }
+        }
+
+        /**
+         * 3. DELETE: Execute Delete Operation
+         */
+        async function executeDeleteRecord() {
+            if (!deleteTargetId) return;
+
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'Deleting (DELETE)...';
+
+            const config = ENDPOINTS[currentEntity];
+            const targetUrl = `${config.phpUrl}?id=${deleteTargetId}`;
+            const startTime = performance.now();
+
+            logInspectorRequest('DELETE', targetUrl, { 'Accept': 'application/json' }, { id: deleteTargetId });
+
+            // Animate row deletion before removing
+            const tr = document.getElementById(`row-${deleteTargetId}`);
+            if (tr) tr.classList.add('row-deleting');
+
+            try {
+                let responseJson = null;
+                let statusCode = 200;
+
+                if (isLivePhpServer) {
+                    const res = await fetch(targetUrl, {
+                        method: 'DELETE',
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    statusCode = res.status;
+                    responseJson = await res.json();
+                } else {
+                    await new Promise(r => setTimeout(r, 100));
+                    records = records.filter(r => String(r.id) !== String(deleteTargetId));
+                    localStorage.setItem(config.storageKey, JSON.stringify(records));
+                    responseJson = { success: true, status: 200, message: `Record #${deleteTargetId} deleted from client store.` };
+                }
+
+                logInspectorResponse(statusCode, Math.round(performance.now() - startTime), responseJson);
+
+                closeModal('deleteModal');
+                showToast(`🗑️ Record #${deleteTargetId} deleted asynchronously (DELETE 200 OK)!`, 'warning');
+
+                setTimeout(() => {
+                    if (isLivePhpServer) {
+                        fetchRecords();
+                    } else {
+                        renderTableBody(records);
+                        updateKpis();
+                    }
+                }, 350);
+
+            } catch (err) {
+                console.error("Delete error:", err);
+                logInspectorResponse(500, Math.round(performance.now() - startTime), { error: err.message });
+                showToast(`Delete failed: ${err.message}`, 'error');
+                if (tr) tr.classList.remove('row-deleting');
+            } finally {
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = 'Delete Record (DELETE)';
+                deleteTargetId = null;
+                totalApiRequests++;
+                document.getElementById('kpiApiOps').textContent = totalApiRequests;
+            }
+        }
+
+        // --------------------------------------------------------------------
+        // DATA NORMALIZATION & RENDERING
+        // --------------------------------------------------------------------
+
+        function normalizeDataArray(data) {
+            if (!Array.isArray(data)) return [];
+            return data.map(item => {
+                if (currentEntity === 'events') {
+                    return {
+                        id: item.id || item.event_id || 0,
+                        title: item.title || '',
+                        category: item.category || 'Technology',
+                        date: item.date || item.event_date || '',
+                        time: item.time || item.event_time || '',
+                        location: item.location || '',
+                        organizer: item.organizer || '',
+                        seats: item.seats || item.total_seats || 50,
+                        available_seats: item.available_seats || item.seats || 50,
+                        status: item.status || 'Upcoming',
+                        description: item.description || '',
+                        poster_image: item.poster_image || 'uploads/posters/default_poster.jpg'
+                    };
+                } else {
+                    return {
+                        id: item.id || item.student_id || item.registrationId || item.registration_no,
+                        name: item.name || item.full_name || '',
+                        username: item.username || '',
+                        email: item.email || '',
+                        mobile: item.mobile || '',
+                        course: item.course || '',
+                        year: item.year || item.academic_year || 1,
+                        gender: item.gender || 'Male',
+                        role: item.role || 'student'
+                    };
+                }
+            });
+        }
+
+        function renderTableStructure() {
+            const thead = document.getElementById('tableHead');
+            const catFilter = document.getElementById('apiCategoryFilter');
+
+            if (currentEntity === 'events') {
+                thead.innerHTML = `
+                    <tr>
+                        <th style="width: 60px;">Poster</th>
+                        <th>Event Details</th>
+                        <th>Category</th>
+                        <th>Date & Time</th>
+                        <th>Venue / Organizer</th>
+                        <th>Capacity</th>
+                        <th>Status</th>
+                        <th style="text-align: right;">Async Actions</th>
+                    </tr>
+                `;
+                catFilter.innerHTML = `
+                    <option value="all">All Categories</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Competition">Competition</option>
+                    <option value="Workshop">Workshop</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Cultural">Cultural</option>
+                    <option value="Career">Career</option>
+                `;
+                document.getElementById('apiStatusFilter').style.display = 'inline-block';
+                document.getElementById('kpiTotalLabel').textContent = 'Total Events';
+                document.getElementById('kpiActiveLabel').textContent = 'Upcoming Events';
+            } else {
+                thead.innerHTML = `
+                    <tr>
+                        <th style="width: 50px;">Avatar</th>
+                        <th>Student Name & Username</th>
+                        <th>Registration ID</th>
+                        <th>Contact Email & Phone</th>
+                        <th>Course & Year</th>
+                        <th>Gender</th>
+                        <th>Role</th>
+                        <th style="text-align: right;">Async Actions</th>
+                    </tr>
+                `;
+                catFilter.innerHTML = `
+                    <option value="all">All Courses</option>
+                    <option value="B.Tech IT">B.Tech IT</option>
+                    <option value="B.Tech CSE">B.Tech CSE</option>
+                    <option value="BCA">BCA</option>
+                    <option value="B.Tech CE">B.Tech CE</option>
+                    <option value="MCA">MCA</option>
+                `;
+                document.getElementById('apiStatusFilter').style.display = 'none';
+                document.getElementById('kpiTotalLabel').textContent = 'Total Students';
+                document.getElementById('kpiActiveLabel').textContent = 'Enrolled Active';
+            }
+        }
+
+        function renderTableBody(dataList) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            if (dataList.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 45px 20px;">
+                            <div style="font-size: 38px; margin-bottom: 8px;">📭</div>
+                            <div style="font-weight: 700; color: var(--api-text-main); font-size: 15px;">No records match your criteria</div>
+                            <div style="font-size: 13px; color: var(--api-text-muted); margin-top: 4px;">Click "Add Record (POST)" to insert a new entry asynchronously.</div>
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('resultsCount').textContent = `Showing 0 of ${records.length} records`;
+                return;
+            }
+
+            dataList.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.id = `row-${item.id}`;
+
+                if (currentEntity === 'events') {
+                    const posterPath = item.poster_image.startsWith('../') ? item.poster_image : '../' + item.poster_image;
+                    let statusBadgeClass = 'badge-live';
+                    if (item.status === 'Completed') statusBadgeClass = 'badge-method-get';
+                    if (item.status === 'Cancelled') statusBadgeClass = 'badge-method-delete';
+
+                    tr.innerHTML = `
+                        <td>
+                            <img src="${posterPath}" alt="Poster" class="record-thumb" onerror="this.src='../uploads/posters/default_poster.jpg'">
+                        </td>
+                        <td>
+                            <div class="record-title">${escapeHtml(item.title)}</div>
+                            <div class="record-sub">ID #${item.id} &bull; ${escapeHtml(item.description.substring(0, 45))}...</div>
+                        </td>
+                        <td>
+                            <span class="api-badge badge-method-get" style="font-size: 11px;">
+                                ${escapeHtml(item.category)}
+                            </span>
+                        </td>
+                        <td>
+                            <div style="font-weight: 600;">📅 ${escapeHtml(item.date)}</div>
+                            <div class="record-sub">⏰ ${escapeHtml(item.time)}</div>
+                        </td>
+                        <td>
+                            <div style="font-weight: 600;">📍 ${escapeHtml(item.location)}</div>
+                            <div class="record-sub">🏢 ${escapeHtml(item.organizer)}</div>
+                        </td>
+                        <td>
+                            <span style="font-weight: 700; color: #1e293b;">${item.seats}</span>
+                            <span class="record-sub"> seats</span>
+                        </td>
+                        <td>
+                            <span class="api-badge ${statusBadgeClass}" style="font-size: 11px;">
+                                ${escapeHtml(item.status)}
+                            </span>
+                        </td>
+                        <td class="action-cell" style="text-align: right;">
+                            <button type="button" class="btn-table-action" onclick="openViewModal('${item.id}')" title="GET single record details">👁️ View</button>
+                            <button type="button" class="btn-table-action" onclick="openEditModal('${item.id}')" title="PUT update record">✏️ Edit</button>
+                            <button type="button" class="btn-table-action btn-table-delete" onclick="openDeleteModal('${item.id}', '${escapeAttr(item.title)}')" title="DELETE record">🗑️ Delete</button>
+                        </td>
+                    `;
+                } else {
+                    // Students Table Row
+                    tr.innerHTML = `
+                        <td>
+                            <div style="width: 38px; height: 38px; border-radius: 50%; background: #e0f2fe; color: #0369a1; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
+                                ${item.name.charAt(0).toUpperCase()}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="record-title">${escapeHtml(item.name)}</div>
+                            <div class="record-sub">@${escapeHtml(item.username)}</div>
+                        </td>
+                        <td>
+                            <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 11px;">
+                                ${escapeHtml(item.id)}
+                            </code>
+                        </td>
+                        <td>
+                            <div>📧 ${escapeHtml(item.email)}</div>
+                            <div class="record-sub">📱 ${escapeHtml(item.mobile)}</div>
+                        </td>
+                        <td>
+                            <span class="api-badge badge-method-get" style="font-size: 11px;">
+                                ${escapeHtml(item.course)} (Yr ${item.year})
+                            </span>
+                        </td>
+                        <td>${escapeHtml(item.gender)}</td>
+                        <td>
+                            <span class="api-badge badge-live" style="font-size: 10px;">
+                                ${escapeHtml(item.role)}
+                            </span>
+                        </td>
+                        <td class="action-cell" style="text-align: right;">
+                            <button type="button" class="btn-table-action" onclick="openViewModal('${item.id}')">👁️ View</button>
+                            <button type="button" class="btn-table-action" onclick="openEditModal('${item.id}')">✏️ Edit</button>
+                            <button type="button" class="btn-table-action btn-table-delete" onclick="openDeleteModal('${item.id}', '${escapeAttr(item.name)}')">🗑️ Delete</button>
+                        </td>
+                    `;
+                }
+
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('resultsCount').textContent = `Showing ${dataList.length} of ${records.length} records`;
+        }
+
+        // Filtering and Sorting
+        function handleSearchFilter() {
+            const query = document.getElementById('apiSearchInput').value.trim().toLowerCase();
+            const cat = document.getElementById('apiCategoryFilter').value;
+            const status = document.getElementById('apiStatusFilter').value;
+            const sort = document.getElementById('apiSortSelect').value;
+
+            let filtered = records.filter(item => {
+                if (currentEntity === 'events') {
+                    const matchQ = !query || 
+                        item.title.toLowerCase().includes(query) ||
+                        item.location.toLowerCase().includes(query) ||
+                        item.organizer.toLowerCase().includes(query) ||
+                        item.description.toLowerCase().includes(query);
+                    const matchCat = (cat === 'all' || item.category === cat);
+                    const matchStatus = (status === 'all' || item.status === status);
+                    return matchQ && matchCat && matchStatus;
+                } else {
+                    const matchQ = !query ||
+                        item.name.toLowerCase().includes(query) ||
+                        item.username.toLowerCase().includes(query) ||
+                        item.email.toLowerCase().includes(query) ||
+                        String(item.id).toLowerCase().includes(query);
+                    const matchCat = (cat === 'all' || item.course === cat);
+                    return matchQ && matchCat;
+                }
+            });
+
+            // Sorting
+            filtered.sort((a, b) => {
+                if (sort === 'dateDesc') return new Date(b.date || 0) - new Date(a.date || 0);
+                if (sort === 'dateAsc') return new Date(a.date || 0) - new Date(b.date || 0);
+                if (sort === 'nameAsc') return (a.title || a.name).localeCompare(b.title || b.name);
+                if (sort === 'nameDesc') return (b.title || b.name).localeCompare(a.title || a.name);
+                if (sort === 'seatsDesc') return (b.seats || 0) - (a.seats || 0);
+                return 0;
+            });
+
+            renderTableBody(filtered);
+        }
+
+        function updateKpis() {
+            document.getElementById('kpiTotalCount').textContent = records.length;
+            if (currentEntity === 'events') {
+                const upcoming = records.filter(r => r.status === 'Upcoming').length;
+                document.getElementById('kpiActiveCount').textContent = upcoming;
+            } else {
+                document.getElementById('kpiActiveCount').textContent = records.length;
+            }
+        }
+
+        // Switch Entity (Events vs Students)
+        async function switchEntity(entity) {
+            if (currentEntity === entity) return;
+            currentEntity = entity;
+
+            document.getElementById('tabEvents').classList.toggle('active', entity === 'events');
+            document.getElementById('tabStudents').classList.toggle('active', entity === 'students');
+
+            renderTableStructure();
+            document.getElementById('apiSearchInput').value = '';
+            await fetchRecords();
+            showToast(`Switched to ${entity === 'events' ? 'Events' : 'Students'} API mode.`, 'info');
+        }
+
+        // --------------------------------------------------------------------
+        // MODALS HANDLING & FORM BUILDERS
+        // --------------------------------------------------------------------
+
+        function openModal(id) {
+            const m = document.getElementById(id);
+            if (m) m.classList.add('active');
+        }
+
+        function closeModal(id) {
+            const m = document.getElementById(id);
+            if (m) m.classList.remove('active');
+        }
+
+        function openAddModal() {
+            const title = document.getElementById('addModalTitle');
+            const body = document.getElementById('addModalBody');
+
+            if (currentEntity === 'events') {
+                title.innerHTML = '➕ Add New Event (POST)';
+                body.innerHTML = `
+                    <div class="form-group">
+                        <label>Event Title *</label>
+                        <input type="text" id="addEventTitle" class="form-input" required placeholder="e.g. AI Hackathon 2026">
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Category *</label>
+                            <select id="addEventCategory" class="form-input" required>
+                                <option value="Technology">Technology</option>
+                                <option value="Competition">Competition</option>
+                                <option value="Workshop">Workshop</option>
+                                <option value="Sports">Sports</option>
+                                <option value="Cultural">Cultural</option>
+                                <option value="Career">Career</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Event Date *</label>
+                            <input type="date" id="addEventDate" class="form-input" required value="${new Date().toISOString().split('T')[0]}">
+                        </div>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Event Time *</label>
+                            <input type="text" id="addEventTime" class="form-input" required placeholder="e.g. 10:00 AM">
+                        </div>
+                        <div class="form-group">
+                            <label>Location / Venue *</label>
+                            <input type="text" id="addEventLocation" class="form-input" required placeholder="e.g. Main Auditorium">
+                        </div>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Organizing Body *</label>
+                            <input type="text" id="addEventOrganizer" class="form-input" required placeholder="e.g. Computer Dept">
+                        </div>
+                        <div class="form-group">
+                            <label>Capacity Seats *</label>
+                            <input type="number" id="addEventSeats" class="form-input" required min="1" value="100">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Status *</label>
+                        <select id="addEventStatus" class="form-input">
+                            <option value="Upcoming">Upcoming</option>
+                            <option value="Ongoing">Ongoing</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Description *</label>
+                        <textarea id="addEventDesc" class="form-input" rows="3" required placeholder="Describe the campus event..."></textarea>
+                    </div>
+                `;
+            } else {
+                title.innerHTML = '➕ Add New Student (POST)';
+                body.innerHTML = `
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Full Name *</label>
+                            <input type="text" id="addStudentName" class="form-input" required placeholder="e.g. Rohan Sharma">
+                        </div>
+                        <div class="form-group">
+                            <label>Username *</label>
+                            <input type="text" id="addStudentUsername" class="form-input" required placeholder="e.g. rohan_s">
+                        </div>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Email Address *</label>
+                            <input type="email" id="addStudentEmail" class="form-input" required placeholder="rohan@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Mobile Number *</label>
+                            <input type="tel" id="addStudentMobile" class="form-input" required placeholder="9876543210" pattern="[0-9]{10}">
+                        </div>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Course *</label>
+                            <select id="addStudentCourse" class="form-input">
+                                <option value="B.Tech IT">B.Tech IT</option>
+                                <option value="B.Tech CSE">B.Tech CSE</option>
+                                <option value="BCA">BCA</option>
+                                <option value="B.Tech CE">B.Tech CE</option>
+                                <option value="MCA">MCA</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Academic Year *</label>
+                            <select id="addStudentYear" class="form-input">
+                                <option value="1">Year 1</option>
+                                <option value="2">Year 2</option>
+                                <option value="3">Year 3</option>
+                                <option value="4">Year 4</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Gender *</label>
+                        <select id="addStudentGender" class="form-input">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                `;
+            }
+
+            openModal('addModal');
+        }
+
+        function openEditModal(id) {
+            const item = records.find(r => String(r.id) === String(id));
+            if (!item) return;
+
+            document.getElementById('editRecordId').value = item.id;
+            const title = document.getElementById('editModalTitle');
+            const body = document.getElementById('editModalBody');
+
+            if (currentEntity === 'events') {
+                title.innerHTML = `✏️ Update Event #${item.id} (PUT)`;
+                body.innerHTML = `
+                    <div class="form-group">
+                        <label>Event Title *</label>
+                        <input type="text" id="editEventTitle" class="form-input" required value="${escapeAttr(item.title)}">
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Category *</label>
+                            <select id="editEventCategory" class="form-input">
+                                <option value="Technology" ${item.category === 'Technology' ? 'selected' : ''}>Technology</option>
+                                <option value="Competition" ${item.category === 'Competition' ? 'selected' : ''}>Competition</option>
+                                <option value="Workshop" ${item.category === 'Workshop' ? 'selected' : ''}>Workshop</option>
+                                <option value="Sports" ${item.category === 'Sports' ? 'selected' : ''}>Sports</option>
+                                <option value="Cultural" ${item.category === 'Cultural' ? 'selected' : ''}>Cultural</option>
+                                <option value="Career" ${item.category === 'Career' ? 'selected' : ''}>Career</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Event Date *</label>
+                            <input type="date" id="editEventDate" class="form-input" required value="${item.date}">
+                        </div>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Event Time *</label>
+                            <input type="text" id="editEventTime" class="form-input" required value="${escapeAttr(item.time)}">
+                        </div>
+                        <div class="form-group">
+                            <label>Location / Venue *</label>
+                            <input type="text" id="editEventLocation" class="form-input" required value="${escapeAttr(item.location)}">
+                        </div>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Organizing Body *</label>
+                            <input type="text" id="editEventOrganizer" class="form-input" required value="${escapeAttr(item.organizer)}">
+                        </div>
+                        <div class="form-group">
+                            <label>Capacity Seats *</label>
+                            <input type="number" id="editEventSeats" class="form-input" required min="1" value="${item.seats}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Status *</label>
+                        <select id="editEventStatus" class="form-input">
+                            <option value="Upcoming" ${item.status === 'Upcoming' ? 'selected' : ''}>Upcoming</option>
+                            <option value="Ongoing" ${item.status === 'Ongoing' ? 'selected' : ''}>Ongoing</option>
+                            <option value="Completed" ${item.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                            <option value="Cancelled" ${item.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Description *</label>
+                        <textarea id="editEventDesc" class="form-input" rows="3" required>${escapeHtml(item.description)}</textarea>
+                    </div>
+                `;
+            } else {
+                title.innerHTML = `✏️ Update Student: ${escapeHtml(item.name)} (PUT)`;
+                body.innerHTML = `
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Full Name *</label>
+                            <input type="text" id="editStudentName" class="form-input" required value="${escapeAttr(item.name)}">
+                        </div>
+                        <div class="form-group">
+                            <label>Username (Read-only)</label>
+                            <input type="text" id="editStudentUsername" class="form-input" value="${escapeAttr(item.username)}" readonly style="opacity: 0.7;">
+                        </div>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Email Address *</label>
+                            <input type="email" id="editStudentEmail" class="form-input" required value="${escapeAttr(item.email)}">
+                        </div>
+                        <div class="form-group">
+                            <label>Mobile Number *</label>
+                            <input type="tel" id="editStudentMobile" class="form-input" required value="${escapeAttr(item.mobile)}">
+                        </div>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Course *</label>
+                            <select id="editStudentCourse" class="form-input">
+                                <option value="B.Tech IT" ${item.course === 'B.Tech IT' ? 'selected' : ''}>B.Tech IT</option>
+                                <option value="B.Tech CSE" ${item.course === 'B.Tech CSE' ? 'selected' : ''}>B.Tech CSE</option>
+                                <option value="BCA" ${item.course === 'BCA' ? 'selected' : ''}>BCA</option>
+                                <option value="B.Tech CE" ${item.course === 'B.Tech CE' ? 'selected' : ''}>B.Tech CE</option>
+                                <option value="MCA" ${item.course === 'MCA' ? 'selected' : ''}>MCA</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Academic Year *</label>
+                            <select id="editStudentYear" class="form-input">
+                                <option value="1" ${item.year == 1 ? 'selected' : ''}>Year 1</option>
+                                <option value="2" ${item.year == 2 ? 'selected' : ''}>Year 2</option>
+                                <option value="3" ${item.year == 3 ? 'selected' : ''}>Year 3</option>
+                                <option value="4" ${item.year == 4 ? 'selected' : ''}>Year 4</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Gender *</label>
+                        <select id="editStudentGender" class="form-input">
+                            <option value="Male" ${item.gender === 'Male' ? 'selected' : ''}>Male</option>
+                            <option value="Female" ${item.gender === 'Female' ? 'selected' : ''}>Female</option>
+                            <option value="Other" ${item.gender === 'Other' ? 'selected' : ''}>Other</option>
+                        </select>
+                    </div>
+                `;
+            }
+
+            openModal('editModal');
+        }
+
+        function openViewModal(id) {
+            const item = records.find(r => String(r.id) === String(id));
+            if (!item) return;
+
+            const title = document.getElementById('viewModalTitle');
+            const body = document.getElementById('viewModalBody');
+
+            if (currentEntity === 'events') {
+                title.innerHTML = `👁️ ${escapeHtml(item.title)}`;
+                const posterPath = item.poster_image.startsWith('../') ? item.poster_image : '../' + item.poster_image;
+                body.innerHTML = `
+                    <div style="display: flex; gap: 16px; margin-bottom: 16px; align-items: center; flex-wrap: wrap;">
+                        <img src="${posterPath}" alt="Event poster" style="width: 140px; height: 95px; border-radius: 8px; object-fit: cover; border: 1px solid #cbd5e1;">
+                        <div style="flex: 1;">
+                            <span class="api-badge badge-method-get">${escapeHtml(item.category)}</span>
+                            <span class="api-badge badge-live" style="margin-left: 6px;">${escapeHtml(item.status)}</span>
+                            <div style="font-size: 13px; color: var(--api-text-muted); margin-top: 6px;">Event ID: #${item.id}</div>
+                            <div style="font-size: 14px; font-weight: 700; margin-top: 4px; color: var(--api-text-main);">📅 ${escapeHtml(item.date)} at ${escapeHtml(item.time)}</div>
+                        </div>
+                    </div>
+                    <div style="background: #f8fafc; padding: 14px; border-radius: 8px; border: 1px solid var(--api-border); font-size: 13px; margin-bottom: 14px;">
+                        <div style="margin-bottom: 6px;"><strong>📍 Location:</strong> ${escapeHtml(item.location)}</div>
+                        <div style="margin-bottom: 6px;"><strong>🏢 Organizer:</strong> ${escapeHtml(item.organizer)}</div>
+                        <div><strong>🎟️ Seating Capacity:</strong> ${item.seats} total seats (${item.available_seats} available)</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 12px; font-weight: 700; color: var(--api-text-muted); text-transform: uppercase; margin-bottom: 4px;">Description</div>
+                        <p style="font-size: 13px; line-height: 1.5; color: var(--api-text-main); margin: 0;">${escapeHtml(item.description)}</p>
+                    </div>
+                `;
+            } else {
+                title.innerHTML = `👁️ ${escapeHtml(item.name)}`;
+                body.innerHTML = `
+                    <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 16px;">
+                        <div style="width: 60px; height: 60px; border-radius: 50%; background: #dbeafe; color: #1d4ed8; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800;">
+                            ${item.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                            <h4 style="margin: 0; font-size: 18px;">${escapeHtml(item.name)}</h4>
+                            <div style="font-size: 13px; color: var(--api-text-muted);">@${escapeHtml(item.username)} &bull; ${escapeHtml(item.id)}</div>
+                        </div>
+                    </div>
+                    <div style="background: #f8fafc; padding: 14px; border-radius: 8px; border: 1px solid var(--api-border); font-size: 13px;">
+                        <div style="margin-bottom: 8px;"><strong>📧 Email:</strong> ${escapeHtml(item.email)}</div>
+                        <div style="margin-bottom: 8px;"><strong>📱 Phone:</strong> ${escapeHtml(item.mobile)}</div>
+                        <div style="margin-bottom: 8px;"><strong>🎓 Academic Program:</strong> ${escapeHtml(item.course)} (Year ${item.year})</div>
+                        <div style="margin-bottom: 8px;"><strong>⚧ Gender:</strong> ${escapeHtml(item.gender)}</div>
+                        <div><strong>🛡️ Access Role:</strong> ${escapeHtml(item.role)}</div>
+                    </div>
+                `;
+            }
+
+            openModal('viewModal');
+        }
+
+        function openDeleteModal(id, title) {
+            deleteTargetId = id;
+            document.getElementById('deleteTargetTitle').textContent = title;
+            document.getElementById('deleteTargetMeta').textContent = `Target Identifier: ${id}`;
+            openModal('deleteModal');
+        }
+
+        // --------------------------------------------------------------------
+        // REST API NETWORK INSPECTOR LOGGING
+        // --------------------------------------------------------------------
+
+        function logInspectorRequest(method, url, headers, body) {
+            const methodPill = document.getElementById('lastMethodPill');
+            methodPill.textContent = method;
+            methodPill.className = `api-badge badge-method-${method.toLowerCase()}`;
+
+            document.getElementById('reqTimestamp').textContent = new Date().toLocaleTimeString();
+            document.getElementById('reqUrl').textContent = `${method} ${url}`;
+
+            let headerStr = Object.entries(headers).map(([k, v]) => `${k}: ${v}`).join('<br>');
+            document.getElementById('reqHeaders').innerHTML = headerStr;
+
+            const bodyEl = document.getElementById('reqBody');
+            if (body) {
+                bodyEl.textContent = JSON.stringify(body, null, 2);
+                lastCurlCommand = `curl -X ${method} "${url}" \\\n  -H "Content-Type: application/json" \\\n  -d '${JSON.stringify(body)}'`;
+            } else {
+                bodyEl.textContent = '// No body payload for ' + method;
+                lastCurlCommand = `curl -X ${method} "${url}" -H "Accept: application/json"`;
+            }
+        }
+
+        function logInspectorResponse(status, latencyMs, json) {
+            const statusBadge = document.getElementById('resStatusBadge');
+            statusBadge.textContent = `${status} ${status === 200 ? 'OK' : (status === 201 ? 'Created' : (status === 404 ? 'Not Found' : ''))}`;
+            statusBadge.className = status >= 200 && status < 300 ? 'api-badge badge-live' : 'api-badge badge-method-delete';
+
+            document.getElementById('kpiLastStatus').textContent = `${status} ${status === 200 ? 'OK' : (status === 201 ? 'Created' : '')}`;
+            document.getElementById('resSummary').textContent = `Latency: ~${latencyMs}ms • Size: ~${JSON.stringify(json).length} bytes`;
+
+            const resBodyEl = document.getElementById('resBody');
+            resBodyEl.textContent = JSON.stringify(json, null, 2);
+        }
+
+        function toggleNetworkInspector() {
+            const card = document.getElementById('networkInspectorCard');
+            const text = document.getElementById('inspectorToggleText');
+            if (card.style.display === 'none') {
+                card.style.display = 'block';
+                text.textContent = 'Hide Inspector';
+            } else {
+                card.style.display = 'none';
+                text.textContent = 'Show Inspector';
+            }
+        }
+
+        function clearInspectorLogs() {
+            document.getElementById('reqUrl').textContent = 'GET /php/api_events.php';
+            document.getElementById('reqBody').textContent = '// Cleared';
+            document.getElementById('resBody').textContent = '// Cleared';
+            showToast('Inspector log cleared.', 'info');
+        }
+
+        function copyCurlCommand() {
+            navigator.clipboard.writeText(lastCurlCommand).then(() => {
+                showToast('cURL command copied to clipboard!', 'success');
+            }).catch(() => {
+                showToast('Failed to copy cURL.', 'error');
+            });
+        }
+
+        function exportDataJson() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(records, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `${currentEntity}_export_${Date.now()}.json`);
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+            showToast(`Exported ${records.length} records to JSON file!`, 'success');
+        }
+
+        // --------------------------------------------------------------------
+        // UTILITIES
+        // --------------------------------------------------------------------
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast-msg toast-${type}`;
+
+            let icon = 'ℹ️';
+            if (type === 'success') icon = '✅';
+            if (type === 'error') icon = '❌';
+            if (type === 'warning') icon = '⚠️';
+
+            toast.innerHTML = `<span>${icon}</span><span>${escapeHtml(message)}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 4500);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function escapeAttr(str) {
+            if (!str) return '';
+            return String(str).replace(/"/g, '&quot;');
+        }
+    </script>
+</body>
+
+</html>
